@@ -3,7 +3,7 @@ use Carbon\Carbon;
 
 class InscripcionFinalesController extends BaseController 
 {
-
+//prueba
     private $_data;
     private $_rules;
     private $_messages;
