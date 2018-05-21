@@ -18,7 +18,7 @@ class Util
         return $key;
 
     }
-    //prueba push
+
     //Humaniza las fechas al estilo "Hace una hora o el mes pasado etc.."
     public static function Feacharelativa($time) {
             $second = 1;
