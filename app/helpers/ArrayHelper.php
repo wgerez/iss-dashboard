@@ -21,7 +21,7 @@ class ArrayHelper {
         return $arrContactos;
     }
 
-    // prueba gitgub
+    // prueba 
 
     public static function obtenerPeriodosSeparados($periodos)
     {
