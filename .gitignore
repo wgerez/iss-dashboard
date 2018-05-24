@@ -1,3 +1,5 @@
+.vscode
+.venv
 /vendor
 /node_modules
 /public/storage
