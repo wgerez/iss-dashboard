@@ -21,6 +21,7 @@ class ArrayHelper {
         return $arrContactos;
     }
 
+    // prueba 
 
     public static function obtenerPeriodosSeparados($periodos)
     {
