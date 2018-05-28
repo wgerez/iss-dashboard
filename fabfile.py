@@ -83,7 +83,7 @@ def build_site():
 def swap_symlinks():
     release_into = "%s/%s" % (releases_dir, next_release)
 
-    run("ln -nfs %sdatabase.php %s/app/config/database.php" % (persist_dir, release_into))
+    run("ln -nfs %s/database.php %s/app/config/database.php" % (persist_dir, release_into))
     run("rm -rf %s/app/storage" % release_into)
 
     run("ln -nfs %s/storage %s/app/storage" % (persist_dir, release_into))
