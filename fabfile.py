@@ -17,7 +17,7 @@ next_release = "%(time).0f" % {'time': time()}
 current_release = "/home/deploy/issadmin/current"
 
 @task
-def deploy(migrate='no'):
+def deployqa(migrate='no'):
     init()
     update_git()
     create_release()
