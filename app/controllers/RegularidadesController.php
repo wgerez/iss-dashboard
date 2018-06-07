@@ -11,23 +11,23 @@ class RegularidadesController extends \BaseController {
     const OPERACION_CANCELADA = 3;
     const OPERACION_INFO = 4;
     const NO_EXISTE_ALUMNO = 5;
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
-	public function index()
-	{
-		//
-	}
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function index()
+    {
+        //
+    }
 
-	public function getListado()
-	{
+    public function getListado()
+    {
         $organizaciones = Organizacion::lists('nombre', 'id');
         $organizaciones[0] = 'Seleccionar';
         ksort($organizaciones);
 
-		$habilita = false;
+        $habilita = false;
 
         return View::make('regularidades.listado')
             ->with('organizaciones', $organizaciones)
@@ -39,7 +39,7 @@ class RegularidadesController extends \BaseController {
             ->with('editar', Session::get('BOLETIN_EDITAR'))
             ->with('imprimir', Session::get('BOLETIN_IMPRIMIR'))
             ->with('eliminar', Session::get('BOLETIN_ELIMINAR'));
-	}
+    }
 
     public function getCrear()
     {
@@ -52,11 +52,11 @@ class RegularidadesController extends \BaseController {
         $dni = '';
 
         return View::make('regularidades.nuevo', array(
-            'organizaciones' 	=> $organizaciones,
-            'docentes' 			=> $docentes,
-            'habilita' 			=> $habilita,
-            'idaseguir' 		=> $idaseguir,
-            'dni' 				=> $dni
+            'organizaciones'    => $organizaciones,
+            'docentes'          => $docentes,
+            'habilita'          => $habilita,
+            'idaseguir'         => $idaseguir,
+            'dni'               => $dni
         ))->with('menu', ModulosHelper::MENU_GESTION_ACADEMICA)
             ->with('submenu', ModulosHelper::SUBMENU_BOLETINES)
             ->with('submenu2', ModulosHelper::SUBMENU_2_EXAMENPARCIAL)
@@ -76,34 +76,34 @@ class RegularidadesController extends \BaseController {
 
         if ($alumnoid == '') {
             if ($ciclo_id == '') {
-        	   $regularidades = Regularidades::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND materia_id ='.$materia_id)->get();
+               $regularidades = Regularidades::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND materia_id ='.$materia_id)->get();
             } else {
                 $regularidades = Regularidades::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND materia_id ='.$materia_id.' AND ciclolectivo_id ='.$ciclo_id)->get();
             }
 
-			$alumnos = [];
-			$materias = [];
+            $alumnos = [];
+            $materias = [];
 
-        	if (count($regularidades) > 0) {
-        		foreach ($regularidades as $regularidad) {
-					array_push($alumnos, $regularidad->alumno_id);
-				}
+            if (count($regularidades) > 0) {
+                foreach ($regularidades as $regularidad) {
+                    array_push($alumnos, $regularidad->alumno_id);
+                }
 
-				$resultado = array_unique($alumnos);
-				sort($resultado);
+                $resultado = array_unique($alumnos);
+                sort($resultado);
 
-				foreach ($resultado as $resultad) {
+                foreach ($resultado as $resultad) {
                     ///////////////////////////////////////////////////////
                     $fechainicio = '';
                     $fechafin = '';
 
                     $porcentaje_asistencia = AsistenciaHelper::getAsistenciaporcentaje($carrera_id, $planID, $materia_id, $resultad, $ciclo_id);
                     ///////////////////////////////////////////////////////
-					$alumnoss = Alumno::getAlumnoPorAlumnoId($resultad);
+                    $alumnoss = Alumno::getAlumnoPorAlumnoId($resultad);
 
-			        foreach ($alumnoss as $alumno) {
-			        	$apeynom = $alumno->apellido.', '.$alumno->nombre;
-			        	$regularidade = Regularidades::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND alumno_id ='.$alumno->alumno_id.' AND materia_id ='.$materia_id.' AND ciclolectivo_id ='.$ciclo_id)->get();
+                    foreach ($alumnoss as $alumno) {
+                        $apeynom = $alumno->apellido.', '.$alumno->nombre;
+                        $regularidade = Regularidades::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND alumno_id ='.$alumno->alumno_id.' AND materia_id ='.$materia_id.' AND ciclolectivo_id ='.$ciclo_id)->get();
 
                         if (count($regularidade) > 0) {
                             foreach ($regularidade as $regularidad) {
@@ -112,12 +112,12 @@ class RegularidadesController extends \BaseController {
                             }
                         }
 
-			        	$materias[] = ['alumno' => $apeynom, 'regularidad' => $regularidade, 'porcentaje_asistencia' => $porcentaje_asistencia];
-			        }
-				}
-        	}
+                        $materias[] = ['alumno' => $apeynom, 'regularidad' => $regularidade, 'porcentaje_asistencia' => $porcentaje_asistencia];
+                    }
+                }
+            }
         } else {
-	        ///////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////
             $fechainicio = '';
             $fechafin = '';
 
@@ -125,15 +125,15 @@ class RegularidadesController extends \BaseController {
             ///////////////////////////////////////////////////////
             $countalumnoins = InscripcionMateria::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND alumno_id ='.$alumnoid.' AND materia_id ='.$materia_id)->get();
 
-	        if (count($countalumnoins) > 0) {
-	        	$materias = Regularidades::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND alumno_id ='.$alumnoid.' AND materia_id ='.$materia_id.' AND ciclolectivo_id ='.$ciclo_id)->get();
+            if (count($countalumnoins) > 0) {
+                $materias = Regularidades::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND alumno_id ='.$alumnoid.' AND materia_id ='.$materia_id.' AND ciclolectivo_id ='.$ciclo_id)->get();
 
-	        	if (count($materias) > 0) {
-	        		foreach ($materias as $value) {
-	        			$fecha = FechaHelper::getFechaImpresion($value->fecha_regularidad);
-	        			$value->fecha_regularidad = $fecha;
+                if (count($materias) > 0) {
+                    foreach ($materias as $value) {
+                        $fecha = FechaHelper::getFechaImpresion($value->fecha_regularidad);
+                        $value->fecha_regularidad = $fecha;
                         $promocional = 0;
-	        			$materiainfo = Materia::find($value->materia_id);
+                        $materiainfo = Materia::find($value->materia_id);
 
                         $promocions = RegularPromocion::whereRaw('carrera_id='.$carrera_id.' AND materia_id='.$value->materia_id.' AND planestudio_id='.$planID.' AND ciclolectivo_id='.$ciclo_id)->first();
 
@@ -147,16 +147,16 @@ class RegularidadesController extends \BaseController {
                         
                         $value->promocional = $promocional;
                         $nombremateria = $materiainfo->nombremateria;
-	        			$value->nombremateria = $nombremateria;
+                        $value->nombremateria = $nombremateria;
                         $value->porcentaje_asistencia = $porcentaje_asistencia;
-	        		}
-	        	} else {
-	        		$materias = 1;
-	        	}
-	        } else {
-	        	$materias = 0;
-	        }
-	    }
+                    }
+                } else {
+                    $materias = 1;
+                }
+            } else {
+                $materias = 0;
+            }
+        }
         /*highlight_string(var_export($materias,true));
         exit();*/
         return Response::json($materias);
@@ -170,7 +170,7 @@ class RegularidadesController extends \BaseController {
         $materia_id = Input::get('materia_id');
 
         if ($materia_id == '') {
-            $materias = Materia::where('carrera_id', '=', $carrid)->where('planestudio_id', '=', $planID)->get();
+            $materias = Materia::whereRaw('carrera_id ='.$carrid.' AND planestudio_id ='.$planID)->get();
         } else {
             $materias = Materia::find($materia_id)->periodo;
         }
@@ -290,8 +290,8 @@ class RegularidadesController extends \BaseController {
         $regularidades = Regularidades::whereRaw('carrera_id='.$regularidad->carrera_id.' AND materia_id='.$regularidad->materia_id.' AND planestudio_id='.$regularidad->planestudio_id.' AND alumno_id='.$regularidad->alumno_id)->get();
 
         foreach ($regularidades as $regularidade) {
-        	$fecha = FechaHelper::getFechaImpresion($regularidade->fecha_regularidad);
-        	$regularidade->fecha_regularidad = $fecha;
+            $fecha = FechaHelper::getFechaImpresion($regularidade->fecha_regularidad);
+            $regularidade->fecha_regularidad = $fecha;
         }
 
         $carreras = Carrera::where('organizacion_id', '=', 1)->get();
@@ -325,48 +325,48 @@ class RegularidadesController extends \BaseController {
         }
 
         $alumnoss = Alumno::getAlumnoPorAlumnoId($regularidad->alumno_id);
-		$alumnos = [];
+        $alumnos = [];
 
         foreach ($alumnoss as $alumno) {
-        	$apeynom = $alumno->apellido.', '.$alumno->nombre;
-        	$alumnos[] = ['alumno_id' => $alumno->alumno_id, 'apeynom' => $apeynom, 'nrodocumento' => $alumno->nrodocumento];
+            $apeynom = $alumno->apellido.', '.$alumno->nombre;
+            $alumnos[] = ['alumno_id' => $alumno->alumno_id, 'apeynom' => $apeynom, 'nrodocumento' => $alumno->nrodocumento];
         }
         
         $ciclos = CicloLectivo::all();
         $ciclo_id = $regularidad->ciclolectivo_id;//PlanEstudio::find($planID)->ciclolectivo_id;
         
         
-		$materia_id = $regularidad->materia_id;
-		$carrera_id = $regularidad->carrera_id;
-		$fechadesde = FechaHelper::getFechaImpresion($regularidad->fecha_regularidad);
+        $materia_id = $regularidad->materia_id;
+        $carrera_id = $regularidad->carrera_id;
+        $fechadesde = FechaHelper::getFechaImpresion($regularidad->fecha_regularidad);
 
-    	$porcions = explode("/", $fechadesde);
-    	$fechadesdes = $porcions[2].'-'.$porcions[1].'-'.$porcions[0];
+        $porcions = explode("/", $fechadesde);
+        $fechadesdes = $porcions[2].'-'.$porcions[1].'-'.$porcions[0];
     
-		$habilita = false;
+        $habilita = false;
         $organizaciones = Organizacion::lists('nombre', 'id');
 
         return View::make('regularidades.editar',[
-            'idaseguir'  		=> $idaseguir,
-            'organizaciones'  	=> $organizaciones,
+            'idaseguir'         => $idaseguir,
+            'organizaciones'    => $organizaciones,
             'carrera_id'        => $regularidad->carrera_id,
-            'carreras'        	=> $carreras,
+            'carreras'          => $carreras,
             'materia_id'        => $regularidad->materia_id,
-            'materias'        	=> $materias,
-            'planID'     	  	=> $planID,
-            'planes'          	=> $planes,
+            'materias'          => $materias,
+            'planID'            => $planID,
+            'planes'            => $planes,
             'docente_id'        => $docente_id,
             'docentes'          => $docentes,
-            'ciclo_id' 			=> $ciclo_id,
+            'ciclo_id'          => $ciclo_id,
             'ciclos'            => $ciclos,
             'regularidad'       => $regularidad,
-            'regularidades' 	=> $regularidades,
-            'habilita' 			=> $habilita,
-            'alumnos'       	=> $alumnos,
+            'regularidades'     => $regularidades,
+            'habilita'          => $habilita,
+            'alumnos'           => $alumnos,
             'nombremateria'     => $nombremateria,
-            'parcial'     		=> $parcial,
+            'parcial'           => $parcial,
             'fechadesdes'       => $fechadesdes,
-            'fechadesde'       	=> $fechadesde,
+            'fechadesde'        => $fechadesde,
             'promocional'       => $promocional
         ])->with('menu', ModulosHelper::MENU_GESTION_ACADEMICA)
             ->with('submenu', ModulosHelper::SUBMENU_BOLETINES)
@@ -386,14 +386,14 @@ class RegularidadesController extends \BaseController {
         $cboParcial = Input::get('cboParcial');
         $parcial = 0;
 
-    	$regularidades = Regularidades::whereRaw('carrera_id='.$carrera_id.' AND materia_id='.$materia_id. ' AND planestudio_id='.$planestudio_id.' AND alumno_id='.$alumnoid)->get();
-		
-		foreach ($regularidades as $regularidad) {
-			if ($cboParcial == $regularidad->parcial) {
-				$parcial = 1;
-			}
-		}
-		
+        $regularidades = Regularidades::whereRaw('carrera_id='.$carrera_id.' AND materia_id='.$materia_id. ' AND planestudio_id='.$planestudio_id.' AND alumno_id='.$alumnoid)->get();
+        
+        foreach ($regularidades as $regularidad) {
+            if ($cboParcial == $regularidad->parcial) {
+                $parcial = 1;
+            }
+        }
+        
         return Response::json($parcial);
     }
 
@@ -469,38 +469,38 @@ class RegularidadesController extends \BaseController {
 
     public function postGuardar()
     {   
-    	$validator = Validator::make(
+        $validator = Validator::make(
             array(
-                'cboCarrera'      	=> Input::get('cboCarrera'),
-                'cboPlan'         	=> Input::get('cboPlan'),
-                'cboMaterias'     	=> Input::get('cboMaterias'),
-                'cboDocente'      	=> Input::get('cboDocente'),
-                'alumno_id'       	=> Input::get('alumno_id'),
-                'fechadesde'       	=> Input::get('fechadesde'),
-                'cboParcial'       	=> Input::get('cboParcial'),
+                'cboCarrera'        => Input::get('cboCarrera'),
+                'cboPlan'           => Input::get('cboPlan'),
+                'cboMaterias'       => Input::get('cboMaterias'),
+                'cboDocente'        => Input::get('cboDocente'),
+                'alumno_id'         => Input::get('alumno_id'),
+                'fechadesde'        => Input::get('fechadesde'),
+                'cboParcial'        => Input::get('cboParcial'),
                 'cboCalificacion'   => Input::get('cboCalificacion'),
                 'cboCiclos'         => Input::get('cboCiclos')
             ),
             array(
-                'cboCarrera'      	=> 'required',
-                'cboPlan'         	=> 'required',
-                'cboMaterias'     	=> 'required',
-                'cboDocente'      	=> 'required',
-                'alumno_id'       	=> 'required',
-                'fechadesde'       	=> 'required',
-                'cboParcial'       	=> 'required',
-                'cboCalificacion'	=> 'required',
+                'cboCarrera'        => 'required',
+                'cboPlan'           => 'required',
+                'cboMaterias'       => 'required',
+                'cboDocente'        => 'required',
+                'alumno_id'         => 'required',
+                'fechadesde'        => 'required',
+                'cboParcial'        => 'required',
+                'cboCalificacion'   => 'required',
                 'cboCiclos'         => 'required'
             ),
             array(
-                'required' 		=> 'Campo Obligatorio',
-                'required' 		=> 'Campo Obligatorio',
-                'required' 		=> 'Campo Obligatorio',
-                'required' 		=> 'Campo Obligatorio',
-                'required' 		=> 'Campo Obligatorio',
-                'required' 		=> 'Campo Obligatorio',
-                'required' 		=> 'Campo Obligatorio',
-                'required' 		=> 'Campo Obligatorio',
+                'required'      => 'Campo Obligatorio',
+                'required'      => 'Campo Obligatorio',
+                'required'      => 'Campo Obligatorio',
+                'required'      => 'Campo Obligatorio',
+                'required'      => 'Campo Obligatorio',
+                'required'      => 'Campo Obligatorio',
+                'required'      => 'Campo Obligatorio',
+                'required'      => 'Campo Obligatorio',
                 'required'      => 'Campo Obligatorio'
             )
         );
@@ -529,7 +529,7 @@ class RegularidadesController extends \BaseController {
         }
 
         if ($cboRecuperatorio == 0) {
-        	$cboRecuperatorio = '';
+            $cboRecuperatorio = '';
             if ($cboParcial == 0) {
                 Session::flash('message', 'ERROR AL INTENTAR GUARDAR LAS REGULARIDADES DEBE SELECCIONAR PARCIAL.');
                 Session::flash('message_type', self::OPERACION_FALLIDA);
@@ -541,13 +541,13 @@ class RegularidadesController extends \BaseController {
             $cboParcial = 0;
         }
 
-    	if ($fechadesde == '') {
-    		$fechadesde = date('d/m/Y');
-    	} else {
-    		$porcion = explode("-", $fechadesde);
-        	$fechadesde = $porcion[2].'/'.$porcion[1].'/'.$porcion[0];
-        	//$fechadesde = FechaHelper::getFechaParaGuardar($fechadesdes);
-    	}
+        if ($fechadesde == '') {
+            $fechadesde = date('d/m/Y');
+        } else {
+            $porcion = explode("-", $fechadesde);
+            $fechadesde = $porcion[2].'/'.$porcion[1].'/'.$porcion[0];
+            //$fechadesde = FechaHelper::getFechaParaGuardar($fechadesdes);
+        }
 
         if ($validator->fails()) {
             Session::flash('message', 'ERROR AL INTENTAR GUARDAR LAS REGULARIDADES.');
@@ -670,7 +670,7 @@ class RegularidadesController extends \BaseController {
             $fecha = FechaHelper::getFechaParaGuardar($fechadesde);
             $cuatrimestre = Materia::find($materia_id)->cuatrimestre;
 
-        	$regularidades = Regularidades::whereRaw('carrera_id='.$carrera_id.' AND materia_id='.$materia_id. ' AND planestudio_id='.$planID.' AND alumno_id='.$alumno_id.' AND parcial='. $cboParcial)->first();
+            $regularidades = Regularidades::whereRaw('carrera_id='.$carrera_id.' AND materia_id='.$materia_id. ' AND planestudio_id='.$planID.' AND alumno_id='.$alumno_id.' AND parcial='. $cboParcial)->first();
 
             if (count($regularidades) > 0) {
                 $regularidad = Regularidades::find($regularidades->id);
@@ -695,23 +695,23 @@ class RegularidadesController extends \BaseController {
 
                 $idaseguir = $regularidades->id;
             } else {
-            	$regularidad = new Regularidades();
+                $regularidad = new Regularidades();
 
-                $regularidad->alumno_id     	= $alumno_id;
-                $regularidad->planestudio_id  	= $planID;
+                $regularidad->alumno_id         = $alumno_id;
+                $regularidad->planestudio_id    = $planID;
                 $regularidad->ciclolectivo_id   = $ciclo_id;
-                $regularidad->materia_id    	= $materia_id;
-                $regularidad->carrera_id 		= $carrera_id;
-                $regularidad->cuatrimestre		= $cuatrimestre;
-                $regularidad->fecha_regularidad	= $fecha;
-                $regularidad->parcial 			= $cboParcial;
-                $regularidad->calificacion 		= $cboCalificacion;
-                $regularidad->nota 				= $cboNota;
-                $regularidad->recuperatorio 	= $cboRecuperatorio;
-                $regularidad->regularizo 		= $cboRegularizo;
+                $regularidad->materia_id        = $materia_id;
+                $regularidad->carrera_id        = $carrera_id;
+                $regularidad->cuatrimestre      = $cuatrimestre;
+                $regularidad->fecha_regularidad = $fecha;
+                $regularidad->parcial           = $cboParcial;
+                $regularidad->calificacion      = $cboCalificacion;
+                $regularidad->nota              = $cboNota;
+                $regularidad->recuperatorio     = $cboRecuperatorio;
+                $regularidad->regularizo        = $cboRegularizo;
                 $regularidad->observaciones     = $observaciones;
-                $regularidad->usuario_alta   	= Auth::user()->usuario;  
-                $regularidad->fecha_alta	   	= date('Y-m-d');
+                $regularidad->usuario_alta      = Auth::user()->usuario;  
+                $regularidad->fecha_alta        = date('Y-m-d');
                 
                 $regularidad->save();
 
@@ -748,9 +748,9 @@ class RegularidadesController extends \BaseController {
         $nombremateria = $materia->nombremateria;
 
         if ($materia->periodo == 'Anual') {
-            $parcial = 3;
+            $parcial = 4;
         } else {
-            $parcial = 2;
+            $parcial = 3;
         }
 
         $ciclos = CicloLectivo::all();
@@ -773,21 +773,21 @@ class RegularidadesController extends \BaseController {
         $docentes[] = ['id' => $docente->id, 'apeynom' => $apeynom];
 
         $alumnoss = Alumno::getAlumnoPorAlumnoId($regularidad->alumno_id);
-		$alumnos = [];
+        $alumnos = [];
 
         foreach ($alumnoss as $alumno) {
-        	$apeynom = $alumno->apellido.', '.$alumno->nombre;
-        	$alumnos[] = ['alumno_id' => $alumno->alumno_id, 'apeynom' => $apeynom, 'nrodocumento' => $alumno->nrodocumento];
+            $apeynom = $alumno->apellido.', '.$alumno->nombre;
+            $alumnos[] = ['alumno_id' => $alumno->alumno_id, 'apeynom' => $apeynom, 'nrodocumento' => $alumno->nrodocumento];
         }
         
-		$materia_id = $regularidad->materia_id;
-		$carrera_id = $regularidad->carrera_id;
-		$fechadesde = FechaHelper::getFechaImpresion($regularidad->fecha_regularidad);
+        $materia_id = $regularidad->materia_id;
+        $carrera_id = $regularidad->carrera_id;
+        $fechadesde = FechaHelper::getFechaImpresion($regularidad->fecha_regularidad);
 
-    	$porcions = explode("/", $fechadesde);
-    	$fechadesdes = $porcions[2].'-'.$porcions[1].'-'.$porcions[0];
+        $porcions = explode("/", $fechadesde);
+        $fechadesdes = $porcions[2].'-'.$porcions[1].'-'.$porcions[0];
     
-		$habilita = false;
+        $habilita = false;
         $organizaciones = Organizacion::lists('nombre', 'id');
 
         foreach ($regularidades as $value) {
@@ -797,23 +797,23 @@ class RegularidadesController extends \BaseController {
         }
 
         return View::make('regularidades.nuevo',[
-            'organizaciones'  	=> $organizaciones,
+            'organizaciones'    => $organizaciones,
             'carrera_id'        => $regularidad->carrera_id,
-            'carreras'        	=> $carreras,
+            'carreras'          => $carreras,
             'materia_id'        => $regularidad->materia_id,
-            'materias'        	=> $materias,
-            'planID'     	  	=> $planID,
-            'planes'          	=> $planes,
+            'materias'          => $materias,
+            'planID'            => $planID,
+            'planes'            => $planes,
             'docente_id'        => $docente_id,
             'docentes'          => $docentes,
-            'ciclo_id' 			=> $ciclo_id,
+            'ciclo_id'          => $ciclo_id,
             'ciclos'            => $ciclos,
-            'regularidades' 	=> $regularidades,
-            'habilita' 			=> $habilita,
-            'alumnos'       	=> $alumnos,
+            'regularidades'     => $regularidades,
+            'habilita'          => $habilita,
+            'alumnos'           => $alumnos,
             'nombremateria'     => $nombremateria,
             'fechadesdes'       => $fechadesdes,
-            'fechadesde'       	=> $fechadesde,
+            'fechadesde'        => $fechadesde,
             'parcial'           => $parcial,
             'promocional'       => $promocional
         ])->with('menu', ModulosHelper::MENU_GESTION_ACADEMICA)
@@ -1182,74 +1182,74 @@ class RegularidadesController extends \BaseController {
     }
 
 
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		//
-	}
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return Response
+     */
+    public function create()
+    {
+        //
+    }
 
 
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
-		//
-	}
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @return Response
+     */
+    public function store()
+    {
+        //
+    }
 
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function show($id)
+    {
+        //
+    }
 
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function edit($id)
+    {
+        //
+    }
 
 
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		//
-	}
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function update($id)
+    {
+        //
+    }
 
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		//
-	}
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
 
 
 }

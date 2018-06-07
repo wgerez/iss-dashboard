@@ -31,9 +31,9 @@ if (isset($alumnos)) {
 if (isset($regularidad)) {
 	//foreach ($regularidad as $value) {
 	if ($regularidad->cuatrimestre == 0) {
-		$cuatrimestre = 1;
+		$cuatrimestre = 'Anual';
 	} else{
-		$cuatrimestre = $regularidad->cuatrimestre;
+		$cuatrimestre = $regularidad->cuatrimestre.'°';
 	}
 
 	$nota = $regularidad->nota;
@@ -259,7 +259,7 @@ if (isset($regularidad)) {
 									<div class="col-md-2">
 										<!--select name="cboCuatrimestre" id="cboCuatrimestre" class="table-group-action-input form-control">
 										</select-->
-										<input class="form-control" name="cuatrimestre" id="cuatrimestre" type="text" value="<?php if (isset($cuatrimestre)) echo $cuatrimestre .'°'; ?>" readonly>
+										<input class="form-control" name="cuatrimestre" id="cuatrimestre" type="text" value="<?php if (isset($cuatrimestre)) echo $cuatrimestre; ?>" readonly>
 									</div>
 								</div>
 
@@ -393,7 +393,7 @@ if (isset($regularidad)) {
 												<center><i class="glyphicon glyphicon-book"></i> Materia</center>
 											</th>
 											<th>
-												<center><i class="fa fa-files-o"></i> Regimén</center>
+												<center><i class="fa fa-files-o"></i> Régimen</center>
 											</th>
 											<th>
 												<center><i class="fa fa-files-o"></i> Parcial</center>
@@ -438,7 +438,7 @@ if (isset($regularidad)) {
 																	<?php if ($regularidad->promocional == 0) {
 																		echo "Regular";
 																	} else {
-																		echo "promocional";
+																		echo "Promocional";
 																	} ?>
 																</center>
 															</td>

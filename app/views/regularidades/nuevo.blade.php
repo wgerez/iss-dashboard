@@ -372,7 +372,7 @@ if (isset($regularidades)) {
 												<center><i class="glyphicon glyphicon-book"></i> Materia</center>
 											</th>
 											<th>
-												<center><i class="fa fa-files-o"></i> Regimén</center>
+												<center><i class="fa fa-files-o"></i> Régimen</center>
 											</th>
 											<th>
 												<center><i class="fa fa-files-o"></i> Parcial</center>
@@ -413,7 +413,7 @@ if (isset($regularidades)) {
 																<?php if ($regularidad->promocional == 0) {
 																	echo "Regular";
 																} else {
-																	echo "promocional";
+																	echo "Promocional";
 																} ?>
 															</center>
 														</td>
@@ -1328,7 +1328,7 @@ if (isset($regularidades)) {
 
 			    if (value.cuatrimestre == 0) {
 				    //$('#cboCuatrimestre').append($('<option></option>').val(value.cuatrimestre).html(1 + '°'));
-				    $('#cuatrimestre').val(1 + '°');
+				    $('#cuatrimestre').val('Anual');
 				} else {
 					//$('#cboCuatrimestre').append($('<option></option>').val(value.cuatrimestre).html(value.cuatrimestre + '°'));
 				    $('#cuatrimestre').val(value.cuatrimestre + '°');
