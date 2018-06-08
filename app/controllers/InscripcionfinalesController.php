@@ -55,7 +55,7 @@ class InscripcionFinalesController extends BaseController
     
     public function postObtenerinscriptos ()
     {
-        //echo "string";
+        //echo "hola";
         /*highlight_string(var_export($asignard,true));
         exit();*/
         $inscriptos = [];
