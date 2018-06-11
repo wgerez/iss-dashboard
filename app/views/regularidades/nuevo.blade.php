@@ -301,6 +301,7 @@ if (isset($regularidades)) {
 								    	<!--fin error-->
 									</div>
 									<input class="form-control" name="promocion" id="promocion" type="hidden" value="<?php if (isset($promocional)) echo $promocional; ?>" readonly>
+									<input class="form-control" name="asistencia" id="asistencia" type="hidden" value="" readonly>
 								</div>
 									
 								<div class="form-group">
@@ -706,6 +707,7 @@ if (isset($regularidades)) {
 		$('#alumno_id').val('');
 		//$("#btnAgregar").removeAttr("disabled");
 		var url_destino = "";
+		$('#asistencia').val('');
 
 		if ($("#cboFiltroAlumno").val() == 1) {
 			url_destino = "{{url('alumnos/obteneralumnopordni')}}";
@@ -786,8 +788,10 @@ if (isset($regularidades)) {
 
 						if (value.porcentaje_asistencia > 79) {
 							asistencia_por = 1;
+							$('#asistencia').val(1);
 						} else {
 							asistencia_por = 0;
+							$('#asistencia').val(0);
 						}
 					});
 
@@ -1150,6 +1154,21 @@ if (isset($regularidades)) {
 				    );
 				}
 
+		        $('#cboRegularizo').children().remove().end();
+
+				if ($('#asistencia').val() == 1) {
+			    	$('#cboRegularizo').append(
+				        $('<option></option>').val(0).html('-'),
+				        $('<option></option>').val(1).html('SI'),
+				        $('<option></option>').val(2).html('NO')
+				    );
+				    $("#cboRecuperatorio").removeAttr("disabled");
+				} else {
+					$('#cboRegularizo').append(
+				        $('<option></option>').val(0).html('-')
+				    );
+				}
+
 		        $('#cboRegularizo').val(0);
 		    } else {
 			    $("#cboNota").removeAttr("disabled");
@@ -1242,8 +1261,10 @@ if (isset($regularidades)) {
 				$.each(materias, function(key, value) {
 					if (value.porcentaje_asistencia > 74) {
 						asistencia_por = 1;
+						$('#asistencia').val(1);
 					} else {
 						asistencia_por = 0;
+						$('#asistencia').val(0);
 					}
 				});
 
