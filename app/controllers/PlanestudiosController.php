@@ -306,6 +306,7 @@ class PlanestudiosController extends \BaseController {
             $planestudio->codigoplan        = Input::get('codigoplan1');
             $planestudio->ciclolectivo_id   = Input::get('ciclos');
             $planestudio->tituloplan        = Input::get('tituloplan');
+            $planestudio->nroresolucion     = Input::get('nroresolucion');
             $planestudio->fechainicio       = $fechainicio;
             $planestudio->fechafin          = $fechafin;
             $planestudio->usuario_alta      = Auth::user()->usuario;

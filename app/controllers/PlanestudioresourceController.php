@@ -35,7 +35,7 @@ class PlanestudioresourceController extends \BaseController {
 	 */
 	public function store()
 	{
-		$this->_data = array(
+		/*$this->_data = array(
             'organizacion'  => Input::get('organizacion'),
             'carrera'       => Input::get('carrera'),
             'ciclos'        => Input::get('ciclos'),
@@ -88,7 +88,7 @@ class PlanestudioresourceController extends \BaseController {
                 'status' => false], 404
                 );
             } 
-        }
+        }*/
 	}
 
 
