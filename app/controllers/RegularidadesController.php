@@ -27,7 +27,7 @@ class RegularidadesController extends \BaseController {
         $organizaciones[0] = 'Seleccionar';
         ksort($organizaciones);
 
-        //$habilita = false;
+        $habilita = false;
 
         return View::make('regularidades.listado')
             ->with('organizaciones', $organizaciones)
