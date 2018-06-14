@@ -455,6 +455,8 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 	$('.btnAnularInscripcion').live('click', function(){
 		//PASO EL DATA ID AL CAMPO OCULTO		
 		$('#idAnularHidden').val($(this).data('id'));
+		$('#cbofil').val($('#cboFiltro').val());
+		$('#txtfil').val($('#nrodocumento').val());
 		//MUESTRO EL MODAL DE ADVERTENCIA
 		$('#modalAnularInscripcion').modal('show');
 	});
