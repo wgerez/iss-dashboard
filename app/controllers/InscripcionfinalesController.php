@@ -506,9 +506,46 @@ class InscripcionFinalesController extends BaseController
 
         Session::flash('message', 'LA INCRIPCION AL EXAMEN HA SIDO ANULADA CORRECTAMENTE.');
         Session::flash('message_type', self::OPERACION_EXITOSA);
-        return Redirect::to('inscripcionfinal');
+        return Redirect::to('inscripcionfinal/anulado/'.$id);
     }
 
+    public function getAnulado($id)
+    {  
+        $inscripcion = InscripcionFinal::find($id);
+
+        $mesaexamen = MesaExamen::find($inscripcion->mesaexamen_id);
+
+        $organizaciones = Organizacion::lists('nombre', 'id');
+        $carreras = Carrera::where('organizacion_id', '=', 1)->get();
+        $materias = Materia::where('carrera_id', '=', $mesaexamen->carrera_id)->where('planestudio_id', '=', $planID)->get();
+        $ciclos = CicloLectivo::all();
+        $turnoexamen = TurnoExamen::find($mesaexamen->turnoexamen_id);
+
+        if ($inscripcion->primerllamado == 1) {
+            $llamado = 1;
+        } else {
+            $llamado = 0;
+        }
+
+        return View::make('inscripcionfinal.listado',[
+            'organizaciones'    => $organizaciones,
+            'organizacion_id'   => $mesaexamen->organizacion_id,
+            'carreras'          => $carreras,
+            'carr_id'           => $mesaexamen->carrera_id,
+            'materias'          => $materias,
+            'materia_id'        => $mesaexamen->materia_id,
+            'ciclos'            => $ciclos,
+            'ciclo_id'          => $mesaexamen->ciclolectivo_id,
+            'turnos'            => $turnoexamen,
+            'turno_id'          => $mesaexamen->turnoexamen_id,
+            'llamado'           => $llamado
+        ])->with('menu', ModulosHelper::MENU_GESTION_ACADEMICA)
+            ->with('submenu', ModulosHelper::SUBMENU_INSCRIPCIONES)
+            ->with('leer', Session::get('INSCRIPCION_LEER'))
+            ->with('editar', Session::get('INSCRIPCION_EDITAR'))
+            ->with('imprimir', Session::get('INSCRIPCION_IMPRIMIR'))
+            ->with('eliminar', Session::get('INSCRIPCION_ELIMINAR'));
+    }
 
     public function getImprimiracuse($id)
     {
