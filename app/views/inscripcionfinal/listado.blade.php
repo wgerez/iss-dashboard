@@ -368,6 +368,8 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 	<div class="modal fade" id="modalAnularInscripcion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		{{ Form::open(array('url' => 'inscripcionfinal/anular')) }}
 			<input id="idAnularHidden" name='idAnularHidden' type="hidden" value="">
+			<input id="cbofil" name='cbofil' type="hidden" value="">
+			<input id="txtfil" name='txtfil' type="hidden" value="">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
