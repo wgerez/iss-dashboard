@@ -29,7 +29,7 @@ class CreateAsistenciasTable extends Migration {
 			$table->integer('lunes')->default(0);
 			$table->timestamp('martesfecha')->nullable();
 			$table->integer('martes')->default(0);
-			$table->timestamp('miercolesesfecha')->nullable();
+			$table->timestamp('miercolesfecha')->nullable();
 			$table->integer('miercoles')->default(0);
 			$table->timestamp('juevesfecha')->nullable();
 			$table->integer('jueves')->default(0);
