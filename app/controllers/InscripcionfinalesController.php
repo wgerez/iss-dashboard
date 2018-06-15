@@ -381,7 +381,7 @@ class InscripcionFinalesController extends BaseController
 
         if ($estado !== 0) {
             if ($estado == 1) {
-                $mesas [] = 2;//['id' => 2]; // falta matricula
+                $mesas [] = 2;//['id' => 2]; // falta matriculas
             } else if ($estado == 2) {
                 $mesas [] = 3;//['id' => 3]; // falta falta cuota del mes
             } else if ($estado == 3) {
