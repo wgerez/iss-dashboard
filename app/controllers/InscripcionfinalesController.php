@@ -16,22 +16,7 @@ class InscripcionFinalesController extends BaseController
 
     public function getIndex()
     {
-        /*$organizaciones = Organizacion::lists('nombre', 'id');
-
-        return View::make('inscripcionfinal.gestion')->with([
-            'arrOrganizaciones' => $organizaciones,
-            'carreras'          => Carrera::lists('carrera', 'id'),
-            'planes'            => PlanEstudio::lists('codigoplan', 'id'),
-            'menu'              => ModulosHelper::MENU_GESTION_ACADEMICA,
-            'submenu'           => ModulosHelper::SUBMENU_INSCRIPCIONES,
-            'leer'              => Session::get('INSCRIPCION_LEER'),
-            'editar'            => Session::get('INSCRIPCION_EDITAR'),
-            'imprimir'          => Session::get('INSCRIPCION_IMPRIMIR'),
-            'eliminar'          => Session::get('INSCRIPCION_ELIMINAR'),
-            'finales'           => InscripcionFinal::all()->toArray()
-        ]);*/
-
-        //$organizaciones = Organizacion::lists('nombre', 'id');
+        $organizaciones = Organizacion::lists('nombre', 'id');
 
         $turnos = TurnoExamen::all();
 
