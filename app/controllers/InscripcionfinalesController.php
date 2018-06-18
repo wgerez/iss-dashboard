@@ -31,7 +31,7 @@ class InscripcionFinalesController extends BaseController
             'finales'           => InscripcionFinal::all()->toArray()
         ]);*/
 
-        $organizaciones = Organizacion::lists('nombre', 'id');
+        //$organizaciones = Organizacion::lists('nombre', 'id');
 
         $turnos = TurnoExamen::all();
 
