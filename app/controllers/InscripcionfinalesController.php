@@ -335,7 +335,7 @@ class InscripcionFinalesController extends BaseController
         $matricula = Matricula::where('carrera_id', '=', $carr_id)->where('ciclolectivo_id', '=', $ciclo)->first();
 
         if ($matricula) {
-            $pagomatricula = Detallematriculapago::where('alumno_id', '=', $alumno_id)->where('matriculo_id', '=', $matricula->id)->where('mescuota', '=', 0)->where('totalparcial', '=', 0)->first();
+            $pagomatricula = DetalleMatriculaPago::where('alumno_id', '=', $alumno_id)->where('matricula_id', '=', $matricula->id)->where('mescuota', '=', 0)->where('totalparcial', '=', 0)->first();
 
             if ($pagomatricula) {
                 $estado = 0;
@@ -343,7 +343,7 @@ class InscripcionFinalesController extends BaseController
                 $estado = 1;
             }
 
-            $pagocuota = Detallecuotapago::where('alumno_id', '=', $alumno_id)->where('matriculo_id', '=', $matricula->id)->where('mescuota', '=',  (int)  date('m'))->first();
+            $pagocuota = DetalleCuotaPago::where('alumno_id', '=', $alumno_id)->where('matricula_id', '=', $matricula->id)->where('mescuota', '=',  (int)  date('m'))->first();
 
             if ($pagocuota) {
                 $estado = 0;
@@ -373,7 +373,7 @@ class InscripcionFinalesController extends BaseController
                 $mesas [] = 4;//['id' => 4]; // falta falta derecho de examen
             }
         } else {
-            $temp = MesaExamen::where('carrera_id', '=', $carr_id)->where('ciclolectivo_id', '=', $ciclo->id)->where('turnoexamen_id', '=', $turno_id)->get();
+            $temp = MesaExamen::where('carrera_id', '=', $carr_id)->where('ciclolectivo_id', '=', $ciclo)->where('turnoexamen_id', '=', $turno_id)->get();
 
             if ($temp) {
                 foreach ($temp as $tp) {
