@@ -351,7 +351,15 @@ class InscripcionFinalesController extends BaseController
                 $estado = 2;
             }
         }
-        
+        //agregue
+        if ($estado !== 0) {
+            if ($estado == 1) {
+                $mesas [] = 2;//['id' => 2]; // falta matriculas
+            } else if ($estado == 2) {
+                $mesas [] = 3;//['id' => 3]; // falta falta cuota del mes
+            }
+        }
+        //aca
         // derecho de examen
         $derechos = CajaChica::where('alumno_id', '=', $alumno_id)->where('carrera_id', '=', $carr_id)->where('concepto_id', '=', 1)->get();
 
