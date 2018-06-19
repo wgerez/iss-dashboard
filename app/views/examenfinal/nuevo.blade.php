@@ -156,7 +156,7 @@ if (!isset($turnoexamen_id)) {
 										</select>
 									</div>
 
-									<label class="col-md-2 col-sm-2 control-label" for="filtro">Turno Exámen:</label>
+									<label class="col-md-2 col-sm-2 control-label" for="filtro">Turno Examen:</label>
 									<div class="col-md-2 col-sm-3">
 										<select name="cboTurnoExamen" id="cboTurnoExamen" class="table-group-action-input form-control">
 											<option value="0">Seleccione</option>

@@ -2,7 +2,7 @@
 
 @section('cuerpo')
 <p align="right">Fecha de Impresión: {{date('d/m/Y')}} - {{Auth::user()->usuario}}</p>
-  <center><h3>Listado de Examén Final</h3></center>
+  <center><h3>Listado de Examen Final</h3></center>
   <p><strong>Carrera: {{$carreras}}</strong></p>
 <?php
 if (!$nrodocumento == '') { ?>
