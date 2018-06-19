@@ -160,7 +160,7 @@ if (!isset($turnoexamen_id)) {
 								</div>
 
 								<div class="form-group">
-									<label class="col-md-2 col-sm-2 control-label" for="cboMaterias">Espacio Curricular:</label>
+									<label class="col-md-2 col-sm-2 control-label" for="cboMaterias">Unidad Curricular:</label>
 									<div class="col-md-6 col-sm-6">
 										<select name="cboMaterias" id="cboMaterias" class="table-group-action-input form-control">
 											<option value="0">Seleccione</option>
