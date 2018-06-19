@@ -325,11 +325,15 @@ class InscripcionFinalesController extends BaseController
         $mesas = [];
         $carr_id = Input::get('id');
         $plan_id = Input::get('plan_id');
-        $ciclo = CicloLectivo::where('descripcion', '=', Input::get('ciclo_id'))->first();
+        //$ciclo = CicloLectivo::where('descripcion', '=', Input::get('ciclo_id'))->first();
         $turno_id = Input::get('turno_id');
         $alumno_id = Input::get('alumno_id');
         $llamado = Input::get('llamado');
-        $estado = 0;
+        $estado = 1;
+        $matricula = 0;
+        $cuota = 0;
+        $derecho = 0;
+        $ciclo = PlanEstudio::find($plan_id)->ciclolectivo_id;
 
         // validar que tenga pagada la matricula del siglo lectivo actual
         $matricula = Matricula::where('carrera_id', '=', $carr_id)->where('ciclolectivo_id', '=', $ciclo)->first();
@@ -341,6 +345,7 @@ class InscripcionFinalesController extends BaseController
                 $estado = 0;
             } else {
                 $estado = 1;
+                $matricula = 1;
             }
 
             $pagocuota = DetalleCuotaPago::where('alumno_id', '=', $alumno_id)->where('matricula_id', '=', $matricula->id)->where('mescuota', '=',  (int)  date('m'))->first();
@@ -349,17 +354,10 @@ class InscripcionFinalesController extends BaseController
                 $estado = 0;
             } else {
                 $estado = 2;
+                $cuota = 1;
             }
         }
-        //agregue
-        if ($estado !== 0) {
-            if ($estado == 1) {
-                $mesas [] = 2;//['id' => 2]; // falta matriculas
-            } else if ($estado == 2) {
-                $mesas [] = 3;//['id' => 3]; // falta falta cuota del mes
-            }
-        }
-        //aca
+
         // derecho de examen
         $derechos = CajaChica::where('alumno_id', '=', $alumno_id)->where('carrera_id', '=', $carr_id)->where('concepto_id', '=', 1)->get();
 
@@ -368,17 +366,30 @@ class InscripcionFinalesController extends BaseController
                 $estado = 0;
             } else {
                 $estado = 3;
+                $derecho = 1;
             }
         }
         //
 
         if ($estado !== 0) {
-            if ($estado == 1) {
+            /*if ($estado == 1) {
                 $mesas [] = 2;//['id' => 2]; // falta matriculas
             } else if ($estado == 2) {
                 $mesas [] = 3;//['id' => 3]; // falta falta cuota del mes
             } else if ($estado == 3) {
                 $mesas [] = 4;//['id' => 4]; // falta falta derecho de examen
+            }*/
+
+            if ($matricula == 1) {
+                $mesas[] = 2;//['id' => 2]; // falta matriculas
+            }
+
+            if ($cuota == 1) {
+                $mesas[] = 3;//['id' => 3]; // falta falta cuota del mes
+            }
+
+            if ($derecho == 1) {
+                $mesas[] = 4;//['id' => 4]; // falta falta derecho de examen
             }
         } else {
             $temp = MesaExamen::where('carrera_id', '=', $carr_id)->where('ciclolectivo_id', '=', $ciclo)->where('turnoexamen_id', '=', $turno_id)->get();
@@ -388,20 +399,20 @@ class InscripcionFinalesController extends BaseController
                     $materia = Materia::where('id', '=', $tp->materia_id)->where('planestudio_id','=', $plan_id)->first();
 
                     if ($materia) {
-                        $regular = Regularidades::where('carrera_id', '=', $carr_id)->where('planestudio_id', '=', $plan_id)->where('materia_id', '=', $materia->id)->where('alumno_id','=', $alumno_id)->where('regularizo', '=', 1)->first();
+                        $regular = Regularidades::where('carrera_id', '=', $carr_id)->where('planestudio_id', '=', $plan_id)->where('materia_id', '=', $tp->materia_id)->where('alumno_id','=', $alumno_id)->where('regularizo', '=', 1)->first();
                         
                         if ($regular) {
                             //verificar que no exista el re
                             $existe = InscripcionFinal::where('alumno_id', '=', $alumno_id)->where('mesaexamen_id', '=', $tp->id)->first();
-                            if ($existe == null) {
-                                $mesas [] = ['id' => $tp->id, 'materia' => $materia->nombremateria];        
+                            if (!$existe) {
+                                $mesas[] = ['id' => $tp->id, 'materia' => $materia->nombremateria];        
                             }
                         }
                     }
                 }
             } else {
                 unset($mesas);
-                $mesas [] = 1;//['id' => 1]; // 1 = no se encontraron mesas con estos parametros
+                $mesas[] = 1;//['id' => 1]; // 1 = no se encontraron mesas con estos parametros
             }
         }
         
