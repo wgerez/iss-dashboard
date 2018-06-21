@@ -330,7 +330,7 @@ class InscripcionFinalesController extends BaseController
         $alumno_id = Input::get('alumno_id');
         $llamado = Input::get('llamado');
         $estado = 1;
-        $matricula = 0;
+        $matriculas = 0;
         $cuota = 0;
         $derecho = 0;
         $ciclo = PlanEstudio::find($plan_id)->ciclolectivo_id;
@@ -345,7 +345,7 @@ class InscripcionFinalesController extends BaseController
                 $estado = 0;
             } else {
                 $estado = 1;
-                $matricula = 1;
+                $matriculas = 1;
             }
 
             $pagocuota = DetalleCuotaPago::where('alumno_id', '=', $alumno_id)->where('matricula_id', '=', $matricula->id)->where('mescuota', '=',  (int)  date('m'))->first();
@@ -380,15 +380,11 @@ class InscripcionFinalesController extends BaseController
                 $mesas [] = 4;//['id' => 4]; // falta falta derecho de examen
             }*/
 
-            if ($matricula == 1) {
+            if ($matriculas == 1) {
                 $mesas[] = 2;//['id' => 2]; // falta matriculas
-            }
-
-            if ($cuota == 1) {
+            } else if ($cuota == 1) {
                 $mesas[] = 3;//['id' => 3]; // falta falta cuota del mes
-            }
-
-            if ($derecho == 1) {
+            } else if ($derecho == 1) {
                 $mesas[] = 4;//['id' => 4]; // falta falta derecho de examen
             }
         } else {
