@@ -532,7 +532,7 @@ class InscripcionFinalesController extends BaseController
 
         $mesaexamen = MesaExamen::find($inscripcion->mesaexamen_id);
 
-        $planID = Materia::find($inscripcion->materia_id)->planestudio_id;
+        $planID = Materia::find($mesaexamen->materia_id)->planestudio_id;
 
         $organizaciones = Organizacion::lists('nombre', 'id');
         $carreras = Carrera::where('organizacion_id', '=', 1)->get();

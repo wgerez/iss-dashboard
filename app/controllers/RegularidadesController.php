@@ -663,6 +663,8 @@ class RegularidadesController extends \BaseController {
                         }
                     }
                 }
+            } else {
+                $cboRegularizo = 0;
             }
 
             /////////////////////////////

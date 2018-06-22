@@ -48,25 +48,31 @@ class PlanestudiosController extends \BaseController {
         $orgid = Input::get('organizacion');
         $planID = Input::get('plan');
 
-        $organizaciones = Organizacion::lists('nombre', 'id');
+        if (!$orgid == '') {
+            $organizaciones = Organizacion::lists('nombre', 'id');
 
-        //array_unshift($organizaciones, 'Seleccionar');
-        $carreras = Carrera::where('organizacion_id', '=', $orgid)->get();
+            $carreras = Carrera::where('organizacion_id', '=', $orgid)->get();
 
-        $planestudios = PlanEstudio::whereRaw('carrera_id= '. $carrera)->get();
+            $planestudios = PlanEstudio::whereRaw('carrera_id= '. $carrera)->get();
 
-        foreach ($planestudios as $planestudio) {
-            $fechamostrar = FechaHelper::getFechaImpresion($planestudio->fechainicio);
-            $planestudio->fechainicio = $fechamostrar;
-            $fechamostrar = FechaHelper::getFechaImpresion($planestudio->fechafin);
-            $planestudio->fechafin = $fechamostrar;
-            $materias = Materia::whereRaw('planestudio_id = '. $planestudio->id)->get();
+            foreach ($planestudios as $planestudio) {
+                $fechamostrar = FechaHelper::getFechaImpresion($planestudio->fechainicio);
+                $planestudio->fechainicio = $fechamostrar;
+                $fechamostrar = FechaHelper::getFechaImpresion($planestudio->fechafin);
+                $planestudio->fechafin = $fechamostrar;
+                $materias = Materia::whereRaw('planestudio_id = '. $planestudio->id)->get();
 
-            if (count($materias) > 0) {
-                $planestudio->materia = 'true';
-            } else {
-                $planestudio->materia = 'false';
+                if (count($materias) > 0) {
+                    $planestudio->materia = 'true';
+                } else {
+                    $planestudio->materia = 'false';
+                }
             }
+        } else {
+            $carreras = [];
+            $planestudios = [];
+            $organizaciones = Organizacion::lists('nombre', 'id');
+            array_unshift($organizaciones, 'Seleccionar');
         }
 
         /*$carrid = Input::get('carrera');
@@ -82,8 +88,6 @@ class PlanestudiosController extends \BaseController {
             $value->ciclolectivo = $planestudio->ciclolectivo->descripcion;
             $value->idplan = $planestudio->id;
         }*/
-
-        $organizaciones = Organizacion::lists('nombre', 'id');
 
         return View::make('planestudios/listado')
             ->with('organizaciones', $organizaciones)
