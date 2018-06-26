@@ -480,7 +480,8 @@ highlight_string(var_export($examenfinal,true));
                 'libro'       		=> Input::get('libro'),
                 'folio'   			=> Input::get('folio'),
                 'acta'       		=> Input::get('acta'),
-                'cbofinalnumero'    => Input::get('cbofinalnumero')
+                'cbofinalnumero'    => Input::get('cbofinalnumero'),
+                'inscripto'         => Input::get('inscripto')
             ),
             array(
                 'cboCarrera'      	=> 'required',
@@ -492,7 +493,8 @@ highlight_string(var_export($examenfinal,true));
                 'libro'       		=> 'required',
                 'folio'				=> 'required',
                 'acta'       		=> 'required',
-                'cbofinalnumero'    => 'required'
+                'cbofinalnumero'    => 'required',
+                'inscripto'         => 'required'
             ),
             array(
                 'required' 		=> 'Campo Obligatorio',
@@ -504,7 +506,8 @@ highlight_string(var_export($examenfinal,true));
                 'required' 		=> 'Campo Obligatorio',
                 'required' 		=> 'Campo Obligatorio',
                 'required' 		=> 'Campo Obligatorio',
-                'required' 		=> 'Campo Obligatorio'
+                'required' 		=> 'Campo Obligatorio',
+                'required'      => 'Campo Obligatorio'
             )
         );
 
