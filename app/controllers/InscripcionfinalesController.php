@@ -612,13 +612,6 @@ class InscripcionFinalesController extends BaseController
         ////////////////////////
         $turnos = TurnoExamen::all();
 
-        if (count($turnos) > 0) {
-            $turno_id = $turnos[0]->id;
-        } else {
-            $turno_id = '';
-            $turnos = [];
-        }
-
         return View::make('inscripcionfinal.listado',[
             'organizaciones'    => $organizaciones,
             'organizacion_id'   => $mesaexamen->organizacion_id,
