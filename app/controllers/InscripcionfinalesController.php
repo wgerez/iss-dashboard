@@ -610,6 +610,14 @@ class InscripcionFinalesController extends BaseController
             }
         }
         ////////////////////////
+        $turnos = TurnoExamen::all();
+
+        if (count($turnos) > 0) {
+            $turno_id = $turnos[0]->id;
+        } else {
+            $turno_id = '';
+            $turnos = [];
+        }
 
         return View::make('inscripcionfinal.listado',[
             'organizaciones'    => $organizaciones,
@@ -620,7 +628,7 @@ class InscripcionFinalesController extends BaseController
             'materia_id'        => $mesaexamen->materia_id,
             'ciclos'            => $ciclos,
             'ciclo_id'          => $mesaexamen->ciclolectivo_id,
-            'turnos'            => $turnoexamen,
+            'turnos'            => $turnos,
             'turno_id'          => $mesaexamen->turnoexamen_id,
             'llamado'           => $llamado,
             'filtro'            => $filtro,
