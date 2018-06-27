@@ -856,11 +856,12 @@ highlight_string(var_export($examenfinal,true));
     			$alumnopersona = Alumno::find($value->alumno_id)->persona_id;
     			$personaalumno = Persona::find($alumnopersona);
     			$persona = $personaalumno->apellido .', '. $personaalumno->nombre;
+                $dni = $personaalumno->nrodocumento;
 
 	        	$fecha_aprobacion = FechaHelper::getFechaImpresion($value->fecha_aprobacion);
 	        	$nombremateria = Materia::find($materia_id)->nombremateria;
 	        	
-	        	$materias[] = ['id' => $value->id, 'fecha_aprobacion' => $fecha_aprobacion, 'docentes' => $docentes, 'alumno' => $persona, 'nombremateria' => $nombremateria, 'calif_final_num' => $value->calif_final_num, 'calif_final_let' => $value->calif_final_let, 'folio' => $value->folio, 'libro' => $value->libro, 'acta' => $value->acta, 'observaciones' => $value->observaciones, 'nroresolucion' => $nroresolucion, 'condicion' => $condicion];
+	        	$materias[] = ['id' => $value->id, 'fecha_aprobacion' => $fecha_aprobacion, 'docentes' => $docentes, 'alumno' => $persona, 'nombremateria' => $nombremateria, 'calif_final_num' => $value->calif_final_num, 'calif_final_let' => $value->calif_final_let, 'folio' => $value->folio, 'libro' => $value->libro, 'acta' => $value->acta, 'observaciones' => $value->observaciones, 'nroresolucion' => $nroresolucion, 'condicion' => $condicion, 'dni' => $dni];
 	        }
         } else {
         	$materias = [];
