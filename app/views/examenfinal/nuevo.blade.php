@@ -242,8 +242,8 @@ if (!isset($turnoexamen_id)) {
 								</div>
 
 								<div class="form-group">
-									<label class="col-md-2 control-label <?php if ($errors->has('asistencia')) echo 'text-danger' ?>">Asistencia:</label>
-									<div class="col-md-1 <?php if ($errors->has('asistencia')) echo 'has-error' ?>">
+									<label class="col-md-1 control-label <?php if ($errors->has('asistencia')) echo 'text-danger' ?>">Asistencia:</label>
+									<div class="col-md-2 <?php if ($errors->has('asistencia')) echo 'has-error' ?>">
 										<select name="asistencia" id="asistencia" class="table-group-action-input form-control">
 												<option value="0">Presente</option>
 												<option value="1">Ausente</option>
@@ -272,7 +272,7 @@ if (!isset($turnoexamen_id)) {
 
 									<div class="@if ($errors->has('observaciones')) {{'has-error'}} @endif">
 										<label class="col-md-1 control-label">Observaciones: </label>
-										<div class="col-md-4 col-sm-6">
+										<div class="col-md-4 col-sm-4">
 											<textarea rows="5" name="observaciones" class="col-md-2 form-control" placeholder="Observaciones" 
 											value="{{ Input::old('observaciones') }}"><?php if (count($examenfinal) > 0) echo $examenfinal->observaciones; ?></textarea>
 											@if ($errors->has('observaciones'))
@@ -284,7 +284,7 @@ if (!isset($turnoexamen_id)) {
 
 								<div class="form-group">
 									<label class="col-md-2 control-label <?php if ($errors->has('cbofinalnumero')) echo 'text-danger' ?>">Calif. Final Número/Letra:</label>
-									<div class="col-md-1 <?php if ($errors->has('cbofinalnumero')) echo 'has-error' ?>">
+									<div class="col-md-2 <?php if ($errors->has('cbofinalnumero')) echo 'has-error' ?>">
 										<select name="cbofinalnumero" id="cbofinalnumero" class="table-group-action-input form-control">
 											<?php if (!$calif_final_num == '') { ?>
 												<option value="1" <?php if ($examenfinal->calif_final_num == 1) echo "selected"; ?>>1 (uno)</option>
@@ -569,7 +569,12 @@ if (!isset($turnoexamen_id)) {
 				    		$('#MensajeCantidad').modal('show');
 					    	return;
 						} else {
-							if (inscripto > 0) $('#inscripto').val(inscripto);
+							if (inscripto > 0) {
+								$('#inscripto').val(inscripto);
+							}
+
+							$('#divMensaje').html('<p class="form-control-static"><h4>' + 'El Alumno ya tiene referencias de examen!' + '</h4></p>');
+		    				$('#MensajeCantidad').modal('show');
 
 							$.each(inscripto, function(key, value) {
 								$('#libro').val(value.libro);
