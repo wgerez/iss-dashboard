@@ -547,6 +547,60 @@ if (isset($regularidades)) {
 	$("#observaciones").attr('disabled', 'disabled');
 	$('#btnAgregar').attr('disabled', 'disabled');
 
+	$('#btnAgregar').on('click', function(e) {
+		var organizacion_id = $('#cboOrganizacion').val();
+		
+		if (organizacion_id == '0'){
+			$('#divMensaje').html('<p class="form-control-static"><h4>' + 'Todos los combos deben tener una opción seleccionada!' + '</h4></p>');
+			$('#MensajeCantidad').modal('show');
+			return false;
+		}
+
+		var carrera_id = $('#cboCarrera').val();
+
+		if (carrera_id == '0' || carrera_id == null){
+			$('#divMensaje').html('<p class="form-control-static"><h4>' + 'Todos los combos deben tener una opción seleccionada!' + '</h4></p>');
+			$('#MensajeCantidad').modal('show');
+			return false;
+		}
+
+		var materia_id = $('#cboMaterias').val();
+
+		if (materia_id == '0' || materia_id == null){
+			$('#divMensaje').html('<p class="form-control-static"><h4>' + 'Todos los combos deben tener una opción seleccionada!' + '</h4></p>');
+			$('#MensajeCantidad').modal('show');
+			return false;
+		}
+
+		var ciclo_id = $('#cboCiclos').val();
+
+		if (ciclo_id == '0' || ciclo_id == null){
+			$('#divMensaje').html('<p class="form-control-static"><h4>' + 'Todos los combos deben tener una opción seleccionada!' + '</h4></p>');
+			$('#MensajeCantidad').modal('show');
+			return false;
+		}
+
+		var ciclo_id = $('#cboPlan').val();
+
+		if (ciclo_id == '0' || ciclo_id == null){
+			$('#divMensaje').html('<p class="form-control-static"><h4>' + 'Todos los combos deben tener una opción seleccionada!' + '</h4></p>');
+			$('#MensajeCantidad').modal('show');
+			return false;
+		}
+
+		var fechadesde = $('#fechadesde').val();
+
+		if (fechadesde == '' || fechadesde == null){
+			$('#divMensaje').html('<p class="form-control-static"><h4>' + 'Debe cargar la fecha de parcial!' + '</h4></p>');
+			$('#MensajeCantidad').modal('show');
+			return false;
+		}
+
+    	$('#btnAgregar').attr('disabled', 'disabled');
+
+    	$('#FrmRegularidades').submit();
+	});
+
     $('#fechadesde').change(function() {
 		var fechadesde = $('#fechadesde').val();
         var cboParcial = $('#cboParcial').val();
