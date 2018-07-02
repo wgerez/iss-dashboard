@@ -176,7 +176,6 @@ if (isset($regularidades)) {
 									    @endif
 									</div>
 
-									<div class="form-group <?php if ($errors->has('cboCiclos')) echo 'has-error' ?>" >
 										<label class="col-md-2 col-sm-2 control-label">Ciclo Lectivo:</label>
 										<div class="col-md-2 col-sm-2">
 											<select class="table-group-action-input form-control" name="cboCiclos" id="cboCiclos">
@@ -193,7 +192,6 @@ if (isset($regularidades)) {
 										    <!--fin error-->
 
 										</div>
-									</div>
 								</div>
 
 								<div class="form-group <?php if ($errors->has('cboMaterias')) echo 'has-error' ?>">

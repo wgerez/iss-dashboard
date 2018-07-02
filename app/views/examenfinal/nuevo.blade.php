@@ -426,6 +426,7 @@ if (!isset($turnoexamen_id)) {
 														</td>
 														<td>
 															<center>
+																<a title="Modificar" href="{{url('examenfinal/editar/' . $examenfin->id)}}" class="btn default btn-xs purple"><i class="fa fa-edit"></i></a>
 																<a href="#" data-id="{{ $examenfin->id }}" class="btn default btn-xs red btnEliminarMaterias"><i title="Eliminar" class="fa fa-trash-o"></i></a>
 															</center>
 														</td>
@@ -576,7 +577,7 @@ if (!isset($turnoexamen_id)) {
 							$('#divMensaje').html('<p class="form-control-static"><h4>' + 'El Alumno ya tiene referencias de examen!' + '</h4></p>');
 		    				$('#MensajeCantidad').modal('show');
 
-							$.each(inscripto, function(key, value) {
+							/*$.each(inscripto, function(key, value) {
 								$('#libro').val(value.libro);
 								$('#folio').val(value.folio);
 								$('#acta').val(value.acta);
@@ -584,7 +585,7 @@ if (!isset($turnoexamen_id)) {
 								$('#inscripto').val(value.inscripcionfinal_id);
 								$('#fechadesde').val(value.fecha_aprobacion);
 								$('#observaciones').val(value.observaciones);
-							});
+							});*/
 						}
 
 				}).error(function(data) {
@@ -669,7 +670,7 @@ if (!isset($turnoexamen_id)) {
 					calif_final_let = 'Ausente';
 				}*/
 				
-				$('#table_regularidades > tbody').append('<tr><td><center>'+value.fecha_aprobacion+'</center></td><td><center>'+value.docentes+'</center></td><td><center>'+value.alumno+'</center></td><td><center>'+value.nombremateria+'</center></td><td><center>'+value.calif_final_num+' ('+value.calif_final_let+')</center></td><td><center>'+value.folio+'</center></td><td><center>'+value.libro+'</center></td><td><center>'+value.acta+'</center></td><td><center><a href="#" data-id="'+value.id+'" class="btn default btn-xs red btnEliminarMaterias"><i title="Eliminar" class="fa fa-trash-o"></i></a></center></td></tr>');
+				$('#table_regularidades > tbody').append('<tr><td><center>'+value.fecha_aprobacion+'</center></td><td><center>'+value.docentes+'</center></td><td><center>'+value.alumno+'</center></td><td><center>'+value.nombremateria+'</center></td><td><center>'+value.calif_final_num+' ('+value.calif_final_let+')</center></td><td><center>'+value.folio+'</center></td><td><center>'+value.libro+'</center></td><td><center>'+value.acta+'</center></td><td><center><a title="Modificar" href="{{url('examenfinal/editar/')}}/'+value.id+'" class="btn default btn-xs purple"><i class="fa fa-edit"></i></a><a href="#" data-id="'+value.id+'" class="btn default btn-xs red btnEliminarMaterias"><i title="Eliminar" class="fa fa-trash-o"></i></a></center></td></tr>');
 			});
 
 		}).error(function(data) {

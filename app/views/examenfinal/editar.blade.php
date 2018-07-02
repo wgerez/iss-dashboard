@@ -458,6 +458,7 @@ if (isset($regularidad)) {
 															</td>
 															<td>
 																<center>
+																	<a title="Modificar" href="{{url('examenfinal/editar/' . $regularidad->id)}}" class="btn default btn-xs purple"><i class="fa fa-edit"></i></a>
 																	<a href="#" data-id="{{ $regularidad->id }}" class="btn default btn-xs red btnEliminarMaterias"><i title="Eliminar" class="fa fa-trash-o"></i></a>
 																</center>
 															</td>
