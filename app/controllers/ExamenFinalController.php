@@ -321,11 +321,17 @@ highlight_string(var_export($examenfinal,true));
 				    	$docentes .= $docentetitular . ' - ';
 		        	}
 		        }
+
+                $inscripcion = InscripcionFinal::whereRaw('mesaexamen_id = '.$value->id)->first();
 	        }
         }
         
-        $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id)->get();
-
+        if (count($inscripcion) > 0) {
+            $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND inscripcionfinal_id ='.$inscripcion->id)->get();
+        } else {
+            $examenfinal = [];
+        }
+        
         if (count($examenfinal) > 0) {
         	foreach ($examenfinal as $value) {
     			$alumnopersona = Alumno::find($value->alumno_id)->persona_id;
