@@ -65,7 +65,7 @@ class ExamenFinalController extends \BaseController {
         $habilita = true;
         $nota = ['cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez'];
 
-        if ($orgid == 0 || $carrera_id == 0 || $planID == 0 || $materia_id == 0 || $turnoexamen_id == 0) {
+        if ($orgid == 0 || $carrera_id == 0 || $planID == 0 || $materia_id == 0 || $turnoexamen_id == 0 || $ciclolectivo_id == 0) {
         	Session::flash('message', 'ERROR DEBE SELECCIONAR LOS DATOS A BUSCAR.');
             Session::flash('message_type', self::OPERACION_FALLIDA);
             return Redirect::to('examenfinal/listado')
@@ -80,6 +80,7 @@ class ExamenFinalController extends \BaseController {
         if (count($mesaexamen) > 0) {
         	foreach ($mesaexamen as $value) {
 	        	$docentesasig = TribunalDocente::whereRaw('mesaexamen_id ='. $value->id)->get();
+                $mesaexamen_id = $value->id;
 
 	        	if (count($docentesasig) > 0) {
 		        	foreach ($docentesasig as $docente) {
@@ -114,10 +115,19 @@ class ExamenFinalController extends \BaseController {
         if (count($alumnos) > 0) {
         	$alumno_id = $alumnos[0]->alumno_id;
         	$nrodocumento = $alumnos[0]->nrodocumento;
-
-        	$examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id)->get();
+            /////////
+            $inscripcionfinal_id = InscripcionFinal::whereRaw('alumno_id ='.$alumno_id.' AND mesaexamen_id ='.$mesaexamen_id)->first()->id;
+            ////////
+        	$examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id.' AND inscripcionfinal_id ='.$inscripcionfinal_id)->get();
         } else {
-        	$examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id)->get();
+            /////////
+            $inscripcionfinal_id = InscripcionFinal::whereRaw('mesaexamen_id ='.$mesaexamen_id)->first();
+
+            if (count($inscripcionfinal_id) > 0) {
+                $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND inscripcionfinal_id ='.$inscripcionfinal_id->id)->get();
+            } else {
+                $examenfinal = [];
+            }
         }
 
         if (count($examenfinal) > 0) {
@@ -353,8 +363,11 @@ highlight_string(var_export($examenfinal,true));
         $justifico = $examenfinal->justifico;
 
         //$materias = Materia::where('carrera_id', '=', $examenfinal->carrera_id)->where('planestudio_id', '=', $planID)->get();
+        $mesaexamen_id = InscripcionFinal::find($examenfinal->inscripcionfinal_id)->mesaexamen_id;
+
+        $ciclo_id = MesaExamen::find($mesaexamen_id)->ciclolectivo_id;
         
-        $ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+        //$ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
         
         $materiaexamenfinal = MesaExamen::whereRaw('carrera_id ='.$examenfinal->carrera_id.' AND ciclolectivo_id ='.$ciclo_id.' AND materia_id ='.$examenfinal->materia_id.' AND turnoexamen_id ='.$examenfinal->turnoexamen_id)->get();
         $docentes = '';
@@ -417,6 +430,8 @@ highlight_string(var_export($examenfinal,true));
             $value->alumno = $persona;
         }
 
+        $ciclos = CicloLectivo::where('organizacion_id','=',$examenfinal->organizacion_id)->orderby('descripcion', 'DESC')->get();
+
         $turnos = TurnoExamen::all();
 
         return View::make('examenfinal.nuevo',[
@@ -428,6 +443,7 @@ highlight_string(var_export($examenfinal,true));
             'planID'     	  	=> $planID,
             'planes'          	=> $planes,
             'ciclo_id' 			=> $ciclo_id,
+            'ciclos'            => $ciclos,
             'examenfina' 		=> $examenfina,
             'examenfinal' 		=> $examenfinal,
             'habilita' 			=> $habilita,
