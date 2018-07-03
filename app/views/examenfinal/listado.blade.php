@@ -146,6 +146,19 @@ if (!isset($turnoexamen_id)) {
 										</select>
 									</div>
 
+									<label class="col-md-2 col-sm-2 control-label">Ciclo Lectivo:</label>
+									<div class="col-md-2 col-sm-2">
+										<select class="table-group-action-input form-control" name="cboCiclos" id="cboCiclos">
+											@if (isset($ciclos))
+												@foreach ($ciclos as $ciclo)
+													<option value="{{$ciclo->id}}" <?php if ($ciclo->id == $ciclo_id) echo "selected"; ?>>{{$ciclo->descripcion}}</option>
+												@endforeach
+											@endif
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group">
 									<label class="col-md-2 col-sm-2 control-label" for="filtro">Turno Exámen:</label>
 									<div class="col-md-2 col-sm-3">
 										<select name="cboTurnoExamen" id="cboTurnoExamen" class="table-group-action-input form-control">
@@ -489,10 +502,11 @@ if (!isset($turnoexamen_id)) {
         var plan_id = $('#cboPlan').val();
     	var carrera_id = $('#cboCarrera').val();
     	var turnoexamen_id = $('#cboTurnoExamen').val();
+    	var cboCiclos = $('#cboCiclos').val();
 
 		$.ajax({
 		  url: "{{url('examenfinal/obtenermaterias')}}",
-		  data:{'plan_id': plan_id, 'carrera_id': carrera_id, 'turnoexamen_id': turnoexamen_id},
+		  data:{'plan_id': plan_id, 'carrera_id': carrera_id, 'turnoexamen_id': turnoexamen_id, 'cboCiclos': cboCiclos},
 		  type: 'POST'
 		}).done(function(materias) {
 			console.log(materias);
@@ -520,6 +534,45 @@ if (!isset($turnoexamen_id)) {
     	$('#cboTurnoExamen').val(0);
 		$('#cboMaterias').children().remove().end();
         if ($('#cboPlan').val() == 0) return;
+
+        var plan_id = $('#cboPlan').val();
+    	var carrera_id = $('#cboCarrera').val();
+
+    	$('#cboCiclos').children().remove().end();
+		if ($('#cboOrganizacion').val() == 0) return;
+
+		$.ajax({
+		  url: '{{url('ciclolectivo/obtenercicloslectivos')}}',
+		  data:{'organizacion_id': $('#cboOrganizacion').val()},
+		  type: 'POST'
+		}).done(function(ciclos) {
+			console.log(ciclos);
+
+			if (ciclos == <?php echo CicloLectivoController::NO_EXISTE_CICLO ?>) {
+				$('#divMensaje').html('<p class="form-control-static"><h4>' + 'La Organización no tiene Ciclos Lectivos Asignados' + '</h4></p>');
+	    	    $('#MensajeCantidad').modal('show');
+				return;
+		    }
+
+			$('#cboCiclos').append(
+		        $('<option></option>').val(0).html('Seleccionar')
+		    );
+
+			$.each(ciclos, function(key, value) {
+				$('#cboCiclos').append(
+			        $('<option></option>').val(value.id).html(value.descripcion)
+			    );
+			});
+
+		}).error(function(data) {
+			console.log(data);
+		});
+    });
+
+    $('#cboCiclos').change(function() {
+    	limpiar_tabla();
+
+    	$('#cboTurnoExamen').val(0);
     });
 
     $('#cboCarrera').change(function() {

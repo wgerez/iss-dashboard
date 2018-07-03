@@ -53,6 +53,7 @@ class ExamenFinalController extends \BaseController {
         $carrera_id = Input::get('cboCarrera');
         $orgid =  Input::get('cboOrganizacion');
         $planID = Input::get('cboPlan');
+        $ciclolectivo_id = Input::get('cboCiclos');
         $materia_id = Input::get('cboMaterias');
         $turnoexamen_id = Input::get('cboTurnoExamen');
         $dni = Input::get('txtalumno');
@@ -72,7 +73,7 @@ class ExamenFinalController extends \BaseController {
                 ->withInput();
         }
         ///////////////
-        $ciclolectivo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+        //$ciclolectivo_id = PlanEstudio::find($planID)->ciclolectivo_id;
 
         $mesaexamen = MesaExamen::whereRaw('carrera_id ='.$carrera_id.' AND ciclolectivo_id ='.$ciclolectivo_id.' AND materia_id ='.$materia_id.' AND turnoexamen_id ='.$turnoexamen_id)->get();
 
@@ -142,6 +143,8 @@ highlight_string(var_export($examenfinal,true));
 
         $planestudios = PlanEstudio::whereRaw('carrera_id= '. $carrera_id)->get();
 
+        $ciclos = CicloLectivo::where('organizacion_id','=',$orgid)->orderby('descripcion', 'DESC')->get();
+
         $turnos = TurnoExamen::all();
 
         $organizaciones = Organizacion::lists('nombre', 'id');
@@ -150,6 +153,8 @@ highlight_string(var_export($examenfinal,true));
             ->with('organizaciones', $organizaciones)
             ->with('planes', $planestudios)
             ->with('planID', $planID)
+            ->with('ciclos', $ciclos)
+            ->with('ciclo_id', $ciclolectivo_id)
             ->with('carrera_id', $carrera_id)
             ->with('OrgID', $orgid)
             ->with('carreras', $carreras)
@@ -216,8 +221,9 @@ highlight_string(var_export($examenfinal,true));
         $carrid = Input::get('carrera_id');
         $planID = Input::get('plan_id');
         $turnoexamen_id = Input::get('turnoexamen_id');
+        $ciclolectivo_id = Input::get('cboCiclos');
 
-        $ciclolectivo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+        //$ciclolectivo_id = PlanEstudio::find($planID)->ciclolectivo_id;
 
         $examenfinal = MesaExamen::whereRaw('carrera_id ='.$carrid.' AND ciclolectivo_id ='.$ciclolectivo_id.' AND turnoexamen_id ='.$turnoexamen_id)->get();
 
@@ -243,7 +249,7 @@ highlight_string(var_export($examenfinal,true));
         $alumno_id = Input::get('alumno_id');
         $inscripto = 0;
 
-        $ciclolectivo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+        $ciclolectivo_id = Input::get('cboCiclos');//PlanEstudio::find($planID)->ciclolectivo_id;
 
         $inscripcion = InscripcionFinal::whereRaw('alumno_id = '.$alumno_id)->get();
 
@@ -283,24 +289,10 @@ highlight_string(var_export($examenfinal,true));
         $planID = Input::get('planID');
         $materia_id = Input::get('materia_id');
         $turnoexamen_id = Input::get('cboTurnoExamen');
-        //$alumnoid = Input::get('alumnoid');
+        $ciclolectivo_id = Input::get('cboCiclos');
 
-        /*$asignaciones = AsignarDocente::whereRaw('carrera_id='. $carrera_id .' AND materia_id='. $materia_id . ' AND planestudio_id='. $planID)->first();
-
-    	$personatitular = Docente::find($asignaciones->docentetitular_id)->persona_id;
-    	$personaprovisorio = Docente::find($asignaciones->docenteprovisorio_id)->persona_id;
-    	$personasuplente = Docente::find($asignaciones->docentesuplente_id)->persona_id;
-
-    	$docentetitular_id = Persona::find($personatitular);
-    	$docenteprovisorio_id = Persona::find($personaprovisorio);
-    	$docentesuplente_id = Persona::find($personasuplente);
-
-    	$docentetitular = $docentetitular_id->apellido .', '. $docentetitular_id->nombre;
-    	$docenteprovisorio = $docenteprovisorio_id->apellido .', '. $docenteprovisorio_id->nombre;
-    	$docentesuplente = $docentesuplente_id->apellido .', '. $docentesuplente_id->nombre;*/
-    	///////////////
     	$docentes = '';
-        $ciclolectivo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+        //$ciclolectivo_id = PlanEstudio::find($planID)->ciclolectivo_id;
 
         $mesaexamen = MesaExamen::whereRaw('carrera_id ='.$carrera_id.' AND ciclolectivo_id ='.$ciclolectivo_id.' AND materia_id ='.$materia_id.' AND turnoexamen_id ='.$turnoexamen_id)->get();
 
@@ -473,6 +465,7 @@ highlight_string(var_export($examenfinal,true));
                 'cboOrganizacion'   => Input::get('cboOrganizacion'),
                 'cboCarrera'      	=> Input::get('cboCarrera'),
                 'cboPlan'         	=> Input::get('cboPlan'),
+                'cboCiclos'           => Input::get('cboCiclos'),
                 'cboMaterias'     	=> Input::get('cboMaterias'),
                 'cboTurnoExamen'    => Input::get('cboTurnoExamen'),
                 'alumno_id'       	=> Input::get('alumno_id'),
@@ -486,6 +479,7 @@ highlight_string(var_export($examenfinal,true));
             array(
                 'cboCarrera'      	=> 'required',
                 'cboPlan'         	=> 'required',
+                'cboCiclos'         => 'required',
                 'cboMaterias'     	=> 'required',
                 'cboTurnoExamen'    => 'required',
                 'alumno_id'       	=> 'required',
@@ -507,6 +501,7 @@ highlight_string(var_export($examenfinal,true));
                 'required' 		=> 'Campo Obligatorio',
                 'required' 		=> 'Campo Obligatorio',
                 'required' 		=> 'Campo Obligatorio',
+                'required'      => 'Campo Obligatorio',
                 'required'      => 'Campo Obligatorio'
             )
         );
@@ -514,6 +509,7 @@ highlight_string(var_export($examenfinal,true));
         $organizacion_id = Input::get('cboOrganizacion');
         $carrera_id = Input::get('cboCarrera');
         $planID = Input::get('cboPlan');
+        $ciclo_id = Input::get('cboCiclos');
         $materia_id = Input::get('cboMaterias');
         $turnoexamen_id = Input::get('cboTurnoExamen');
         $fechadesde = Input::get('fechadesde');
@@ -552,7 +548,11 @@ highlight_string(var_export($examenfinal,true));
             //$cuatrimestre = Materia::find($materia_id)->cuatrimestre;
 
         	//$regularidades = Regularidades::whereRaw('carrera_id='.$carrera_id.' AND materia_id='.$materia_id. ' AND planestudio_id='.$planID.' AND alumno_id='.$alumno_id.' AND parcial='. $cboParcial)->first();
-        	$examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id.' AND inscripcionfinal_id ='.$inscripcionfinal_id)->first();
+            $mesaexamen = MesaExamen::whereRaw('carrera_id ='.$carrera_id.' AND ciclolectivo_id ='.$ciclo_id.' AND materia_id ='.$materia_id.' AND turnoexamen_id ='.$turnoexamen_id)->first();
+
+            $inscripcion = InscripcionFinal::whereRaw('alumno_id = '.$alumno_id.' AND mesaexamen_id ='.$mesaexamen->id)->first();
+
+        	$examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id.' AND inscripcionfinal_id ='.$inscripcion->id)->first();
 
             if (count($examenfinal) > 0) {
                 $examenfina = ExamenFinal::find($examenfinal->id);
@@ -570,7 +570,7 @@ highlight_string(var_export($examenfinal,true));
                 $examenfina->calif_final_let    = $nota[$cbofinalnumero];
                 $examenfina->fecha_aprobacion 	= $fecha;
                 $examenfina->observaciones      = $observaciones;
-                $examenfina->inscripcionfinal_id = $inscripcionfinal_id;
+                $examenfina->inscripcionfinal_id = $inscripcion->id;
                 $examenfina->asistencia         = $asistencia;
                 $examenfina->justifico          = $justifico;
                 $examenfina->usuario_modi      	= Auth::user()->usuario;  
@@ -595,7 +595,7 @@ highlight_string(var_export($examenfinal,true));
                 $examenfina->calif_final_let 	= $nota[$cbofinalnumero];
                 $examenfina->fecha_aprobacion	= $fecha;
                 $examenfina->observaciones 		= $observaciones;
-                $examenfina->inscripcionfinal_id = $inscripcionfinal_id;
+                $examenfina->inscripcionfinal_id = $inscripcion->id;
                 $examenfina->asistencia         = $asistencia;
                 $examenfina->justifico          = $justifico;
                 $examenfina->usuario_alta   	= Auth::user()->usuario;  
