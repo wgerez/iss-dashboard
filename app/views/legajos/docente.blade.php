@@ -35,7 +35,7 @@
 				<div class="col-md-12">
 					<!-- COMIENZO TITULO & BREADCRUMB-->
 					<h3 class="page-title">
-					Legajo Alumno
+					Legajo Docente
 					</h3>
 					<ul class="page-breadcrumb breadcrumb">
 						<li>
@@ -44,7 +44,7 @@
 							<i class="fa fa-angle-right"></i>
 						</li>
 						<li>
-							<a href="{{url('alumnos/listado')}}">Alumnos</a>
+							<a href="{{url('docentes/listado')}}">Docentes</a>
 							<i class="fa fa-angle-right"></i>
 						</li>
 						<li>
@@ -61,13 +61,13 @@
 					<!-- PARA MOSTRAR ALERTAS - ERRORES - INFORMACIÓN ETC. USAREMOS ESTE DIV. DEPENDIENDO DEL TIPO (note-danger=rojo - note-info=celeste - note-warning=rojo - note-success=verde) USAR DISPLAY:NONE  -->
 
 					@if (Session::has('message'))
-					    @if (Session::get('message_type') == AlumnosController::OPERACION_EXITOSA)
+					    @if (Session::get('message_type') == DocentesController::OPERACION_EXITOSA)
 
 							<div class="note note-success">
 								<p> {{ Session::get('message') }} </p>
 							</div>
 
-						@elseif (Session::get('message_type') == AlumnosController::OPERACION_FALLIDA)
+						@elseif (Session::get('message_type') == DocentesController::OPERACION_FALLIDA)
 
 							<div class="note note-danger">
 								<p> {{ Session::get('message') }} </p>
@@ -89,12 +89,12 @@
 								<span class="hidden-480">
 								Guardar </span>
 								</button>-->
-								<a href="{{url('alumnos/listado')}}" class="btn default yellow-stripe">
+								<a href="{{url('docentes/listado')}}" class="btn default yellow-stripe">
 								<i class="fa fa-reorder"></i>
 								<span class="hidden-480">
 								Listado </span>
 								</a>
-								<!--<a href="{{url('alumnos/listado')}}" class="btn default red-stripe">
+								<!--<a href="{{url('docentes/listado')}}" class="btn default red-stripe">
 								<i class="fa fa-times"></i>
 								<span class="hidden-480">
 								Cancelar </span>
@@ -106,19 +106,15 @@
 								<div class="tabbable-custom">
 									<ul class="nav nav-tabs">
 										<li>
-											<a href="{{url('alumnos/editar')}}/{{$alumno->id}}">
+											<a href="{{url('docentes/editar')}}/{{$alumno->id}}">
 											Datos Personales </a>
-										</li>
-										<li>
-											<a href="{{url('inscripciones/inscribiralumno')}}/{{$alumno->id}}" >
-											Inscripciones </a>
 										</li>
 										<li class="active">
 											<a href="#tab_legajos" data-toggle="tab">
 											Legajo </a>
 										</li>
 										<!--li>
-											<a href="{{url('alumnos/familia')}}/{{$alumno->id}}">
+											<a href="{{url('docentes/familia')}}/{{$alumno->id}}">
 											Familia </a>
 										</li-->
 									</ul>
@@ -256,7 +252,7 @@
 
 									{{ Form::close()}}
 
-									{{ Form::open(array('url'=>'alumnos/guardardocumento', 'class'=>'form-horizontal form-row-seperated', 'id'=>'FormDocumentos', 'enctype'=>'multipart/form-data'))}}
+									{{ Form::open(array('url'=>'docentes/guardardocumento', 'class'=>'form-horizontal form-row-seperated', 'id'=>'FormDocumentos', 'enctype'=>'multipart/form-data'))}}
 
 									    <input type ='hidden' name='txtAlumnoLegajoId' value='{{$alumno->alumnolegajo->id}}'>
 									    <input type ='hidden' name='txtAlumnoDocumentoId' value='{{$alumno->id}}'>
@@ -317,11 +313,11 @@
 																		{{FechaHelper::getFechaImpresion($documento->updated_at)}}
 																	</td>
 																	<td>
-																		<input id="doc_{{$i}}" type="hidden" value="{{url('alumnos/documentos')}}/{{$documento->documento}}">
+																		<input id="doc_{{$i}}" type="hidden" value="{{url('docentes/documentos')}}/{{$documento->documento}}">
 																		<center>
 																		<a href="#" {{$disabled}} title="Modificar" data-id="{{$documento->id}}" data-doc="{{$documento->tipodocumento}}" class="btn default btn-xs purple btnEditarDoc">
 																		<i class="fa fa-edit"></i></a>
-																		<a href="#" title="Eliminar" {{$eliminar}} data-id="{{$documento->id}}" data-doc="{{url('alumnos/documentos')}}/{{$documento->documento}}" class="btn default btn-xs red btnEliminarDoc">
+																		<a href="#" title="Eliminar" {{$eliminar}} data-id="{{$documento->id}}" data-doc="{{url('docentes/documentos')}}/{{$documento->documento}}" class="btn default btn-xs red btnEliminarDoc">
 																		<i class="fa fa-trash-o"></i></a>
 																		</center>
 																	</td>
@@ -343,7 +339,7 @@
 																<p><strong>Vista Previa</strong></p>
 																<center>
 																<div class="thumbnail">
-																    <img id="imgvistaprevia" class="img-responsive" src="{{url('alumnos/documentos')}}/{{$imagen}}" alt="vista previa documento">
+																    <img id="imgvistaprevia" class="img-responsive" src="{{url('docentes/documentos')}}/{{$imagen}}" alt="vista previa documento">
 																</div>
 																</center>
 															</fieldset>
@@ -372,7 +368,7 @@
 
 	<!-- MODAL-->
 	<div class="modal fade" id="modalEliminaDoc" tabindex="-3" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		{{ Form::open(array('url' => 'alumnos/borrardocumento')) }}
+		{{ Form::open(array('url' => 'docentes/borrardocumento')) }}
 			<input id="idDocumentoHidden" name='idDocumentoHidden' type="hidden" value="">
 			<input type ='hidden' name='txtAlumnoDocumentoId' value='{{$alumno->id}}'>
 			<div class="modal-dialog">
@@ -400,7 +396,7 @@
 
 	<!-- MODAL MODIFICAR DOCUMENTO-->
 	<div class="modal fade" id="modalEditarDoc" tabindex="-4" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		{{ Form::open(array('url' => 'alumnos/editardocumento', 'class' => 'form-horizontal form-row-seperated')) }}
+		{{ Form::open(array('url' => 'docentes/editardocumento', 'class' => 'form-horizontal form-row-seperated')) }}
 			<input id="idDocumentoHiddenModi" name='idDocumentoHiddenModi' type="hidden" value="">
 			<input id="txtAlumnoDocumentoModiId" name='txtAlumnoDocumentoModiId' type="hidden" value="{{$alumno->id}}">
 			
@@ -610,7 +606,7 @@ $('#otros').change(function(){
 
 function guardar_item_legajo(valor, campo) {
 	$.ajax({
-	  url: "{{url('alumnos/guardaritemlegajo')}}",
+	  url: "{{url('docentes/guardaritemlegajo')}}",
 	  data:{
 	      'legajoId': <?php echo $alumno->alumnolegajo->id; ?>,
 	      'valor': valor,

@@ -342,7 +342,36 @@ class MesaexamenesController extends \BaseController {
 
        	/*highlight_string(var_export($horasegundollamado, true));
         exit();*/
-	   	
+        if (!$fechaprimerllamado == '') {
+            $feriados = Feriados::whereRaw('ciclolectivo_id ='.$ciclo_id)->get();
+
+            foreach ($feriados as $feriado) {
+                $porcion = explode(" ", $feriado->fecha_feriado);
+                $fecha = $porcion[0];
+                
+                if ($fechaprimerllamado == $fecha) {
+                    Session::flash('message', 'ERROR AL INTENTAR GUARDAR, LA FECHA ELEGIDA ES FERIADO.');
+                    Session::flash('message_type', self::OPERACION_FALLIDA);
+                    return Redirect::to('mesaexamenes/crear');
+                }
+            }
+        }
+
+        if (!$fechasegundollamado == '') {
+            $feriados = Feriados::whereRaw('ciclolectivo_id ='.$ciclo_id)->get();
+
+            foreach ($feriados as $feriado) {
+                $porcion = explode(" ", $feriado->fecha_feriado);
+                $fecha = $porcion[0];
+                
+                if ($fechasegundollamado == $fecha) {
+                    Session::flash('message', 'ERROR AL INTENTAR GUARDAR, LA FECHA ELEGIDA ES FERIADO.');
+                    Session::flash('message_type', self::OPERACION_FALLIDA);
+                    return Redirect::to('mesaexamenes/crear');
+                }
+            }
+        }
+
 	   	$docentes      = Input::get('docentes');
 
 	   	$mesa = new MesaExamen();

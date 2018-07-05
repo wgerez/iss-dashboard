@@ -157,14 +157,18 @@ if (trim(Input::old('codigopostal') == false)) {
 											<a href="#tab_datos_personales" data-toggle="tab">
 											Datos Personales </a>
 										</li>
-										<li>
+										<!--li>
 											<a href="#tab_familia" data-toggle="tab">
 											Familia </a>
-										</li>
+										</li-->
 										<li>
+											<a href="{{url('docentes/legajo')}}/{{$docente->id}}" >
+											Legajo </a>
+										</li>
+										<!--li>
 											<a href="#tab_legajos" data-toggle="tab">
 											Legajos </a>
-										</li>
+										</li-->
 									</ul>
 									<div class="tab-content no-space">
 										<div class="tab-pane active" id="tab_datos_personales">
