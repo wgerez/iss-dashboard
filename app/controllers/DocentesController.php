@@ -395,6 +395,29 @@ class DocentesController extends BaseController {
         }
     }
 
+    public function getLegajo($id_docente)
+    {
+        $alumno = Alumno::with('persona')->with('alumnolegajo')->find($id_docente);
+        $alumno_legajo = AlumnoLegajo::with('alumnoslegajosdocumentos')->find($alumno->alumnolegajo->id);
+        
+        if (!$alumno->alumnolegajo->fechavencimientoseguro == NULL) {
+            $fechavencimientoseguro = FechaHelper::getFechaImpresion($alumno->alumnolegajo->fechavencimientoseguro);
+            $porcion = explode("/", $fechavencimientoseguro);
+            $fechadesde = $porcion[2].'-'.$porcion[1].'-'.$porcion[0];
+            $alumno->alumnolegajo->fechavencimientoseguro = $fechadesde;
+        }
+
+        return View::make('legajos.docente')
+            ->with('alumno', $alumno)
+            ->with('alumno_legajo', $alumno_legajo)
+            ->with('menu', ModulosHelper::MENU_GESTION_ACADEMICA)
+            ->with('submenu', ModulosHelper::SUBMENU_ALUMNOS)
+            ->with('leer', Session::get('ALUMNO_LEER'))
+            ->with('editar', Session::get('ALUMNO_EDITAR'))
+            ->with('imprimir', Session::get('ALUMNO_IMPRIMIR'))
+            ->with('eliminar', Session::get('ALUMNO_ELIMINAR'));
+    }
+
     public function postBorrar()
     {
         $id = Input::get('txtIdDocenteHidden');

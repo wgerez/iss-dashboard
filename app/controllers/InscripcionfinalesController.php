@@ -333,7 +333,8 @@ class InscripcionFinalesController extends BaseController
         $matriculas = 0;
         $cuota = 0;
         $derecho = 0;
-        $ciclo = PlanEstudio::find($plan_id)->ciclolectivo_id;
+        //$ciclo = PlanEstudio::find($plan_id)->ciclolectivo_id;
+        $ciclo = CicloLectivo::whereRaw('organizacion_id = 1 AND activo=1')->first()->id;
 
         // validar que tenga pagada la matricula del siglo lectivo actual
         $matricula = Matricula::where('carrera_id', '=', $carr_id)->where('ciclolectivo_id', '=', $ciclo)->first();
@@ -401,7 +402,13 @@ class InscripcionFinalesController extends BaseController
                             //verificar que no exista el re
                             $existe = InscripcionFinal::where('alumno_id', '=', $alumno_id)->where('mesaexamen_id', '=', $tp->id)->first();
                             if (!$existe) {
-                                $mesas[] = ['id' => $tp->id, 'materia' => $materia->nombremateria];        
+                                $examenfinal = ExamenFinal::whereRaw('alumno_id ='.$alumno_id.' AND carrera_id ='.$carr_id.' AND planestudio_id ='.$plan_id.' AND materia_id ='.$tp->materia_id)->get();
+
+                                foreach ($examenfinal as $value) {
+                                    if ($value->calif_final_num < 5 || $value->asistencia == 1) {
+                                        $mesas[] = ['id' => $tp->id, 'materia' => $materia->nombremateria];
+                                    }
+                                }
                             }
                         }
                     }

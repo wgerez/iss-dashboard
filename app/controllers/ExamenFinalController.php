@@ -62,6 +62,7 @@ class ExamenFinalController extends \BaseController {
         $nrodocumento = '';
         $docentes = '';
         $alumnos = [];
+        $materias = [];
         $habilita = true;
         $nota = ['cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez'];
 
@@ -119,17 +120,49 @@ class ExamenFinalController extends \BaseController {
             $inscripcionfinal_id = InscripcionFinal::whereRaw('alumno_id ='.$alumno_id.' AND mesaexamen_id ='.$mesaexamen_id)->first()->id;
             ////////
         	$examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id.' AND inscripcionfinal_id ='.$inscripcionfinal_id)->get();
+
+            if (count($examenfinal) > 0) {
+                foreach ($examenfinal as $value) {
+                    $alumnopersona = Alumno::find($value->alumno_id)->persona_id;
+                    $personaalumno = Persona::find($alumnopersona);
+                    $persona = $personaalumno->apellido .', '. $personaalumno->nombre;
+
+                    $fecha_aprobacion = FechaHelper::getFechaImpresion($value->fecha_aprobacion);
+                    $nombremateria = Materia::find($materia_id)->nombremateria;
+                    
+                    $materias[] = ['id' => $value->id, 'fecha_aprobacion' => $fecha_aprobacion, 'docentes' => $docentes, 'alumno' => $persona, 'nombremateria' => $nombremateria, 'calif_final_num' => $value->calif_final_num, 'calif_final_let' => $value->calif_final_let, 'folio' => $value->folio, 'libro' => $value->libro, 'acta' => $value->acta];
+                }
+            } else {
+                $habilita = false;
+                $materias = [];
+            }
         } else {
             /////////
-            $inscripcionfinal_id = InscripcionFinal::whereRaw('mesaexamen_id ='.$mesaexamen_id)->first();
+            $inscripcionfinal_id = InscripcionFinal::whereRaw('mesaexamen_id ='.$mesaexamen_id)->get();
 
             if (count($inscripcionfinal_id) > 0) {
-                $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND inscripcionfinal_id ='.$inscripcionfinal_id->id)->get();
+                foreach ($inscripcionfinal_id as $inscripcionfinal) {
+                    $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND inscripcionfinal_id ='.$inscripcionfinal->id)->get();
+
+                    if (count($examenfinal) > 0) {
+                        foreach ($examenfinal as $value) {
+                            $alumnopersona = Alumno::find($value->alumno_id)->persona_id;
+                            $personaalumno = Persona::find($alumnopersona);
+                            $persona = $personaalumno->apellido .', '. $personaalumno->nombre;
+
+                            $fecha_aprobacion = FechaHelper::getFechaImpresion($value->fecha_aprobacion);
+                            $nombremateria = Materia::find($materia_id)->nombremateria;
+                            
+                            $materias[] = ['id' => $value->id, 'fecha_aprobacion' => $fecha_aprobacion, 'docentes' => $docentes, 'alumno' => $persona, 'nombremateria' => $nombremateria, 'calif_final_num' => $value->calif_final_num, 'calif_final_let' => $value->calif_final_let, 'folio' => $value->folio, 'libro' => $value->libro, 'acta' => $value->acta];
+                        }
+                    }
+                }
             } else {
-                $examenfinal = [];
+                $habilita = false;
+                $materias = [];
             }
         }
-
+/*
         if (count($examenfinal) > 0) {
         	foreach ($examenfinal as $value) {
     			$alumnopersona = Alumno::find($value->alumno_id)->persona_id;
@@ -144,11 +177,11 @@ class ExamenFinalController extends \BaseController {
         } else {
         	$habilita = false;
         	$materias = [];
-        }
+        }*/
         /*
-highlight_string(var_export($examenfinal,true));
-        exit;
-*/
+        highlight_string(var_export($examenfinal,true));
+                exit;
+        */
         $carreras = Carrera::where('organizacion_id', '=', $orgid)->get();
 
         $planestudios = PlanEstudio::whereRaw('carrera_id= '. $carrera_id)->get();
@@ -811,11 +844,12 @@ highlight_string(var_export($examenfinal,true));
         $domicilio = '';
         $condicion = '';
         $docentes = '';
+        $mesaexamen_id = '';
         $nota = ['cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez'];
 
         $planestudios = PlanEstudio::find($planID);
 
-        $ciclolectivo_id = $planestudios->ciclolectivo_id;
+        $ciclolectivo_id = Input::get('cboCiclos');//$planestudios->ciclolectivo_id;
         $cohorte = $planestudios->codigoplan;
 
         $mesaexamen = MesaExamen::whereRaw('carrera_id ='.$carrera_id.' AND ciclolectivo_id ='.$ciclolectivo_id.' AND materia_id ='.$materia_id.' AND turnoexamen_id ='.$turnoexamen_id)->get();
@@ -823,6 +857,7 @@ highlight_string(var_export($examenfinal,true));
         if (count($mesaexamen) > 0) {
         	foreach ($mesaexamen as $value) {
         		$docentesasig = TribunalDocente::whereRaw('mesaexamen_id ='. $value->id)->get();
+                $mesaexamen_id = $value->id;
 
 	        	if (count($docentesasig) > 0) {
 		        	foreach ($docentesasig as $docente) {
@@ -860,12 +895,62 @@ highlight_string(var_export($examenfinal,true));
         	$apeynom = $alumnos[0]->apellido.', '. $alumnos[0]->nombre;
         	$domicilio = $alumnos[0]->calle.' - '. $alumnos[0]->numero;
 
-        	$examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id)->get();
+            /////////
+            $inscripcionfinal_id = InscripcionFinal::whereRaw('alumno_id ='.$alumno_id.' AND mesaexamen_id ='.$mesaexamen_id)->first()->id;
+            ////////
+            $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id.' AND inscripcionfinal_id ='.$inscripcionfinal_id)->get();
+
+            if (count($examenfinal) > 0) {
+                foreach ($examenfinal as $value) {
+                    $alumnopersona = Alumno::find($value->alumno_id)->persona_id;
+                    $personaalumno = Persona::find($alumnopersona);
+                    $persona = $personaalumno->apellido .', '. $personaalumno->nombre;
+                    $dni = $personaalumno->nrodocumento;
+
+                    $fecha_aprobacion = FechaHelper::getFechaImpresion($value->fecha_aprobacion);
+                    $nombremateria = Materia::find($materia_id)->nombremateria;
+                    
+                    $materias[] = ['id' => $value->id, 'fecha_aprobacion' => $fecha_aprobacion, 'docentes' => $docentes, 'alumno' => $persona, 'nombremateria' => $nombremateria, 'calif_final_num' => $value->calif_final_num, 'calif_final_let' => $value->calif_final_let, 'folio' => $value->folio, 'libro' => $value->libro, 'acta' => $value->acta, 'observaciones' => $value->observaciones, 'nroresolucion' => $nroresolucion, 'condicion' => $condicion, 'dni' => $dni];
+                }
+            } else {
+                $materias = [];
+            }
         } else {
-        	$examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id)->get();
+            /////////
+            $inscripcionfinal_id = InscripcionFinal::whereRaw('mesaexamen_id ='.$mesaexamen_id)->get();
+
+            if (count($inscripcionfinal_id) > 0) {
+                foreach ($inscripcionfinal_id as $inscripcionfinal) {
+                    $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND inscripcionfinal_id ='.$inscripcionfinal->id)->get();
+
+                    if (count($examenfinal) > 0) {
+                        foreach ($examenfinal as $value) {
+                            $regularidades = Regularidades::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$value->alumno_id)->get();
+
+                            foreach ($regularidades as $regularidad) {
+                                if ($regularidad->regularizo == 1) {
+                                    $condicion = 'Regular';
+                                }
+                            }
+
+                            $alumnopersona = Alumno::find($value->alumno_id)->persona_id;
+                            $personaalumno = Persona::find($alumnopersona);
+                            $persona = $personaalumno->apellido .', '. $personaalumno->nombre;
+                            $dni = $personaalumno->nrodocumento;
+
+                            $fecha_aprobacion = FechaHelper::getFechaImpresion($value->fecha_aprobacion);
+                            $nombremateria = Materia::find($materia_id)->nombremateria;
+                            
+                            $materias[] = ['id' => $value->id, 'fecha_aprobacion' => $fecha_aprobacion, 'docentes' => $docentes, 'alumno' => $persona, 'nombremateria' => $nombremateria, 'calif_final_num' => $value->calif_final_num, 'calif_final_let' => $value->calif_final_let, 'folio' => $value->folio, 'libro' => $value->libro, 'acta' => $value->acta, 'observaciones' => $value->observaciones, 'nroresolucion' => $nroresolucion, 'condicion' => $condicion, 'dni' => $dni];
+                        }
+                    }
+                }
+            } else {
+                $materias = [];
+            }
         }
 
-        if (count($examenfinal) > 0) {
+        /*if (count($examenfinal) > 0) {
         	foreach ($examenfinal as $value) {
         		$regularidades = Regularidades::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$value->alumno_id)->get();
 
@@ -887,7 +972,7 @@ highlight_string(var_export($examenfinal,true));
 	        }
         } else {
         	$materias = [];
-        }
+        }*/
         
         $turnos = TurnoExamen::all();
 

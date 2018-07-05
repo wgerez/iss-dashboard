@@ -103,7 +103,7 @@ if (!isset($turnoexamen_id)) {
 								<span class="hidden-480">
 								Nuevo </span>
 								</a>
-								<a target="_blank" href="#" id="imprimir" {{$imprimir}} class="btn default yellow-stripe" <?php if ($habilita == false) echo "disabled"; ?>>
+								<a href="#" id="imprimir" {{$imprimir}} class="btn default yellow-stripe" <?php if ($habilita == false) echo "disabled"; ?>>
 								<i class="fa fa-print"></i>
 								<span class="hidden-480">
 								Imprimir </span>
@@ -437,8 +437,14 @@ if (!isset($turnoexamen_id)) {
 	});
 
 	$('#imprimir').on('click', function(e){
-		e.preventDefault();
-		window.open("{{url('examenfinal/imprimir')}}?planID=" + $('#cboPlan').val() + '&carrera_id=' + $('#cboCarrera').val() + '&materia_id=' + $('#cboMaterias').val() + '&cboTurnoExamen=' + $('#cboTurnoExamen').val() + '&cboOrganizacion=' + $('#cboOrganizacion').val() + '&txtalumno=' + $('#txtalumno').val());
+		if ($('#cboCarrera').val() == false || $('#cboMaterias').val() == false || $('#cboTurnoExamen').val() == false || $('#cboPlan').val() == false || $('#cboCiclos').val() == false) {
+			$('#divMensaje').html('<p class="form-control-static"><h4>' + 'Debe seleccionar las opciones!' + '</h4></p>');
+    		$('#MensajeCantidad').modal('show');
+	    	return;
+		} else {
+			e.preventDefault();
+			window.open("{{url('examenfinal/imprimir')}}?planID=" + $('#cboPlan').val() + '&carrera_id=' + $('#cboCarrera').val() + '&materia_id=' + $('#cboMaterias').val() + '&cboTurnoExamen=' + $('#cboTurnoExamen').val() + '&cboOrganizacion=' + $('#cboOrganizacion').val() + '&txtalumno=' + $('#txtalumno').val() + '&cboCiclos=' + $('#cboCiclos').val());
+		}
 	});
 
 	$('.btnEliminarMaterias').live('click', function(){
@@ -447,7 +453,7 @@ if (!isset($turnoexamen_id)) {
 	});
 
     $('#btnBuscar').click(function() {
-    	var ciclo = $('#cboCiclo').val();
+    	var ciclo = $('#cboCiclos').val();
     	var carrera = $('#cboCarrera').val();
 
     });
