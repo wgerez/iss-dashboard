@@ -63,6 +63,7 @@ class ExamenFinalController extends \BaseController {
         $docentes = '';
         $alumnos = [];
         $materias = [];
+        $mesaexamen_id = 0;
         $habilita = true;
         $nota = ['cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez'];
 
@@ -116,10 +117,15 @@ class ExamenFinalController extends \BaseController {
         if (count($alumnos) > 0) {
         	$alumno_id = $alumnos[0]->alumno_id;
         	$nrodocumento = $alumnos[0]->nrodocumento;
-            /////////
-            $inscripcionfinal_id = InscripcionFinal::whereRaw('alumno_id ='.$alumno_id.' AND mesaexamen_id ='.$mesaexamen_id)->first()->id;
-            ////////
-        	$examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id.' AND inscripcionfinal_id ='.$inscripcionfinal_id)->get();
+
+            if ($mesaexamen_id > 0) {
+                /////////
+                $inscripcionfinal_id = InscripcionFinal::whereRaw('alumno_id ='.$alumno_id.' AND mesaexamen_id ='.$mesaexamen_id)->first();
+                ////////
+                $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id.' AND inscripcionfinal_id ='.$inscripcionfinal_id->id)->get();
+            } else {
+        	   $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id)->get();
+            }
 
             if (count($examenfinal) > 0) {
                 foreach ($examenfinal as $value) {
