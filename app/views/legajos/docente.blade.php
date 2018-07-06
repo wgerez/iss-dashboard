@@ -302,9 +302,9 @@
 															</th>
 														</tr>
 														</thead>
-														<tbody>
+														<tbody>2786.59
 															<?php $i = 0; ?>
-															@foreach ($alumno_legajo->alumnoslegajosdocumentos as $documento)
+															@foreach ($docente_legajo->docenteslegajosdocumentos as $documento)
 																<tr id="colum_{{$i}}">
 																	<td class="vistaprevia" style="cursor:pointer">
 																		{{$documento->tipodocumento}}

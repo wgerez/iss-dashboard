@@ -644,7 +644,7 @@ class ExamenFinalController extends \BaseController {
                 
                 $examenfina->save();
 
-                $idaseguir = $examenfinal->id;
+                $idaseguir = $examenfinal->id.'-'.$ciclo_id;
             } else {
             	$examenfina = new ExamenFinal();
 
@@ -672,7 +672,7 @@ class ExamenFinalController extends \BaseController {
                 $asigna = ExamenFinal::all();
 
                 $examenfinal = $asigna->last();
-                $idaseguir = $examenfinal->id;
+                $idaseguir = $examenfinal->id.'-'.$ciclo_id;
             }
 
 
@@ -686,7 +686,10 @@ class ExamenFinalController extends \BaseController {
 
     public function getGuardado($idaseguir)
     {  
-        $examenfinal = ExamenFinal::find($idaseguir);
+        $porcion = explode('-', $idaseguir);
+
+        $ids = $porcion[0];
+        $examenfinal = ExamenFinal::find($ids);
 
         $folio = '';
         $libro = '';
@@ -699,7 +702,7 @@ class ExamenFinalController extends \BaseController {
 
         $inscripto = $examenfinal->inscripcionfinal_id;
 
-        $carreras = Carrera::where('organizacion_id', '=', 1)->get();
+        $carreras = Carrera::where('organizacion_id', '=', $examenfinal->organizacion_id)->get();
 
         $planes = PlanEstudio::where('carrera_id', '=', $examenfinal->carrera_id)->get();
         
@@ -708,7 +711,7 @@ class ExamenFinalController extends \BaseController {
 
         //$materias = Materia::where('carrera_id', '=', $examenfinal->carrera_id)->where('planestudio_id', '=', $planID)->get();
         
-        $ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+        $ciclo_id = $porcion[1];//PlanEstudio::find($planID)->ciclolectivo_id;
         
         $materiaexamenfinal = MesaExamen::whereRaw('carrera_id ='.$examenfinal->carrera_id.' AND ciclolectivo_id ='.$ciclo_id.' AND materia_id ='.$examenfinal->materia_id.' AND turnoexamen_id ='.$examenfinal->turnoexamen_id)->get();
         $docentes = '';
@@ -770,6 +773,8 @@ class ExamenFinalController extends \BaseController {
             $value->alumno = $persona;
         }
 
+        $ciclos = CicloLectivo::where('organizacion_id','=',$examenfinal->organizacion_id)->orderby('descripcion', 'DESC')->get();
+
         $turnos = TurnoExamen::all();
 
         return View::make('examenfinal.nuevo',[
@@ -781,6 +786,7 @@ class ExamenFinalController extends \BaseController {
             'planID'     	  	=> $planID,
             'planes'          	=> $planes,
             'ciclo_id' 			=> $ciclo_id,
+            'ciclos'            => $ciclos,
             'examenfina' 		=> $examenfina,
             'examenfinal' 		=> $examenfinal,
             'habilita' 			=> $habilita,
@@ -789,7 +795,7 @@ class ExamenFinalController extends \BaseController {
             'fechadesdes'       => $fechadesdes,
             'fechadesde'       	=> $fechadesde,
             'turnos'       		=> $turnos,
-            'idaseguir'    		=> $idaseguir,
+            'idaseguir'    		=> $ids,
             'folio'    			=> $folio,
             'libro'    			=> $libro,
             'acta'    			=> $acta,
@@ -826,7 +832,11 @@ class ExamenFinalController extends \BaseController {
 
         if (count($examenfinals) > 0) {
             foreach ($examenfinals as $value) {
-                $idaseguir = $value->id;
+                $inscripcion = InscripcionFinal::find($value->inscripcionfinal_id);
+
+                $ciclo_id = MesaExamen::find($inscripcion->mesaexamen_id)->ciclolectivo_id;
+
+                $idaseguir = $value->id.'-'.$ciclo_id;
             }
 
             Session::flash('message', 'EL REGISTRO HA SIDO BORRADO.');

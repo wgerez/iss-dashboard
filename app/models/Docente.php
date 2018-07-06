@@ -42,6 +42,11 @@ class Docente extends Eloquent {
         return $this->hasmany('TribunalDocente', 'docente_id');
     }
 
+    public function docentelegajo()
+    {
+        return $this->hasOne('DocenteLegajo');
+    }
+
     public static function getDocentePorDni($dni)
     {
         $result = DB::table('personas', 'docentes', 'localidades', 'provincias')

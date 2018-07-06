@@ -398,18 +398,24 @@ class DocentesController extends BaseController {
     public function getLegajo($id_docente)
     {
         $docente = Docente::with('persona')->with('docentelegajo')->find($id_docente);
-        $docente_legajo = DocenteLegajo::with('docenteslegajosdocumentos')->find($docente->docentelegajo->id);
-        
-        if (!$docente->docentelegajo->fechavencimientoseguro == NULL) {
-            $fechavencimientoseguro = FechaHelper::getFechaImpresion($docente->docentelegajo->fechavencimientoseguro);
-            $porcion = explode("/", $fechavencimientoseguro);
-            $fechadesde = $porcion[2].'-'.$porcion[1].'-'.$porcion[0];
-            $docente->docentelegajo->fechavencimientoseguro = $fechadesde;
+        $doc_legajo = DocenteLegajo::whereRaw('docente_id = '.$id_docente)->first();
+
+        if (count($doc_legajo) > 0) {
+            $docente_legajo = DocenteLegajo::with('docenteslegajosdocumentos')->find($docente->docentelegajo->id);
+            
+            if (!$docente->docentelegajo->fechavencimientoseguro == NULL) {
+                $fechavencimientoseguro = FechaHelper::getFechaImpresion($docente->docentelegajo->fechavencimientoseguro);
+                $porcion = explode("/", $fechavencimientoseguro);
+                $fechadesde = $porcion[2].'-'.$porcion[1].'-'.$porcion[0];
+                $docente->docentelegajo->fechavencimientoseguro = $fechadesde;
+            }
+        } else {
+            $docente_legajo = [];
         }
 
         return View::make('legajos.docente')
             ->with('alumno', $docente)
-            ->with('alumno_legajo', $docente_legajo)
+            ->with('docente_legajo', $docente_legajo)
             ->with('menu', ModulosHelper::MENU_GESTION_ACADEMICA)
             ->with('submenu', ModulosHelper::SUBMENU_ALUMNOS)
             ->with('leer', Session::get('ALUMNO_LEER'))
