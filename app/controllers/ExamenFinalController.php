@@ -122,7 +122,12 @@ class ExamenFinalController extends \BaseController {
                 /////////
                 $inscripcionfinal_id = InscripcionFinal::whereRaw('alumno_id ='.$alumno_id.' AND mesaexamen_id ='.$mesaexamen_id)->first();
                 ////////
-                $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id.' AND inscripcionfinal_id ='.$inscripcionfinal_id->id)->get();
+                
+                if (count($inscripcionfinal_id) > 0) {
+                    $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id.' AND inscripcionfinal_id ='.$inscripcionfinal_id->id)->get();
+                } else {
+                    $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id)->get();
+                }
             } else {
         	   $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id)->get();
             }
