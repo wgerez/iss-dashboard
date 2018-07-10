@@ -432,6 +432,98 @@ class DocentesController extends BaseController {
           ->with('eliminar', Session::get('DOCENTE_ELIMINAR'));
     }
 
+    /*
+     * SE GUARDA POR JSON AJAX
+     */
+    public function postGuardaritemlegajo()
+    {
+        $legajo_id = Input::get('legajoId');
+        $campo = Input::get('campo');
+
+        if ($campo == 'FECHA_SEGURO') {
+            $fecha_vencimiento = Input::get('valor');
+            if ($fecha_vencimiento == '') {
+                $fecha_vencimiento = NULL;
+            } else {
+                $porcion = explode("-", $fecha_vencimiento);
+                $fechadesde = $porcion[0].'/'.$porcion[1].'/'.$porcion[2];
+                $fecha_vencimiento = FechaHelper::getFechaParaGuardar($fechadesde);
+            }
+        }
+
+        $legajo = DocenteLegajo::find($legajo_id);
+
+        if (count($legajo) > 0) {
+            # code...
+        }
+        switch ($campo) {
+            case 'DNI':
+                $legajo->dni = (int) Input::get('valor');
+                break;
+            case 'FOTO':
+                $legajo->foto = (int) Input::get('valor');
+                break;                
+
+            case 'PARTIDA_NACIMIENTO':
+                $legajo->partidanacimiento = (int) Input::get('valor');
+                break;
+
+            case 'BUENA_SALUD':
+                $legajo->ficha_medica = (int) Input::get('valor');
+                break;
+
+            case 'CUIL_CUIT':
+                $legajo->cuil_cuit = (int) Input::get('valor');
+                break;
+
+            case 'TITULO':
+                $legajo->titulosecundario = (int) Input::get('valor');
+                break;
+
+            case 'CARGOS_ACTIVIDADES':
+                $legajo->cargos_actividades = (int) Input::get('valor');
+                break;
+
+            case 'TITULO_PROFESIONAL':
+                $legajo->tituloprofesional = (int) Input::get('valor');
+                break;
+
+            case 'DECLARACION_JURADA':
+                $legajo->declaracion_jurada = (int) Input::get('valor');
+                break;
+
+            case 'SEGURO':
+                $legajo->seguro = (int) Input::get('valor');
+                break;
+
+            case 'FECHA_SEGURO':
+                $legajo->fechavencimientoseguro = $fecha_vencimiento;
+                break;
+
+            case 'OTROS':
+                $legajo->otros = (int) Input::get('valor');
+                break;
+        }
+
+        $legajo->save();
+
+        /*Session::flash('message', 'LEGAJO GUARDADO CORRECTAMENTE.');
+        Session::flash('message_type', self::OPERACION_EXITOSA);
+        return Redirect::to('alumnos/legajo/' . $alumno_id);*/
+
+        $result = [
+            'mensaje' => 'LEGAJO ACTUALIZADO',
+            'tipo_mensaje' => self::OPERACION_EXITOSA
+        ];
+
+        return Response::json($result);
+    }
+
+    /* 
+     * REFACTORING
+     * mensajes de error en caso de no enviar la imagen
+     */
+
     public function postBorrar()
     {
         $id = Input::get('txtIdDocenteHidden');

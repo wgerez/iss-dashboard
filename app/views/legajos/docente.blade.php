@@ -28,17 +28,44 @@
 
 	$dni = '';
 	$foto = '';
+	$cuil_cuit = '';
+	$partidanacimiento = '';
+	$certificadobuenasalud = '';
+	$titulosecundario = '';
+	$constituloprofesional = '';
+	$cargos_actividades = '';
+	$declaracion_jurada = '';
+	$seguro = '';
+	$otros = '';
+	$fechavencimientoseguro = '';
+	$docentelegajo_id = 1;
 
 	if (!$docente->docentelegajo == null) {
 		if ($docente->docentelegajo->dni) $dni = 'CHECKED';
 		
 		if ($docente->docentelegajo->foto) $foto = 'CHECKED';
 
+		if ($docente->docentelegajo->cuil_cuit) $cuil_cuit = 'checked';
+
 		if ($docente->docentelegajo->partidanacimiento) $partidanacimiento = 'CHECKED';
 
-		if ($docente->docentelegajo->certificadobuenasalud) $certificadobuenasalud = 'CHECKED';
+		if ($docente->docentelegajo->ficha_medica) $certificadobuenasalud = 'CHECKED';
 
-		if ($docente->docentelegajo->cuil_cuit) $cuil_cuit = 'checked';
+		if ($docente->docentelegajo->titulosecundario) $titulosecundario = 'CHECKED';
+
+		if ($docente->docentelegajo->tituloprofesional) $constituloprofesional = 'CHECKED';
+
+		if ($docente->docentelegajo->cargos_actividades) $cargos_actividades = 'CHECKED';
+
+		if ($docente->docentelegajo->declaracion_jurada) $declaracion_jurada = 'CHECKED';
+
+		if ($docente->docentelegajo->seguro) $seguro = 'CHECKED';
+
+		if ($docente->docentelegajo->otros) $otros = 'CHECKED';
+
+		if ($docente->docentelegajo->fechavencimientoseguro) $fechavencimientoseguro = $docente->docentelegajo->fechavencimientoseguro;
+
+		if ($docente->docentelegajo->id) $docentelegajo_id = $docente->docentelegajo->id;
 	}
 ?>
 
@@ -158,8 +185,7 @@
 																</div> 
 																Fotocopia DNI
 															</label>
-<?php highlight_string(var_export($docente,true));
-        										exit; ?>
+
 															<label>
 																<div class="checker {{$disabled}}">
 																	<span class="<?php echo $foto; ?>">
@@ -172,7 +198,7 @@
 															<label>
 																<div class="checker {{$disabled}}">
 																	<span class="<?php echo $cuil_cuit; ?>">
-																		<input name="fotocopiacertificadovacunacion" id='fotocopiacertificadovacunacion' type="checkbox" <?php echo $cuil_cuit; ?>>
+																		<input name="cuil_cuit" id='cuil_cuit' type="checkbox" <?php echo $cuil_cuit; ?>>
 																	</span>
 																</div> 
 																CUIL/CUIT
@@ -203,8 +229,8 @@
 
 															<label>
 																<div class="checker {{$disabled}}">
-																	<span class="<?php if ($docente->docentelegajo->titulosecundario) echo 'checked'; ?>">
-																		<input name="fotocopiatitulosecundario" id='fotocopiatitulosecundario' type="checkbox" <?php if ($docente->docentelegajo->titulosecundario) echo 'CHECKED'; ?>>
+																	<span class="<?php echo $titulosecundario; ?>">
+																		<input name="fotocopiatitulosecundario" id='fotocopiatitulosecundario' type="checkbox" <?php echo $titulosecundario; ?>>
 																	</span>
 																</div> 
 																Fotocopia de título secundario
@@ -212,8 +238,8 @@
 
 															<label>
 																<div class="checker {{$disabled}}">
-																	<span class="<?php if ($docente->docentelegajo->constitulotramite) echo 'checked'; ?>">
-																		<input name="constanciatitulotramite" id='constanciatitulotramite' type="checkbox" <?php if ($docente->docentelegajo->constitulotramite) echo 'CHECKED'; ?>>
+																	<span class="<?php echo $constituloprofesional; ?>">
+																		<input name="constanciatitulotramite" id='constanciatitulotramite' type="checkbox" <?php echo $constituloprofesional; ?>>
 																	</span>
 																</div> 
 																Constancia de Título Profesional
@@ -221,8 +247,8 @@
 
 															<label>
 																<div class="checker {{$disabled}}">
-																	<span class="<?php if ($docente->docentelegajo->fichapreinscripcion) echo 'checked'; ?>">
-																		<input name="fichapreinscripcion" id='fichapreinscripcion' type="checkbox" <?php if ($docente->docentelegajo->fichapreinscripcion) echo 'CHECKED'; ?>>
+																	<span class="<?php echo $cargos_actividades; ?>">
+																		<input name="fichapreinscripcion" id='fichapreinscripcion' type="checkbox" <?php echo $cargos_actividades; ?>>
 																	</span>
 																</div> 
 																Ficha Cargos y Actividades
@@ -230,8 +256,8 @@
 
 															<label>
 																<div class="checker {{$disabled}}">
-																	<span class="<?php if ($docente->docentelegajo->constanciatrabajo) echo 'checked'; ?>">
-																		<input name="constanciatrabajo" id='constanciatrabajo' type="checkbox" <?php if ($docente->docentelegajo->constanciatrabajo) echo 'CHECKED'; ?>>
+																	<span class="<?php echo $declaracion_jurada; ?>">
+																		<input name="constanciatrabajo" id='constanciatrabajo' type="checkbox" <?php echo $declaracion_jurada; ?>>
 																	</span>
 																</div> 
 																Fotocopia Declaración Jurada
@@ -239,8 +265,8 @@
 
 															<label>
 																<div class="checker {{$disabled}}">
-																	<span class="<?php if ($docente->docentelegajo->seguro) echo 'checked'; ?>">
-																		<input name="seguro" id='seguro' type="checkbox" <?php if ($alumno->docentelegajo->seguro) echo 'CHECKED'; ?>>
+																	<span class="<?php echo $seguro; ?>">
+																		<input name="seguro" id='seguro' type="checkbox" <?php echo $seguro; ?>>
 																	</span>
 																</div> 
 																Seguro
@@ -248,8 +274,8 @@
 
 															<label>
 																<div class="checker {{$disabled}}">
-																	<span class="<?php if ($alumno->docentelegajo->otros) echo 'checked'; ?>">
-																		<input name="otros" id='otros' type="checkbox" <?php if ($alumno->docentelegajo->otros) echo 'CHECKED'; ?>>
+																	<span class="<?php echo $otros; ?>">
+																		<input name="otros" id='otros' type="checkbox" <?php echo $otros; ?>>
 																	</span>
 																</div> 
 																Otros
@@ -258,11 +284,11 @@
 														</div>
 													</div>
 
-													<div class="col-md-10" id="fecha" style="<?php if ($alumno->docentelegajo->seguro) {echo 'display: block';} else {echo 'display: none';} ?>">
+													<div class="col-md-10" id="fecha" style="<?php if ($seguro = 'CHECKED') {echo 'display: block';} else {echo 'display: none';} ?>">
 														<div class="checkbox-list">
 															<label class="col-md-8 col-sm-4 control-label">Fecha Vencimiento Seguro:</label>
 													 		<div class="input-icon col-md-3 col-sm-4">
-																<input type="date" name="fechaseguro" id="fechaseguro" placeholder="" class="form-control" value="<?php if ($alumno->docentelegajo->fechavencimientoseguro) echo $alumno->docentelegajo->fechavencimientoseguro; ?>">
+																<input type="date" name="fechaseguro" id="fechaseguro" placeholder="" class="form-control" value="<?php $fechavencimientoseguro; ?>">
 															</div><a class="btn blue-madison" id='btnAgregar'><i class="fa fa-plus"></i></a>
 														</div>
 													</div>
@@ -272,8 +298,8 @@
 
 									{{ Form::open(array('url'=>'docentes/guardardocumento', 'class'=>'form-horizontal form-row-seperated', 'id'=>'FormDocumentos', 'enctype'=>'multipart/form-data'))}}
 
-									    <input type ='hidden' name='txtAlumnoLegajoId' value='{{$alumno->docentelegajo->id}}'>
-									    <input type ='hidden' name='txtAlumnoDocumentoId' value='{{$alumno->id}}'>
+									    <input type ='hidden' name='txtAlumnoLegajoId' value='{{$docentelegajo_id}}'>
+									    <input type ='hidden' name='txtAlumnoDocumentoId' value='{{$docente->id}}'>
 												<div class="form-group <?php if ($errors->has('tipo_documento')) echo 'has-error' ?>">
 													<label for="tipodocumento" class="col-md-2 col-sm-3 control-label">Documentaci&oacute;n:</label>
 													<div class="col-md-4 col-sm-6">
@@ -320,7 +346,7 @@
 															</th>
 														</tr>
 														</thead>
-														<tbody>2786.59
+														<tbody>
 														<?php $i = 0;
 														if (count($docente_legajo) > 0) { ?>
 															@foreach ($docente_legajo->docenteslegajosdocumentos as $documento)
@@ -390,7 +416,7 @@
 	<div class="modal fade" id="modalEliminaDoc" tabindex="-3" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		{{ Form::open(array('url' => 'docentes/borrardocumento')) }}
 			<input id="idDocumentoHidden" name='idDocumentoHidden' type="hidden" value="">
-			<input type ='hidden' name='txtAlumnoDocumentoId' value='{{$alumno->id}}'>
+			<input type ='hidden' name='txtAlumnoDocumentoId' value='{{$docente->id}}'>
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -418,7 +444,7 @@
 	<div class="modal fade" id="modalEditarDoc" tabindex="-4" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		{{ Form::open(array('url' => 'docentes/editardocumento', 'class' => 'form-horizontal form-row-seperated')) }}
 			<input id="idDocumentoHiddenModi" name='idDocumentoHiddenModi' type="hidden" value="">
-			<input id="txtAlumnoDocumentoModiId" name='txtAlumnoDocumentoModiId' type="hidden" value="{{$alumno->id}}">
+			<input id="txtAlumnoDocumentoModiId" name='txtAlumnoDocumentoModiId' type="hidden" value="{{$docente->id}}">
 			
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -556,11 +582,11 @@ $('#certificadobuenasalud').change(function(){
 <?php } ?>
 
 <?php if ($disabled!='disabled'){ ?>
-$('#fotocopiacertificadovacunacion').change(function(){
+$('#cuil_cuit').change(function(){
     var checkeado = $(this).attr("checked");
     var valor = (checkeado) ? 1 : 0;
     (valor) ? $(this).parent().addClass('checked') : $(this).parent().removeClass('checked');
-    guardar_item_legajo(valor, 'VACUNACION');
+    guardar_item_legajo(valor, 'CUIL_CUIT');
 });
 <?php } ?>
 
@@ -569,7 +595,7 @@ $('#fichapreinscripcion').change(function(){
     var checkeado = $(this).attr("checked");
     var valor = (checkeado) ? 1 : 0;
     (valor) ? $(this).parent().addClass('checked') : $(this).parent().removeClass('checked');
-    guardar_item_legajo(valor, 'FICHA_PREINSCRIPCION');
+    guardar_item_legajo(valor, 'CARGOS_ACTIVIDADES');
 });
 <?php } ?>
 
@@ -587,7 +613,7 @@ $('#constanciatitulotramite').change(function(){
     var checkeado = $(this).attr("checked");
     var valor = (checkeado) ? 1 : 0;
     (valor) ? $(this).parent().addClass('checked') : $(this).parent().removeClass('checked');
-    guardar_item_legajo(valor, 'TITULO_TRAMITE');
+    guardar_item_legajo(valor, 'TITULO_PROFESIONAL');
 });
 <?php } ?>
 
@@ -596,7 +622,7 @@ $('#constanciatrabajo').change(function(){
     var checkeado = $(this).attr("checked");
     var valor = (checkeado) ? 1 : 0;
     (valor) ? $(this).parent().addClass('checked') : $(this).parent().removeClass('checked');
-    guardar_item_legajo(valor, 'CONSTANCIA_TRABAJO');
+    guardar_item_legajo(valor, 'DECLARACION_JURADA');
 });
 <?php } ?>
 
@@ -628,7 +654,7 @@ function guardar_item_legajo(valor, campo) {
 	$.ajax({
 	  url: "{{url('docentes/guardaritemlegajo')}}",
 	  data:{
-	      'legajoId': <?php echo $alumno->alumnolegajo->id; ?>,
+	      'legajoId': <?php echo $docentelegajo_id; ?>,
 	      'valor': valor,
 	      'campo': campo
 	  },
