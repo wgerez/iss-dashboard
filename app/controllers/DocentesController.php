@@ -387,6 +387,14 @@ class DocentesController extends BaseController {
                 });
                 $imagen->save(self::IMG_PATH . $filename);
             }
+
+            // se crea el legajo
+            $legajo = new DocenteLegajo;
+                $legajo->docente_id    = $docente->id;
+                $legajo->usuario_alta = Auth::user()->usuario;
+                $legajo->fecha_alta   = date('Y-m-d');
+            $legajo->save();
+
             //txtIdDocenteHidden
 
             Session::flash('message', 'DOCENTE CREADO CON ÉXITO!');
@@ -414,14 +422,14 @@ class DocentesController extends BaseController {
         }
 
         return View::make('legajos.docente')
-            ->with('alumno', $docente)
+            ->with('docente', $docente)
             ->with('docente_legajo', $docente_legajo)
             ->with('menu', ModulosHelper::MENU_GESTION_ACADEMICA)
-            ->with('submenu', ModulosHelper::SUBMENU_ALUMNOS)
-            ->with('leer', Session::get('ALUMNO_LEER'))
-            ->with('editar', Session::get('ALUMNO_EDITAR'))
-            ->with('imprimir', Session::get('ALUMNO_IMPRIMIR'))
-            ->with('eliminar', Session::get('ALUMNO_ELIMINAR'));
+          ->with('submenu', ModulosHelper::SUBMENU_DOCENTES)
+          ->with('leer', Session::get('DOCENTE_LEER'))
+          ->with('editar', Session::get('DOCENTE_EDITAR'))
+          ->with('imprimir', Session::get('DOCENTE_IMPRIMIR'))
+          ->with('eliminar', Session::get('DOCENTE_ELIMINAR'));
     }
 
     public function postBorrar()

@@ -25,7 +25,23 @@
 	$readonly = (!$editar) ? 'readonly' : '';
 	$imprimir = (!$imprimir) ? 'disabled' : '';
 	$eliminar = (!$eliminar) ? 'disabled' : '';
+
+	$dni = '';
+	$foto = '';
+
+	if (!$docente->docentelegajo == null) {
+		if ($docente->docentelegajo->dni) $dni = 'CHECKED';
+		
+		if ($docente->docentelegajo->foto) $foto = 'CHECKED';
+
+		if ($docente->docentelegajo->partidanacimiento) $partidanacimiento = 'CHECKED';
+
+		if ($docente->docentelegajo->certificadobuenasalud) $certificadobuenasalud = 'CHECKED';
+
+		if ($docente->docentelegajo->cuil_cuit) $cuil_cuit = 'checked';
+	}
 ?>
+
 @section('content')
 	<!-- COMIENZO CONTENIDO -->
 	<div class="page-content-wrapper">
@@ -106,7 +122,7 @@
 								<div class="tabbable-custom">
 									<ul class="nav nav-tabs">
 										<li>
-											<a href="{{url('docentes/editar')}}/{{$alumno->id}}">
+											<a href="{{url('docentes/editar')}}/{{$docente->id}}">
 											Datos Personales </a>
 										</li>
 										<li class="active">
@@ -114,7 +130,7 @@
 											Legajo </a>
 										</li>
 										<!--li>
-											<a href="{{url('docentes/familia')}}/{{$alumno->id}}">
+											<a href="{{url('docentes/familia')}}/{{$docente->id}}">
 											Familia </a>
 										</li-->
 									</ul>
@@ -123,11 +139,11 @@
 											<div class="form-body">
 												<div class="form-group">
 													<div class="col-md-4">
-														<h4 class="text-info">Legajo: {{$alumno->nrolegajo}}</h4>
+														<h4 class="text-info">Legajo: {{$docente->nrolegajo}}</h4>
 													</div>
 													<div class="col-md-6">
 														<h4 class="text-info">
-															{{$alumno->persona->apellido}}, {{$alumno->persona->nombre}}
+															{{$docente->persona->apellido}}, {{$docente->persona->nombre}}
 														</h4>
 													</div>													
 												</div>
@@ -136,17 +152,18 @@
 														<div class="checkbox-list">
 															<label>
 																<div class="checker {{$disabled}}">
-																	<span class="<?php if ($alumno->alumnolegajo->dni) echo 'checked'; ?>">
-																		<input name="fotocopiadni" id='fotocopiadni' type="checkbox" <?php if ($alumno->alumnolegajo->dni) echo 'CHECKED'; ?>
+																	<span class="<?php echo $dni; ?>">
+																		<input name="fotocopiadni" id='fotocopiadni' type="checkbox" <?php echo $dni; ?>
 																	</span>
 																</div> 
 																Fotocopia DNI
 															</label>
-
+<?php highlight_string(var_export($docente,true));
+        										exit; ?>
 															<label>
 																<div class="checker {{$disabled}}">
-																	<span class="<?php if ($alumno->alumnolegajo->foto) echo 'checked'; ?>">
-																		<input name="foto" id='foto' type="checkbox" <?php if ($alumno->alumnolegajo->foto) echo 'CHECKED'; ?>
+																	<span class="<?php echo $foto; ?>">
+																		<input name="foto" id='foto' type="checkbox" <?php echo $foto; ?>
 																	</span>
 																</div> 
 																3 Foto 4x4
@@ -154,8 +171,17 @@
 
 															<label>
 																<div class="checker {{$disabled}}">
-																	<span class="<?php if ($alumno->alumnolegajo->partidanacimiento) echo 'checked'; ?>">
-																		<input name="fotocopiapartida" id='fotocopiapartida' type="checkbox" <?php if ($alumno->alumnolegajo->partidanacimiento) echo 'CHECKED'; ?>>
+																	<span class="<?php echo $cuil_cuit; ?>">
+																		<input name="fotocopiacertificadovacunacion" id='fotocopiacertificadovacunacion' type="checkbox" <?php echo $cuil_cuit; ?>>
+																	</span>
+																</div> 
+																CUIL/CUIT
+															</label>
+
+															<label>
+																<div class="checker {{$disabled}}">
+																	<span class="<?php echo $partidanacimiento; ?>">
+																		<input name="fotocopiapartida" id='fotocopiapartida' type="checkbox" <?php echo $partidanacimiento; ?>>
 																	</span>
 																</div> 
 																Fotocopia partida de nacimiento
@@ -163,21 +189,13 @@
 
 															<label>
 																<div class="checker {{$disabled}}">
-																	<span class="<?php if ($alumno->alumnolegajo->certificadobuenasalud) echo 'checked'; ?>">
-																		<input name="certificadobuenasalud" id='certificadobuenasalud' type="checkbox" <?php if ($alumno->alumnolegajo->certificadobuenasalud) echo 'CHECKED'; ?>>
+																	<span class="<?php echo $certificadobuenasalud; ?>">
+																		<input name="certificadobuenasalud" id='certificadobuenasalud' type="checkbox" <?php echo $certificadobuenasalud; ?>>
 																	</span>
 																</div> 
-																Ficha Médica
+																Fotocopia Ficha Médica
 															</label>
 
-															<label>
-																<div class="checker {{$disabled}}">
-																	<span class="<?php if ($alumno->alumnolegajo->certificadovacinacion) echo 'checked'; ?>">
-																		<input name="fotocopiacertificadovacunacion" id='fotocopiacertificadovacunacion' type="checkbox" <?php if ($alumno->alumnolegajo->certificadovacinacion) echo 'CHECKED'; ?>>
-																	</span>
-																</div> 
-																Fotocopia certificado de vacunación
-															</label>
 														</div>
 													</div>
 													<div class="col-md-6">
@@ -185,17 +203,8 @@
 
 															<label>
 																<div class="checker {{$disabled}}">
-																	<span class="<?php if ($alumno->alumnolegajo->fichapreinscripcion) echo 'checked'; ?>">
-																		<input name="fichapreinscripcion" id='fichapreinscripcion' type="checkbox" <?php if ($alumno->alumnolegajo->fichapreinscripcion) echo 'CHECKED'; ?>>
-																	</span>
-																</div> 
-																Ficha Preinscripción
-															</label>
-
-															<label>
-																<div class="checker {{$disabled}}">
-																	<span class="<?php if ($alumno->alumnolegajo->titulosecundario) echo 'checked'; ?>">
-																		<input name="fotocopiatitulosecundario" id='fotocopiatitulosecundario' type="checkbox" <?php if ($alumno->alumnolegajo->titulosecundario) echo 'CHECKED'; ?>>
+																	<span class="<?php if ($docente->docentelegajo->titulosecundario) echo 'checked'; ?>">
+																		<input name="fotocopiatitulosecundario" id='fotocopiatitulosecundario' type="checkbox" <?php if ($docente->docentelegajo->titulosecundario) echo 'CHECKED'; ?>>
 																	</span>
 																</div> 
 																Fotocopia de título secundario
@@ -203,26 +212,35 @@
 
 															<label>
 																<div class="checker {{$disabled}}">
-																	<span class="<?php if ($alumno->alumnolegajo->constitulotramite) echo 'checked'; ?>">
-																		<input name="constanciatitulotramite" id='constanciatitulotramite' type="checkbox" <?php if ($alumno->alumnolegajo->constitulotramite) echo 'CHECKED'; ?>>
+																	<span class="<?php if ($docente->docentelegajo->constitulotramite) echo 'checked'; ?>">
+																		<input name="constanciatitulotramite" id='constanciatitulotramite' type="checkbox" <?php if ($docente->docentelegajo->constitulotramite) echo 'CHECKED'; ?>>
 																	</span>
 																</div> 
-																Constancia de Título en trámite
+																Constancia de Título Profesional
 															</label>
 
 															<label>
 																<div class="checker {{$disabled}}">
-																	<span class="<?php if ($alumno->alumnolegajo->constanciatrabajo) echo 'checked'; ?>">
-																		<input name="constanciatrabajo" id='constanciatrabajo' type="checkbox" <?php if ($alumno->alumnolegajo->constanciatrabajo) echo 'CHECKED'; ?>>
+																	<span class="<?php if ($docente->docentelegajo->fichapreinscripcion) echo 'checked'; ?>">
+																		<input name="fichapreinscripcion" id='fichapreinscripcion' type="checkbox" <?php if ($docente->docentelegajo->fichapreinscripcion) echo 'CHECKED'; ?>>
 																	</span>
 																</div> 
-																Constancia de trabajo
+																Ficha Cargos y Actividades
 															</label>
 
 															<label>
 																<div class="checker {{$disabled}}">
-																	<span class="<?php if ($alumno->alumnolegajo->seguro) echo 'checked'; ?>">
-																		<input name="seguro" id='seguro' type="checkbox" <?php if ($alumno->alumnolegajo->seguro) echo 'CHECKED'; ?>>
+																	<span class="<?php if ($docente->docentelegajo->constanciatrabajo) echo 'checked'; ?>">
+																		<input name="constanciatrabajo" id='constanciatrabajo' type="checkbox" <?php if ($docente->docentelegajo->constanciatrabajo) echo 'CHECKED'; ?>>
+																	</span>
+																</div> 
+																Fotocopia Declaración Jurada
+															</label>
+
+															<label>
+																<div class="checker {{$disabled}}">
+																	<span class="<?php if ($docente->docentelegajo->seguro) echo 'checked'; ?>">
+																		<input name="seguro" id='seguro' type="checkbox" <?php if ($alumno->docentelegajo->seguro) echo 'CHECKED'; ?>>
 																	</span>
 																</div> 
 																Seguro
@@ -230,8 +248,8 @@
 
 															<label>
 																<div class="checker {{$disabled}}">
-																	<span class="<?php if ($alumno->alumnolegajo->otros) echo 'checked'; ?>">
-																		<input name="otros" id='otros' type="checkbox" <?php if ($alumno->alumnolegajo->otros) echo 'CHECKED'; ?>>
+																	<span class="<?php if ($alumno->docentelegajo->otros) echo 'checked'; ?>">
+																		<input name="otros" id='otros' type="checkbox" <?php if ($alumno->docentelegajo->otros) echo 'CHECKED'; ?>>
 																	</span>
 																</div> 
 																Otros
@@ -240,21 +258,21 @@
 														</div>
 													</div>
 
-													<div class="col-md-10" id="fecha" style="<?php if ($alumno->alumnolegajo->seguro) {echo 'display: block';} else {echo 'display: none';} ?>">
+													<div class="col-md-10" id="fecha" style="<?php if ($alumno->docentelegajo->seguro) {echo 'display: block';} else {echo 'display: none';} ?>">
 														<div class="checkbox-list">
 															<label class="col-md-8 col-sm-4 control-label">Fecha Vencimiento Seguro:</label>
 													 		<div class="input-icon col-md-3 col-sm-4">
-																<input type="date" name="fechaseguro" id="fechaseguro" placeholder="" class="form-control" value="<?php if ($alumno->alumnolegajo->fechavencimientoseguro) echo $alumno->alumnolegajo->fechavencimientoseguro; ?>">
+																<input type="date" name="fechaseguro" id="fechaseguro" placeholder="" class="form-control" value="<?php if ($alumno->docentelegajo->fechavencimientoseguro) echo $alumno->docentelegajo->fechavencimientoseguro; ?>">
 															</div><a class="btn blue-madison" id='btnAgregar'><i class="fa fa-plus"></i></a>
 														</div>
 													</div>
 												</div>
-
+											
 									{{ Form::close()}}
 
 									{{ Form::open(array('url'=>'docentes/guardardocumento', 'class'=>'form-horizontal form-row-seperated', 'id'=>'FormDocumentos', 'enctype'=>'multipart/form-data'))}}
 
-									    <input type ='hidden' name='txtAlumnoLegajoId' value='{{$alumno->alumnolegajo->id}}'>
+									    <input type ='hidden' name='txtAlumnoLegajoId' value='{{$alumno->docentelegajo->id}}'>
 									    <input type ='hidden' name='txtAlumnoDocumentoId' value='{{$alumno->id}}'>
 												<div class="form-group <?php if ($errors->has('tipo_documento')) echo 'has-error' ?>">
 													<label for="tipodocumento" class="col-md-2 col-sm-3 control-label">Documentaci&oacute;n:</label>
@@ -303,7 +321,8 @@
 														</tr>
 														</thead>
 														<tbody>2786.59
-															<?php $i = 0; ?>
+														<?php $i = 0;
+														if (count($docente_legajo) > 0) { ?>
 															@foreach ($docente_legajo->docenteslegajosdocumentos as $documento)
 																<tr id="colum_{{$i}}">
 																	<td class="vistaprevia" style="cursor:pointer">
@@ -326,7 +345,8 @@
 																$i++;
 																$imagen = $documento->documento;
 																?>
-															@endforeach																
+															@endforeach	
+														<?php } ?>															
 														</tbody>
 													</table>													
 												</div>
