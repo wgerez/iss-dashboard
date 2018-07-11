@@ -17,7 +17,7 @@ class AlumnosController extends BaseController {
     const IMG_PERFIL_WIDTH = 400;
     const IMG_WIDTH = 800;
 
-//2839
+
 	/**
 	 * Display a listing of the resource.
 	 *
