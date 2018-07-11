@@ -88,6 +88,8 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 					<!-- COMIENZO DE LA TABLA-->
 					{{ Form::open(array('url'=>'mesaexamenes/guardar', 'class'=>'form-horizontal form-row-seperated', 'id'=>'Frmguardar', 'name'=>'Frmguardar'))}}
 					
+					<input type='hidden' name='txtmesaId' value='0'>
+
 					<div class="portlet">
 						<div class="portlet-title">
 							<!--<div class="caption">
@@ -543,8 +545,6 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 
 
 	$('#docentes').change(function() {
-	
-		
 		var organizacion_id = $('#organizacion').val();
 		var carrera_id = $('#carreras').val();
 		var materia_id = $('#materias').val();
@@ -585,25 +585,21 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 			console.log(data);
 		});
 
-
 		//var ultimo = $('#docentes').closest('select').find('option').filter(':selected:last').val();
 
-        temp = $('#docentes').val();
+        var temp = $('#docentes').val();
 
-
-		if (temp.length == 4) {
-			$('#docentes').multiSelect('deselect', ultimo);
+        if (temp.length !== null) {
+			if (temp.length == 4) {
+				$('#docentes').multiSelect('deselect', ultimo);
+			}
 		}
     	
-
     	$('#docentes').multiSelect('refresh');
-	
 	});
 
 
-
-	$('#guardar').on('click', function(e){
-		
+	$('#guardar').on('click', function(e) {
 		var organizacion_id = $('#organizacion').val();
 		
 		if (organizacion_id == '0'){
@@ -628,7 +624,6 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 			return false;
 		}
 
-
 		var ciclo_id = $('#ciclos').val();
 
 		if (ciclo_id == '0' || ciclo_id == null){
@@ -644,7 +639,6 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 			$('#Mensajes').modal('show');
 			return false;
 		}
-
 
 		var primerfecha = $('#fechaprimerllamado').val();
 		var segundafecha = $('#fechasegundollamado').val();
@@ -680,8 +674,6 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 			}
 		}
 
-
-
 		temp = $('#docentes').val();
 
         if ($('#docentes').val() == null) {
@@ -696,15 +688,10 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 			return false;
     	}
 
+    	$('#guardar').attr('disabled', 'disabled');
 
-
+    	$('#Frmguardar').submit();
 	});
-
-
-
-
-
-
 
 @stop
 

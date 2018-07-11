@@ -2,20 +2,29 @@
 
 @section('cuerpo')
 <p align="right">Fecha de Impresión: {{date('d/m/Y')}} - {{Auth::user()->usuario}}</p>
-  <center><h3>Listado de Examén Final</h3></center>
+  <center><h3>Listado de Examen Final</h3></center>
   <p><strong>Carrera: {{$carreras}}</strong></p>
 <?php
 if (!$nrodocumento == '') { ?>
   <p><strong>Alumno: {{$apeynom}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DNI: {{$nrodocumento}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Domicilio: {{$domicilio}}</strong></p>
-<?php } ?>
+<?php }
+if (isset($materias)) {
+  foreach ($materias as $materia) {
+    $docentes = $materia['docentes'];
+  }
+             
+}
+?>
   
 <p><strong>Cohorte: {{$cohorte}}</strong></p>
+<p><strong>Docentes: {{$docentes}}</strong></p>
 
   <table class="collapse">
     <thead>
       <tr>
         <?php if ($nrodocumento == '') { ?>
           <td><center><strong>Alumno</strong></center></td>
+          <td><center><strong>DNI</strong></center></td>
         <?php } ?>
         <td><center><strong>Unidad Curricular</strong></center></td>
         <td><center><strong>Nota</strong></center></td>
@@ -38,7 +47,8 @@ if (!$nrodocumento == '') { ?>
               <?php $calif_final_num = $materia['calif_final_num']; ?>
               <tr>
                 <?php if ($nrodocumento == '') { ?>
-                  <td>{{$materia['alumno']}}</td>
+                  <td><center>{{$materia['alumno']}}</center></td>
+                  <td><center>{{$materia['dni']}}</center></td>
                 <?php } ?>
                 <td><center>{{$materia['nombremateria']}}</center></td>
                 <td><center>{{$materia['calif_final_num']}} ({{ $nota[$calif_final_num] }})</center></td>

@@ -175,6 +175,8 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 										<center>
 											<a title="Datos personales" href="editar/{{$docente->id}}" class="btn default btn-xs purple">
 											<i class="fa fa-edit"></i></a>
+											<a title="Legajo" href="legajo/{{$docente->id}}" class="btn btn-xs blue-hoki">
+											<i class="fa fa-files-o"></i></a>
 											<a title="Eliminar" href="#" {{ $disabled }} data-id="{{$docente->id}}" data-nombre="{{$docente->persona->apellido}}, {{$docente->persona->nombre}}" class="btn default btn-xs red btnEliminarDocente">
 											<i class="fa fa-trash-o"></i></a>
 										</center>

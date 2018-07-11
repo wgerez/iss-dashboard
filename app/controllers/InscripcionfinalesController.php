@@ -16,21 +16,6 @@ class InscripcionFinalesController extends BaseController
 
     public function getIndex()
     {
-        /*$organizaciones = Organizacion::lists('nombre', 'id');
-
-        return View::make('inscripcionfinal.gestion')->with([
-            'arrOrganizaciones' => $organizaciones,
-            'carreras'          => Carrera::lists('carrera', 'id'),
-            'planes'            => PlanEstudio::lists('codigoplan', 'id'),
-            'menu'              => ModulosHelper::MENU_GESTION_ACADEMICA,
-            'submenu'           => ModulosHelper::SUBMENU_INSCRIPCIONES,
-            'leer'              => Session::get('INSCRIPCION_LEER'),
-            'editar'            => Session::get('INSCRIPCION_EDITAR'),
-            'imprimir'          => Session::get('INSCRIPCION_IMPRIMIR'),
-            'eliminar'          => Session::get('INSCRIPCION_ELIMINAR'),
-            'finales'           => InscripcionFinal::all()->toArray()
-        ]);*/
-
         $organizaciones = Organizacion::lists('nombre', 'id');
 
         $turnos = TurnoExamen::all();
@@ -340,33 +325,40 @@ class InscripcionFinalesController extends BaseController
         $mesas = [];
         $carr_id = Input::get('id');
         $plan_id = Input::get('plan_id');
-        $ciclo = CicloLectivo::where('descripcion', '=', Input::get('ciclo_id'))->first();
+        //$ciclo = CicloLectivo::where('descripcion', '=', Input::get('ciclo_id'))->first();
         $turno_id = Input::get('turno_id');
         $alumno_id = Input::get('alumno_id');
         $llamado = Input::get('llamado');
-        $estado = 0;
+        $estado = 1;
+        $matriculas = 0;
+        $cuota = 0;
+        $derecho = 0;
+        //$ciclo = PlanEstudio::find($plan_id)->ciclolectivo_id;
+        $ciclo = CicloLectivo::whereRaw('organizacion_id = 1 AND activo=1')->first()->id;
 
         // validar que tenga pagada la matricula del siglo lectivo actual
         $matricula = Matricula::where('carrera_id', '=', $carr_id)->where('ciclolectivo_id', '=', $ciclo)->first();
 
         if ($matricula) {
-            $pagomatricula = Detallematriculapago::where('alumno_id', '=', $alumno_id)->where('matriculo_id', '=', $matricula->id)->where('mescuota', '=', 0)->where('totalparcial', '=', 0)->first();
+            $pagomatricula = DetalleMatriculaPago::where('alumno_id', '=', $alumno_id)->where('matricula_id', '=', $matricula->id)->where('mescuota', '=', 0)->where('totalparcial', '=', 0)->first();
 
             if ($pagomatricula) {
                 $estado = 0;
             } else {
                 $estado = 1;
+                $matriculas = 1;
             }
 
-            $pagocuota = Detallecuotapago::where('alumno_id', '=', $alumno_id)->where('matriculo_id', '=', $matricula->id)->where('mescuota', '=',  (int)  date('m'))->first();
+            $pagocuota = DetalleCuotaPago::where('alumno_id', '=', $alumno_id)->where('matricula_id', '=', $matricula->id)->where('mescuota', '=',  (int)  date('m'))->first();
 
             if ($pagocuota) {
                 $estado = 0;
             } else {
                 $estado = 2;
+                $cuota = 1;
             }
         }
-        
+
         // derecho de examen
         $derechos = CajaChica::where('alumno_id', '=', $alumno_id)->where('carrera_id', '=', $carr_id)->where('concepto_id', '=', 1)->get();
 
@@ -375,40 +367,55 @@ class InscripcionFinalesController extends BaseController
                 $estado = 0;
             } else {
                 $estado = 3;
+                $derecho = 1;
             }
         }
         //
 
         if ($estado !== 0) {
-            if ($estado == 1) {
-                $mesas [] = 2;//['id' => 2]; // falta matricula
+            /*if ($estado == 1) {
+                $mesas [] = 2;//['id' => 2]; // falta matriculas
             } else if ($estado == 2) {
                 $mesas [] = 3;//['id' => 3]; // falta falta cuota del mes
             } else if ($estado == 3) {
                 $mesas [] = 4;//['id' => 4]; // falta falta derecho de examen
+            }*/
+
+            if ($matriculas == 1) {
+                $mesas[] = 2;//['id' => 2]; // falta matriculas
+            } else if ($cuota == 1) {
+                $mesas[] = 3;//['id' => 3]; // falta falta cuota del mes
+            } else if ($derecho == 1) {
+                $mesas[] = 4;//['id' => 4]; // falta falta derecho de examen
             }
         } else {
-            $temp = MesaExamen::where('carrera_id', '=', $carr_id)->where('ciclolectivo_id', '=', $ciclo->id)->where('turnoexamen_id', '=', $turno_id)->get();
+            $temp = MesaExamen::where('carrera_id', '=', $carr_id)->where('ciclolectivo_id', '=', $ciclo)->where('turnoexamen_id', '=', $turno_id)->get();
 
             if ($temp) {
                 foreach ($temp as $tp) {
                     $materia = Materia::where('id', '=', $tp->materia_id)->where('planestudio_id','=', $plan_id)->first();
 
                     if ($materia) {
-                        $regular = Regularidades::where('carrera_id', '=', $carr_id)->where('planestudio_id', '=', $plan_id)->where('materia_id', '=', $materia->id)->where('alumno_id','=', $alumno_id)->where('regularizo', '=', 1)->first();
+                        $regular = Regularidades::where('carrera_id', '=', $carr_id)->where('planestudio_id', '=', $plan_id)->where('materia_id', '=', $tp->materia_id)->where('alumno_id','=', $alumno_id)->where('regularizo', '=', 1)->first();
                         
                         if ($regular) {
                             //verificar que no exista el re
                             $existe = InscripcionFinal::where('alumno_id', '=', $alumno_id)->where('mesaexamen_id', '=', $tp->id)->first();
-                            if ($existe == null) {
-                                $mesas [] = ['id' => $tp->id, 'materia' => $materia->nombremateria];        
+                            if (!$existe) {
+                                $examenfinal = ExamenFinal::whereRaw('alumno_id ='.$alumno_id.' AND carrera_id ='.$carr_id.' AND planestudio_id ='.$plan_id.' AND materia_id ='.$tp->materia_id)->get();
+
+                                foreach ($examenfinal as $value) {
+                                    if ($value->calif_final_num < 5 || $value->asistencia == 1) {
+                                        $mesas[] = ['id' => $tp->id, 'materia' => $materia->nombremateria];
+                                    }
+                                }
                             }
                         }
                     }
                 }
             } else {
                 unset($mesas);
-                $mesas [] = 1;//['id' => 1]; // 1 = no se encontraron mesas con estos parametros
+                $mesas[] = 1;//['id' => 1]; // 1 = no se encontraron mesas con estos parametros
             }
         }
         
@@ -479,6 +486,8 @@ class InscripcionFinalesController extends BaseController
     public function postAnular()
     {
         $id = Input::get('idAnularHidden');
+        $cbofil = Input::get('cbofil');
+        $txtfil = Input::get('txtfil');
 
         $examen = ExamenFinal::where('inscripcionfinal_id', '=', $id )->first();
 
@@ -503,12 +512,135 @@ class InscripcionFinalesController extends BaseController
         $inscripcion->save();
 
         //MesaExamen::where('id', '=', $id)->delete();
+        if ($txtfil == '') {
+            $txtfil = 0;
+        }
+
+        $idaseguir = $id.'-'.$cbofil.'-'.$txtfil;
 
         Session::flash('message', 'LA INCRIPCION AL EXAMEN HA SIDO ANULADA CORRECTAMENTE.');
         Session::flash('message_type', self::OPERACION_EXITOSA);
-        return Redirect::to('inscripcionfinal');
+        return Redirect::to('inscripcionfinal/anulado/'.$idaseguir);
     }
 
+    public function getAnulado($idaseguir)
+    {  
+        $porcion = explode("-", $idaseguir);
+
+        $id = $porcion[0];
+        $filtro = $porcion[1];
+        $dni = $porcion[2];
+
+        if ($dni == 0) {
+            $dni = '';
+        }
+
+        $inscripcion = InscripcionFinal::find($id);
+
+        $mesaexamen = MesaExamen::find($inscripcion->mesaexamen_id);
+
+        $planID = Materia::find($mesaexamen->materia_id)->planestudio_id;
+
+        $organizaciones = Organizacion::lists('nombre', 'id');
+        $carreras = Carrera::where('organizacion_id', '=', 1)->get();
+        $materias = Materia::where('carrera_id', '=', $mesaexamen->carrera_id)->where('planestudio_id', '=', $planID)->get();
+        $ciclos = CicloLectivo::all();
+        $turnoexamen = TurnoExamen::find($mesaexamen->turnoexamen_id);
+
+        if ($inscripcion->primerllamado == 1) {
+            $llamado = 1;
+        } else {
+            $llamado = 0;
+        }
+        //////////////////////
+        $mesa = MesaExamen::where('carrera_id', '=', $mesaexamen->carrera_id)->where('ciclolectivo_id', '=', $mesaexamen->ciclolectivo_id)->where('turnoexamen_id', '=', $mesaexamen->turnoexamen_id)->where('materia_id', '=', $mesaexamen->materia_id)->first();
+
+        if ($mesa) {
+            $mesa->fechaprimerllamado = FechaHelper::getFechaImpresion($mesa->fechaprimerllamado);
+            $mesa->fechasegundollamado = FechaHelper::getFechaImpresion($mesa->fechasegundollamado);
+
+            $asignard = AsignarDocente::where('materia_id', '=', $mesa->materia_id)->first();
+
+            if ($asignard) {
+                $tempdocente = Docente::where('id', '=', $asignard->docentetitular_id)->first();
+
+                if ($tempdocente) {
+                    $docente =  $tempdocente->persona->apellido .' ' . $tempdocente->persona->nombre;
+                } else {
+                    $docente = '';
+                }
+            } else {
+                $docente = '';
+            }
+            
+            if ($filtro == 1) { //filtro todos
+                if ($llamado == 1) {
+                    $inscripcionfinal = InscripcionFinal::where('mesaexamen_id', '=', $mesa->id)->where('primerllamado', '=', 1)->get();    
+
+                    if ($inscripcionfinal) {
+                        foreach ($inscripcionfinal as $temp) {
+                            $inscriptos [] = ['id' => $temp->id,'fecha' => $mesa->fechaprimerllamado, 'alumno' => $temp->alumno->persona->apellido .' ' . $temp->alumno->persona->nombre, 'plan' => $mesa->materia->planestudio->codigoplan, 'materia' => $mesa->materia->nombremateria, 'docentetitular' => $docente, 'anulado' => $temp->anulado];
+                        }
+                    }
+                } else {
+                    $inscripcionfinal = InscripcionFinal::where('mesaexamen_id', '=', $mesa->id)->where('segundollamado', '=', 1)->get();
+
+                    if ($inscripcionfinal) {
+                        foreach ($inscripcionfinal as $temp) {
+                            $inscriptos [] = ['id' => $temp->id,'fecha' => $mesa->fechasegundollamado, 'alumno' => $temp->alumno->persona->apellido .' ' . $temp->alumno->persona->nombre, 'plan' => $mesa->materia->planestudio->codigoplan, 'materia' => $mesa->materia->nombremateria, 'docentetitular' => $docente, 'anulado' => $temp->anulado];
+                        }
+                    }
+                }
+            } else { //filtro dni
+                if ($llamado == 1) {
+                    $inscripcionfinal = InscripcionFinal::where('mesaexamen_id', '=', $mesa->id)->where('primerllamado', '=', 1)->get();    
+
+                    if ($inscripcionfinal) {
+                        foreach ($inscripcionfinal as $temp) {
+
+                            if ($temp->alumno->persona->nrodocumento == $dni) {
+                                $inscriptos [] = ['id' => $temp->id,'fecha' => $mesa->fechaprimerllamado, 'alumno' => $temp->alumno->persona->apellido .' ' . $temp->alumno->persona->nombre, 'plan' => $mesa->materia->planestudio->codigoplan, 'materia' => $mesa->materia->nombremateria, 'docentetitular' => $docente, 'anulado' => $temp->anulado];
+                            }
+                        }
+                    }
+                } else {
+                    $inscripcionfinal = InscripcionFinal::where('mesaexamen_id', '=', $mesa->id)->where('segundollamado', '=', 1)->get();
+
+                    if ($inscripcionfinal) {
+                        foreach ($inscripcionfinal as $temp) {
+                            if ($temp->alumno->persona->nrodocumento == $dni) {
+                                $inscriptos [] = ['id' => $temp->id,'fecha' => $mesa->fechasegundollamado, 'alumno' => $temp->alumno->persona->apellido .' ' . $temp->alumno->persona->nombre, 'plan' => $mesa->materia->planestudio->codigoplan, 'materia' => $mesa->materia->nombremateria, 'docentetitular' => $docente, 'anulado' => $temp->anulado];
+                            }
+                        }
+                    }
+                }       
+            }
+        }
+        ////////////////////////
+        $turnos = TurnoExamen::all();
+
+        return View::make('inscripcionfinal.listado',[
+            'organizaciones'    => $organizaciones,
+            'organizacion_id'   => $mesaexamen->organizacion_id,
+            'carreras'          => $carreras,
+            'carr_id'           => $mesaexamen->carrera_id,
+            'materias'          => $materias,
+            'materia_id'        => $mesaexamen->materia_id,
+            'ciclos'            => $ciclos,
+            'ciclo_id'          => $mesaexamen->ciclolectivo_id,
+            'turnos'            => $turnos,
+            'turno_id'          => $mesaexamen->turnoexamen_id,
+            'llamado'           => $llamado,
+            'filtro'            => $filtro,
+            'dni'               => $dni,
+            'inscriptos'        => $inscriptos
+        ])->with('menu', ModulosHelper::MENU_GESTION_ACADEMICA)
+            ->with('submenu', ModulosHelper::SUBMENU_INSCRIPCIONES)
+            ->with('leer', Session::get('INSCRIPCION_LEER'))
+            ->with('editar', Session::get('INSCRIPCION_EDITAR'))
+            ->with('imprimir', Session::get('INSCRIPCION_IMPRIMIR'))
+            ->with('eliminar', Session::get('INSCRIPCION_ELIMINAR'));
+    }
 
     public function getImprimiracuse($id)
     {

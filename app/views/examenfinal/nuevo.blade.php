@@ -145,7 +145,7 @@ if (!isset($turnoexamen_id)) {
 
 								<div class="form-group">
 									<label class="col-md-2 col-sm-2 control-label" for="filtro">Plan Estudio:</label>
-									<div class="col-md-2 col-sm-3">
+									<div class="col-md-2 col-sm-2">
 										<select name="cboPlan" id="cboPlan" class="table-group-action-input form-control">
 											<option value="0">Seleccione</option>
 											@if (isset($planes))
@@ -156,8 +156,21 @@ if (!isset($turnoexamen_id)) {
 										</select>
 									</div>
 
-									<label class="col-md-2 col-sm-2 control-label" for="filtro">Turno Exámen:</label>
-									<div class="col-md-2 col-sm-3">
+									<label class="col-md-2 col-sm-2 control-label">Ciclo Lectivo:</label>
+									<div class="col-md-2 col-sm-2">
+										<select class="table-group-action-input form-control" name="cboCiclos" id="cboCiclos">
+											@if (isset($ciclos))
+												@foreach ($ciclos as $ciclo)
+													<option value="{{$ciclo->id}}" <?php if ($ciclo->id == $ciclo_id) echo "selected"; ?>>{{$ciclo->descripcion}}</option>
+												@endforeach
+											@endif
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 col-sm-2 control-label" for="filtro">Turno Examen:</label>
+									<div class="col-md-2 col-sm-2">
 										<select name="cboTurnoExamen" id="cboTurnoExamen" class="table-group-action-input form-control">
 											<option value="0">Seleccione</option>
 											@if (isset($turnos))
@@ -242,8 +255,8 @@ if (!isset($turnoexamen_id)) {
 								</div>
 
 								<div class="form-group">
-									<label class="col-md-2 control-label <?php if ($errors->has('asistencia')) echo 'text-danger' ?>">Asistencia:</label>
-									<div class="col-md-1 <?php if ($errors->has('asistencia')) echo 'has-error' ?>">
+									<label class="col-md-1 control-label <?php if ($errors->has('asistencia')) echo 'text-danger' ?>">Asistencia:</label>
+									<div class="col-md-2 <?php if ($errors->has('asistencia')) echo 'has-error' ?>">
 										<select name="asistencia" id="asistencia" class="table-group-action-input form-control">
 												<option value="0">Presente</option>
 												<option value="1">Ausente</option>
@@ -272,7 +285,7 @@ if (!isset($turnoexamen_id)) {
 
 									<div class="@if ($errors->has('observaciones')) {{'has-error'}} @endif">
 										<label class="col-md-1 control-label">Observaciones: </label>
-										<div class="col-md-4 col-sm-6">
+										<div class="col-md-4 col-sm-4">
 											<textarea rows="5" name="observaciones" class="col-md-2 form-control" placeholder="Observaciones" 
 											value="{{ Input::old('observaciones') }}"><?php if (count($examenfinal) > 0) echo $examenfinal->observaciones; ?></textarea>
 											@if ($errors->has('observaciones'))
@@ -284,7 +297,7 @@ if (!isset($turnoexamen_id)) {
 
 								<div class="form-group">
 									<label class="col-md-2 control-label <?php if ($errors->has('cbofinalnumero')) echo 'text-danger' ?>">Calif. Final Número/Letra:</label>
-									<div class="col-md-1 <?php if ($errors->has('cbofinalnumero')) echo 'has-error' ?>">
+									<div class="col-md-2 <?php if ($errors->has('cbofinalnumero')) echo 'has-error' ?>">
 										<select name="cbofinalnumero" id="cbofinalnumero" class="table-group-action-input form-control">
 											<?php if (!$calif_final_num == '') { ?>
 												<option value="1" <?php if ($examenfinal->calif_final_num == 1) echo "selected"; ?>>1 (uno)</option>
@@ -426,6 +439,7 @@ if (!isset($turnoexamen_id)) {
 														</td>
 														<td>
 															<center>
+																<a title="Modificar" href="{{url('examenfinal/editar/' . $examenfin->id)}}" class="btn default btn-xs purple"><i class="fa fa-edit"></i></a>
 																<a href="#" data-id="{{ $examenfin->id }}" class="btn default btn-xs red btnEliminarMaterias"><i title="Eliminar" class="fa fa-trash-o"></i></a>
 															</center>
 														</td>
@@ -523,6 +537,7 @@ if (!isset($turnoexamen_id)) {
     	var carrera_id = $('#cboCarrera').val();
         var planID = $('#cboPlan').val();
         var cboTurnoExamen = $('#cboTurnoExamen').val();
+        var cboCiclos = $('#cboCiclos').val();
 
 		var url_destino = "";
 
@@ -555,32 +570,37 @@ if (!isset($turnoexamen_id)) {
 
 				$.ajax({
 				  url: "{{url('examenfinal/obtenerinscripcionexamen')}}",
-				  data:{'materia_id': materia_id, 'carrera_id': carrera_id, 'planID': planID, 'cboTurnoExamen': cboTurnoExamen, 'alumno_id': alumno_id},
+				  data:{'materia_id': materia_id, 'carrera_id': carrera_id, 'planID': planID, 'cboTurnoExamen': cboTurnoExamen, 'alumno_id': alumno_id, 'cboCiclos': cboCiclos},
 				  type: 'POST'
 				}).done(function(inscripto) {
 					console.log(inscripto);
 
-						if (inscripto == 0) {
-							$('#inscripto').val('');
-							$('#alumno_id').val('');
-							$('#nombreAlumno').text('');
-							$('#divDNI').html('<p class="form-control-static"></p>');
-							$('#divMensaje').html('<p class="form-control-static"><h4>' + 'El Alumno no esta inscripto en la mesa de examen!' + '</h4></p>');
-				    		$('#MensajeCantidad').modal('show');
-					    	return;
-						} else {
-							if (inscripto > 0) $('#inscripto').val(inscripto);
-
-							$.each(inscripto, function(key, value) {
-								$('#libro').val(value.libro);
-								$('#folio').val(value.folio);
-								$('#acta').val(value.acta);
-								$('#cbofinalnumero').val(value.calif_final_num);
-								$('#inscripto').val(value.inscripcionfinal_id);
-								$('#fechadesde').val(value.fecha_aprobacion);
-								$('#observaciones').val(value.observaciones);
-							});
+					if (inscripto == 0) {
+						$('#inscripto').val('');
+						$('#alumno_id').val('');
+						$('#nombreAlumno').text('');
+						$('#divDNI').html('<p class="form-control-static"></p>');
+						$('#divMensaje').html('<p class="form-control-static"><h4>' + 'El Alumno no esta inscripto en la mesa de examen!' + '</h4></p>');
+			    		$('#MensajeCantidad').modal('show');
+				    	return;
+					} else {
+						if (inscripto > 0) {
+							$('#inscripto').val(inscripto);
 						}
+
+						$('#divMensaje').html('<p class="form-control-static"><h4>' + 'El Alumno ya tiene referencias de examen!' + '</h4></p>');
+	    				$('#MensajeCantidad').modal('show');
+
+						/*$.each(inscripto, function(key, value) {
+							$('#libro').val(value.libro);
+							$('#folio').val(value.folio);
+							$('#acta').val(value.acta);
+							$('#cbofinalnumero').val(value.calif_final_num);
+							$('#inscripto').val(value.inscripcionfinal_id);
+							$('#fechadesde').val(value.fecha_aprobacion);
+							$('#observaciones').val(value.observaciones);
+						});*/
+					}
 
 				}).error(function(data) {
 					console.log(data);
@@ -631,10 +651,11 @@ if (!isset($turnoexamen_id)) {
     	var carrera_id = $('#cboCarrera').val();
         var planID = $('#cboPlan').val();
         var cboTurnoExamen = $('#cboTurnoExamen').val();
+        var cboCiclos = $('#cboCiclos').val();
 
 		$.ajax({
 		  url: "{{url('examenfinal/obtenerexamenes')}}",
-		  data:{'materia_id': materia_id, 'carrera_id': carrera_id, 'planID': planID, 'cboTurnoExamen': cboTurnoExamen},
+		  data:{'materia_id': materia_id, 'carrera_id': carrera_id, 'planID': planID, 'cboTurnoExamen': cboTurnoExamen, 'cboCiclos': cboCiclos},
 		  type: 'POST'
 		}).done(function(materias) {
 			console.log(materias);
@@ -664,7 +685,7 @@ if (!isset($turnoexamen_id)) {
 					calif_final_let = 'Ausente';
 				}*/
 				
-				$('#table_regularidades > tbody').append('<tr><td><center>'+value.fecha_aprobacion+'</center></td><td><center>'+value.docentes+'</center></td><td><center>'+value.alumno+'</center></td><td><center>'+value.nombremateria+'</center></td><td><center>'+value.calif_final_num+' ('+value.calif_final_let+')</center></td><td><center>'+value.folio+'</center></td><td><center>'+value.libro+'</center></td><td><center>'+value.acta+'</center></td><td><center><a href="#" data-id="'+value.id+'" class="btn default btn-xs red btnEliminarMaterias"><i title="Eliminar" class="fa fa-trash-o"></i></a></center></td></tr>');
+				$('#table_regularidades > tbody').append('<tr><td><center>'+value.fecha_aprobacion+'</center></td><td><center>'+value.docentes+'</center></td><td><center>'+value.alumno+'</center></td><td><center>'+value.nombremateria+'</center></td><td><center>'+value.calif_final_num+' ('+value.calif_final_let+')</center></td><td><center>'+value.folio+'</center></td><td><center>'+value.libro+'</center></td><td><center>'+value.acta+'</center></td><td><center><a title="Modificar" href="{{url('examenfinal/editar/')}}/'+value.id+'" class="btn default btn-xs purple"><i class="fa fa-edit"></i></a><a href="#" data-id="'+value.id+'" class="btn default btn-xs red btnEliminarMaterias"><i title="Eliminar" class="fa fa-trash-o"></i></a></center></td></tr>');
 			});
 
 		}).error(function(data) {
@@ -682,10 +703,11 @@ if (!isset($turnoexamen_id)) {
         var plan_id = $('#cboPlan').val();
     	var carrera_id = $('#cboCarrera').val();
     	var turnoexamen_id = $('#cboTurnoExamen').val();
+    	var cboCiclos = $('#cboCiclos').val();
 
 		$.ajax({
 		  url: "{{url('examenfinal/obtenermaterias')}}",
-		  data:{'plan_id': plan_id, 'carrera_id': carrera_id, 'turnoexamen_id': turnoexamen_id},
+		  data:{'plan_id': plan_id, 'carrera_id': carrera_id, 'turnoexamen_id': turnoexamen_id, 'cboCiclos': cboCiclos},
 		  type: 'POST'
 		}).done(function(materias) {
 			console.log(materias);
@@ -713,6 +735,45 @@ if (!isset($turnoexamen_id)) {
     	$('#cboTurnoExamen').val(0);
 		$('#cboMaterias').children().remove().end();
         if ($('#cboPlan').val() == 0) return;
+
+        var plan_id = $('#cboPlan').val();
+    	var carrera_id = $('#cboCarrera').val();
+
+    	$('#cboCiclos').children().remove().end();
+		if ($('#cboOrganizacion').val() == 0) return;
+
+		$.ajax({
+		  url: '{{url('ciclolectivo/obtenercicloslectivos')}}',
+		  data:{'organizacion_id': $('#cboOrganizacion').val()},
+		  type: 'POST'
+		}).done(function(ciclos) {
+			console.log(ciclos);
+
+			if (ciclos == <?php echo CicloLectivoController::NO_EXISTE_CICLO ?>) {
+				$('#divMensaje').html('<p class="form-control-static"><h4>' + 'La Organización no tiene Ciclos Lectivos Asignados' + '</h4></p>');
+	    	    $('#MensajeCantidad').modal('show');
+				return;
+		    }
+
+			$('#cboCiclos').append(
+		        $('<option></option>').val(0).html('Seleccionar')
+		    );
+
+			$.each(ciclos, function(key, value) {
+				$('#cboCiclos').append(
+			        $('<option></option>').val(value.id).html(value.descripcion)
+			    );
+			});
+
+		}).error(function(data) {
+			console.log(data);
+		});
+    });
+
+    $('#cboCiclos').change(function() {
+    	limpiar_tabla();
+
+    	$('#cboTurnoExamen').val(0);
     });
 
     $('#cboCarrera').change(function() {

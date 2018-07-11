@@ -327,12 +327,8 @@ class MesaexamenesController extends \BaseController {
             ->with('eliminar', Session::get('CALENDARIO_ELIMINAR'));
     }
 
-
-
-
 	public function postGuardar()
-	{   
-	   	
+	{
 		$organizacion_id = Input::get('organizacion');
         $carrera_id = Input::get('carreras');
         $materia_id = Input::get('materias');
@@ -346,9 +342,37 @@ class MesaexamenesController extends \BaseController {
 
        	/*highlight_string(var_export($horasegundollamado, true));
         exit();*/
-	   	
-	   	$docentes      = Input::get('docentes');
+        if (!$fechaprimerllamado == '') {
+            $feriados = Feriados::whereRaw('ciclolectivo_id ='.$ciclo_id)->get();
 
+            foreach ($feriados as $feriado) {
+                $porcion = explode(" ", $feriado->fecha_feriado);
+                $fecha = $porcion[0];
+                
+                if ($fechaprimerllamado == $fecha) {
+                    Session::flash('message', 'ERROR AL INTENTAR GUARDAR, LA FECHA ELEGIDA ES FERIADO.');
+                    Session::flash('message_type', self::OPERACION_FALLIDA);
+                    return Redirect::to('mesaexamenes/crear');
+                }
+            }
+        }
+
+        if (!$fechasegundollamado == '') {
+            $feriados = Feriados::whereRaw('ciclolectivo_id ='.$ciclo_id)->get();
+
+            foreach ($feriados as $feriado) {
+                $porcion = explode(" ", $feriado->fecha_feriado);
+                $fecha = $porcion[0];
+                
+                if ($fechasegundollamado == $fecha) {
+                    Session::flash('message', 'ERROR AL INTENTAR GUARDAR, LA FECHA ELEGIDA ES FERIADO.');
+                    Session::flash('message_type', self::OPERACION_FALLIDA);
+                    return Redirect::to('mesaexamenes/crear');
+                }
+            }
+        }
+
+	   	$docentes      = Input::get('docentes');
 
 	   	$mesa = new MesaExamen();
 	   		$mesa->organizacion_id     =  $organizacion_id;
@@ -365,10 +389,7 @@ class MesaexamenesController extends \BaseController {
             $mesa->fecha_alta          =  date('Y-m-d');
         $mesa->save();
 
-
         if ($docentes) {
-
-
             for ($i = 0; $i < count($docentes); $i++) {
                 
                 $tribunal = new TribunalDocente();
@@ -380,19 +401,15 @@ class MesaexamenesController extends \BaseController {
             }
         }
 	   	
-
         Session::flash('message', 'LOS DATOS SE GUARDARON CORRECTAMENTE.');
         Session::flash('message_type', self::OPERACION_EXITOSA);
         //return Redirect::to('correlatividades/crear');
         return Redirect::to('mesaexamenes/editar/'.$mesa->id);
                 //->withErrors($validator)
-  
 		/*$mensaje = 'esta parte falta';
-
 	   	highlight_string(var_export($mensaje, true));
         exit();*/
 	}
-
 
 	public function getEditar($id)
     {

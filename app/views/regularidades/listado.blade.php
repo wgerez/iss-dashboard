@@ -379,7 +379,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 
 	$('#imprimir').on('click', function(e){
 		e.preventDefault();
-		window.open("{{url('regularidades/imprimir')}}?planID=" + $('#cboPlan').val() + '&carrera_id=' + $('#cboCarrera').val() + '&materia_id=' + $('#cboMaterias').val() + '&docente_id=' + $('#cboDocente').val());
+		window.open("{{url('regularidades/imprimir')}}?planID=" + $('#cboPlan').val() + '&carrera_id=' + $('#cboCarrera').val() + '&materia_id=' + $('#cboMaterias').val() + '&docente_id=' + $('#cboDocente').val() + '&ciclo_id=' + $('#cboCiclos').val());
 	});
 
     $('#btnBuscar').click(function() {

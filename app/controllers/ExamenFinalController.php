@@ -53,6 +53,7 @@ class ExamenFinalController extends \BaseController {
         $carrera_id = Input::get('cboCarrera');
         $orgid =  Input::get('cboOrganizacion');
         $planID = Input::get('cboPlan');
+        $ciclolectivo_id = Input::get('cboCiclos');
         $materia_id = Input::get('cboMaterias');
         $turnoexamen_id = Input::get('cboTurnoExamen');
         $dni = Input::get('txtalumno');
@@ -61,10 +62,12 @@ class ExamenFinalController extends \BaseController {
         $nrodocumento = '';
         $docentes = '';
         $alumnos = [];
+        $materias = [];
+        $mesaexamen_id = 0;
         $habilita = true;
         $nota = ['cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez'];
 
-        if ($orgid == 0 || $carrera_id == 0 || $planID == 0 || $materia_id == 0 || $turnoexamen_id == 0) {
+        if ($orgid == 0 || $carrera_id == 0 || $planID == 0 || $materia_id == 0 || $turnoexamen_id == 0 || $ciclolectivo_id == 0) {
         	Session::flash('message', 'ERROR DEBE SELECCIONAR LOS DATOS A BUSCAR.');
             Session::flash('message_type', self::OPERACION_FALLIDA);
             return Redirect::to('examenfinal/listado')
@@ -72,13 +75,14 @@ class ExamenFinalController extends \BaseController {
                 ->withInput();
         }
         ///////////////
-        $ciclolectivo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+        //$ciclolectivo_id = PlanEstudio::find($planID)->ciclolectivo_id;
 
         $mesaexamen = MesaExamen::whereRaw('carrera_id ='.$carrera_id.' AND ciclolectivo_id ='.$ciclolectivo_id.' AND materia_id ='.$materia_id.' AND turnoexamen_id ='.$turnoexamen_id)->get();
 
         if (count($mesaexamen) > 0) {
         	foreach ($mesaexamen as $value) {
 	        	$docentesasig = TribunalDocente::whereRaw('mesaexamen_id ='. $value->id)->get();
+                $mesaexamen_id = $value->id;
 
 	        	if (count($docentesasig) > 0) {
 		        	foreach ($docentesasig as $docente) {
@@ -114,11 +118,62 @@ class ExamenFinalController extends \BaseController {
         	$alumno_id = $alumnos[0]->alumno_id;
         	$nrodocumento = $alumnos[0]->nrodocumento;
 
-        	$examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id)->get();
-        } else {
-        	$examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id)->get();
-        }
+            if ($mesaexamen_id > 0) {
+                /////////
+                $inscripcionfinal_id = InscripcionFinal::whereRaw('alumno_id ='.$alumno_id.' AND mesaexamen_id ='.$mesaexamen_id)->first();
+                ////////
+                
+                if (count($inscripcionfinal_id) > 0) {
+                    $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id.' AND inscripcionfinal_id ='.$inscripcionfinal_id->id)->get();
+                } else {
+                    $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id)->get();
+                }
+            } else {
+        	   $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id)->get();
+            }
 
+            if (count($examenfinal) > 0) {
+                foreach ($examenfinal as $value) {
+                    $alumnopersona = Alumno::find($value->alumno_id)->persona_id;
+                    $personaalumno = Persona::find($alumnopersona);
+                    $persona = $personaalumno->apellido .', '. $personaalumno->nombre;
+
+                    $fecha_aprobacion = FechaHelper::getFechaImpresion($value->fecha_aprobacion);
+                    $nombremateria = Materia::find($materia_id)->nombremateria;
+                    
+                    $materias[] = ['id' => $value->id, 'fecha_aprobacion' => $fecha_aprobacion, 'docentes' => $docentes, 'alumno' => $persona, 'nombremateria' => $nombremateria, 'calif_final_num' => $value->calif_final_num, 'calif_final_let' => $value->calif_final_let, 'folio' => $value->folio, 'libro' => $value->libro, 'acta' => $value->acta];
+                }
+            } else {
+                $habilita = false;
+                $materias = [];
+            }
+        } else {
+            /////////
+            $inscripcionfinal_id = InscripcionFinal::whereRaw('mesaexamen_id ='.$mesaexamen_id)->get();
+
+            if (count($inscripcionfinal_id) > 0) {
+                foreach ($inscripcionfinal_id as $inscripcionfinal) {
+                    $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND inscripcionfinal_id ='.$inscripcionfinal->id)->get();
+
+                    if (count($examenfinal) > 0) {
+                        foreach ($examenfinal as $value) {
+                            $alumnopersona = Alumno::find($value->alumno_id)->persona_id;
+                            $personaalumno = Persona::find($alumnopersona);
+                            $persona = $personaalumno->apellido .', '. $personaalumno->nombre;
+
+                            $fecha_aprobacion = FechaHelper::getFechaImpresion($value->fecha_aprobacion);
+                            $nombremateria = Materia::find($materia_id)->nombremateria;
+                            
+                            $materias[] = ['id' => $value->id, 'fecha_aprobacion' => $fecha_aprobacion, 'docentes' => $docentes, 'alumno' => $persona, 'nombremateria' => $nombremateria, 'calif_final_num' => $value->calif_final_num, 'calif_final_let' => $value->calif_final_let, 'folio' => $value->folio, 'libro' => $value->libro, 'acta' => $value->acta];
+                        }
+                    }
+                }
+            } else {
+                $habilita = false;
+                $materias = [];
+            }
+        }
+/*
         if (count($examenfinal) > 0) {
         	foreach ($examenfinal as $value) {
     			$alumnopersona = Alumno::find($value->alumno_id)->persona_id;
@@ -133,14 +188,16 @@ class ExamenFinalController extends \BaseController {
         } else {
         	$habilita = false;
         	$materias = [];
-        }
+        }*/
         /*
-highlight_string(var_export($examenfinal,true));
-        exit;
-*/
+        highlight_string(var_export($examenfinal,true));
+                exit;
+        */
         $carreras = Carrera::where('organizacion_id', '=', $orgid)->get();
 
         $planestudios = PlanEstudio::whereRaw('carrera_id= '. $carrera_id)->get();
+
+        $ciclos = CicloLectivo::where('organizacion_id','=',$orgid)->orderby('descripcion', 'DESC')->get();
 
         $turnos = TurnoExamen::all();
 
@@ -150,6 +207,8 @@ highlight_string(var_export($examenfinal,true));
             ->with('organizaciones', $organizaciones)
             ->with('planes', $planestudios)
             ->with('planID', $planID)
+            ->with('ciclos', $ciclos)
+            ->with('ciclo_id', $ciclolectivo_id)
             ->with('carrera_id', $carrera_id)
             ->with('OrgID', $orgid)
             ->with('carreras', $carreras)
@@ -216,8 +275,9 @@ highlight_string(var_export($examenfinal,true));
         $carrid = Input::get('carrera_id');
         $planID = Input::get('plan_id');
         $turnoexamen_id = Input::get('turnoexamen_id');
+        $ciclolectivo_id = Input::get('cboCiclos');
 
-        $ciclolectivo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+        //$ciclolectivo_id = PlanEstudio::find($planID)->ciclolectivo_id;
 
         $examenfinal = MesaExamen::whereRaw('carrera_id ='.$carrid.' AND ciclolectivo_id ='.$ciclolectivo_id.' AND turnoexamen_id ='.$turnoexamen_id)->get();
 
@@ -243,7 +303,7 @@ highlight_string(var_export($examenfinal,true));
         $alumno_id = Input::get('alumno_id');
         $inscripto = 0;
 
-        $ciclolectivo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+        $ciclolectivo_id = Input::get('cboCiclos');//PlanEstudio::find($planID)->ciclolectivo_id;
 
         $inscripcion = InscripcionFinal::whereRaw('alumno_id = '.$alumno_id)->get();
 
@@ -283,24 +343,10 @@ highlight_string(var_export($examenfinal,true));
         $planID = Input::get('planID');
         $materia_id = Input::get('materia_id');
         $turnoexamen_id = Input::get('cboTurnoExamen');
-        //$alumnoid = Input::get('alumnoid');
+        $ciclolectivo_id = Input::get('cboCiclos');
 
-        /*$asignaciones = AsignarDocente::whereRaw('carrera_id='. $carrera_id .' AND materia_id='. $materia_id . ' AND planestudio_id='. $planID)->first();
-
-    	$personatitular = Docente::find($asignaciones->docentetitular_id)->persona_id;
-    	$personaprovisorio = Docente::find($asignaciones->docenteprovisorio_id)->persona_id;
-    	$personasuplente = Docente::find($asignaciones->docentesuplente_id)->persona_id;
-
-    	$docentetitular_id = Persona::find($personatitular);
-    	$docenteprovisorio_id = Persona::find($personaprovisorio);
-    	$docentesuplente_id = Persona::find($personasuplente);
-
-    	$docentetitular = $docentetitular_id->apellido .', '. $docentetitular_id->nombre;
-    	$docenteprovisorio = $docenteprovisorio_id->apellido .', '. $docenteprovisorio_id->nombre;
-    	$docentesuplente = $docentesuplente_id->apellido .', '. $docentesuplente_id->nombre;*/
-    	///////////////
     	$docentes = '';
-        $ciclolectivo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+        //$ciclolectivo_id = PlanEstudio::find($planID)->ciclolectivo_id;
 
         $mesaexamen = MesaExamen::whereRaw('carrera_id ='.$carrera_id.' AND ciclolectivo_id ='.$ciclolectivo_id.' AND materia_id ='.$materia_id.' AND turnoexamen_id ='.$turnoexamen_id)->get();
 
@@ -319,11 +365,17 @@ highlight_string(var_export($examenfinal,true));
 				    	$docentes .= $docentetitular . ' - ';
 		        	}
 		        }
+
+                $inscripcion = InscripcionFinal::whereRaw('mesaexamen_id = '.$value->id)->first();
 	        }
         }
         
-        $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id)->get();
-
+        if (count($inscripcion) > 0) {
+            $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND inscripcionfinal_id ='.$inscripcion->id)->get();
+        } else {
+            $examenfinal = [];
+        }
+        
         if (count($examenfinal) > 0) {
         	foreach ($examenfinal as $value) {
     			$alumnopersona = Alumno::find($value->alumno_id)->persona_id;
@@ -361,8 +413,11 @@ highlight_string(var_export($examenfinal,true));
         $justifico = $examenfinal->justifico;
 
         //$materias = Materia::where('carrera_id', '=', $examenfinal->carrera_id)->where('planestudio_id', '=', $planID)->get();
+        $mesaexamen_id = InscripcionFinal::find($examenfinal->inscripcionfinal_id)->mesaexamen_id;
+
+        $ciclo_id = MesaExamen::find($mesaexamen_id)->ciclolectivo_id;
         
-        $ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+        //$ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
         
         $materiaexamenfinal = MesaExamen::whereRaw('carrera_id ='.$examenfinal->carrera_id.' AND ciclolectivo_id ='.$ciclo_id.' AND materia_id ='.$examenfinal->materia_id.' AND turnoexamen_id ='.$examenfinal->turnoexamen_id)->get();
         $docentes = '';
@@ -425,6 +480,8 @@ highlight_string(var_export($examenfinal,true));
             $value->alumno = $persona;
         }
 
+        $ciclos = CicloLectivo::where('organizacion_id','=',$examenfinal->organizacion_id)->orderby('descripcion', 'DESC')->get();
+
         $turnos = TurnoExamen::all();
 
         return View::make('examenfinal.nuevo',[
@@ -436,6 +493,7 @@ highlight_string(var_export($examenfinal,true));
             'planID'     	  	=> $planID,
             'planes'          	=> $planes,
             'ciclo_id' 			=> $ciclo_id,
+            'ciclos'            => $ciclos,
             'examenfina' 		=> $examenfina,
             'examenfinal' 		=> $examenfinal,
             'habilita' 			=> $habilita,
@@ -473,6 +531,7 @@ highlight_string(var_export($examenfinal,true));
                 'cboOrganizacion'   => Input::get('cboOrganizacion'),
                 'cboCarrera'      	=> Input::get('cboCarrera'),
                 'cboPlan'         	=> Input::get('cboPlan'),
+                'cboCiclos'           => Input::get('cboCiclos'),
                 'cboMaterias'     	=> Input::get('cboMaterias'),
                 'cboTurnoExamen'    => Input::get('cboTurnoExamen'),
                 'alumno_id'       	=> Input::get('alumno_id'),
@@ -480,11 +539,13 @@ highlight_string(var_export($examenfinal,true));
                 'libro'       		=> Input::get('libro'),
                 'folio'   			=> Input::get('folio'),
                 'acta'       		=> Input::get('acta'),
-                'cbofinalnumero'    => Input::get('cbofinalnumero')
+                'cbofinalnumero'    => Input::get('cbofinalnumero'),
+                'inscripto'         => Input::get('inscripto')
             ),
             array(
                 'cboCarrera'      	=> 'required',
                 'cboPlan'         	=> 'required',
+                'cboCiclos'         => 'required',
                 'cboMaterias'     	=> 'required',
                 'cboTurnoExamen'    => 'required',
                 'alumno_id'       	=> 'required',
@@ -492,7 +553,8 @@ highlight_string(var_export($examenfinal,true));
                 'libro'       		=> 'required',
                 'folio'				=> 'required',
                 'acta'       		=> 'required',
-                'cbofinalnumero'    => 'required'
+                'cbofinalnumero'    => 'required',
+                'inscripto'         => 'required'
             ),
             array(
                 'required' 		=> 'Campo Obligatorio',
@@ -504,13 +566,16 @@ highlight_string(var_export($examenfinal,true));
                 'required' 		=> 'Campo Obligatorio',
                 'required' 		=> 'Campo Obligatorio',
                 'required' 		=> 'Campo Obligatorio',
-                'required' 		=> 'Campo Obligatorio'
+                'required' 		=> 'Campo Obligatorio',
+                'required'      => 'Campo Obligatorio',
+                'required'      => 'Campo Obligatorio'
             )
         );
 
         $organizacion_id = Input::get('cboOrganizacion');
         $carrera_id = Input::get('cboCarrera');
         $planID = Input::get('cboPlan');
+        $ciclo_id = Input::get('cboCiclos');
         $materia_id = Input::get('cboMaterias');
         $turnoexamen_id = Input::get('cboTurnoExamen');
         $fechadesde = Input::get('fechadesde');
@@ -549,7 +614,11 @@ highlight_string(var_export($examenfinal,true));
             //$cuatrimestre = Materia::find($materia_id)->cuatrimestre;
 
         	//$regularidades = Regularidades::whereRaw('carrera_id='.$carrera_id.' AND materia_id='.$materia_id. ' AND planestudio_id='.$planID.' AND alumno_id='.$alumno_id.' AND parcial='. $cboParcial)->first();
-        	$examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id.' AND inscripcionfinal_id ='.$inscripcionfinal_id)->first();
+            $mesaexamen = MesaExamen::whereRaw('carrera_id ='.$carrera_id.' AND ciclolectivo_id ='.$ciclo_id.' AND materia_id ='.$materia_id.' AND turnoexamen_id ='.$turnoexamen_id)->first();
+
+            $inscripcion = InscripcionFinal::whereRaw('alumno_id = '.$alumno_id.' AND mesaexamen_id ='.$mesaexamen->id)->first();
+
+        	$examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id.' AND inscripcionfinal_id ='.$inscripcion->id)->first();
 
             if (count($examenfinal) > 0) {
                 $examenfina = ExamenFinal::find($examenfinal->id);
@@ -567,7 +636,7 @@ highlight_string(var_export($examenfinal,true));
                 $examenfina->calif_final_let    = $nota[$cbofinalnumero];
                 $examenfina->fecha_aprobacion 	= $fecha;
                 $examenfina->observaciones      = $observaciones;
-                $examenfina->inscripcionfinal_id = $inscripcionfinal_id;
+                $examenfina->inscripcionfinal_id = $inscripcion->id;
                 $examenfina->asistencia         = $asistencia;
                 $examenfina->justifico          = $justifico;
                 $examenfina->usuario_modi      	= Auth::user()->usuario;  
@@ -575,7 +644,7 @@ highlight_string(var_export($examenfinal,true));
                 
                 $examenfina->save();
 
-                $idaseguir = $examenfinal->id;
+                $idaseguir = $examenfinal->id.'-'.$ciclo_id;
             } else {
             	$examenfina = new ExamenFinal();
 
@@ -592,7 +661,7 @@ highlight_string(var_export($examenfinal,true));
                 $examenfina->calif_final_let 	= $nota[$cbofinalnumero];
                 $examenfina->fecha_aprobacion	= $fecha;
                 $examenfina->observaciones 		= $observaciones;
-                $examenfina->inscripcionfinal_id = $inscripcionfinal_id;
+                $examenfina->inscripcionfinal_id = $inscripcion->id;
                 $examenfina->asistencia         = $asistencia;
                 $examenfina->justifico          = $justifico;
                 $examenfina->usuario_alta   	= Auth::user()->usuario;  
@@ -603,7 +672,7 @@ highlight_string(var_export($examenfinal,true));
                 $asigna = ExamenFinal::all();
 
                 $examenfinal = $asigna->last();
-                $idaseguir = $examenfinal->id;
+                $idaseguir = $examenfinal->id.'-'.$ciclo_id;
             }
 
 
@@ -617,7 +686,10 @@ highlight_string(var_export($examenfinal,true));
 
     public function getGuardado($idaseguir)
     {  
-        $examenfinal = ExamenFinal::find($idaseguir);
+        $porcion = explode('-', $idaseguir);
+
+        $ids = $porcion[0];
+        $examenfinal = ExamenFinal::find($ids);
 
         $folio = '';
         $libro = '';
@@ -630,7 +702,7 @@ highlight_string(var_export($examenfinal,true));
 
         $inscripto = $examenfinal->inscripcionfinal_id;
 
-        $carreras = Carrera::where('organizacion_id', '=', 1)->get();
+        $carreras = Carrera::where('organizacion_id', '=', $examenfinal->organizacion_id)->get();
 
         $planes = PlanEstudio::where('carrera_id', '=', $examenfinal->carrera_id)->get();
         
@@ -639,7 +711,7 @@ highlight_string(var_export($examenfinal,true));
 
         //$materias = Materia::where('carrera_id', '=', $examenfinal->carrera_id)->where('planestudio_id', '=', $planID)->get();
         
-        $ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+        $ciclo_id = $porcion[1];//PlanEstudio::find($planID)->ciclolectivo_id;
         
         $materiaexamenfinal = MesaExamen::whereRaw('carrera_id ='.$examenfinal->carrera_id.' AND ciclolectivo_id ='.$ciclo_id.' AND materia_id ='.$examenfinal->materia_id.' AND turnoexamen_id ='.$examenfinal->turnoexamen_id)->get();
         $docentes = '';
@@ -701,6 +773,8 @@ highlight_string(var_export($examenfinal,true));
             $value->alumno = $persona;
         }
 
+        $ciclos = CicloLectivo::where('organizacion_id','=',$examenfinal->organizacion_id)->orderby('descripcion', 'DESC')->get();
+
         $turnos = TurnoExamen::all();
 
         return View::make('examenfinal.nuevo',[
@@ -712,6 +786,7 @@ highlight_string(var_export($examenfinal,true));
             'planID'     	  	=> $planID,
             'planes'          	=> $planes,
             'ciclo_id' 			=> $ciclo_id,
+            'ciclos'            => $ciclos,
             'examenfina' 		=> $examenfina,
             'examenfinal' 		=> $examenfinal,
             'habilita' 			=> $habilita,
@@ -720,7 +795,7 @@ highlight_string(var_export($examenfinal,true));
             'fechadesdes'       => $fechadesdes,
             'fechadesde'       	=> $fechadesde,
             'turnos'       		=> $turnos,
-            'idaseguir'    		=> $idaseguir,
+            'idaseguir'    		=> $ids,
             'folio'    			=> $folio,
             'libro'    			=> $libro,
             'acta'    			=> $acta,
@@ -757,7 +832,11 @@ highlight_string(var_export($examenfinal,true));
 
         if (count($examenfinals) > 0) {
             foreach ($examenfinals as $value) {
-                $idaseguir = $value->id;
+                $inscripcion = InscripcionFinal::find($value->inscripcionfinal_id);
+
+                $ciclo_id = MesaExamen::find($inscripcion->mesaexamen_id)->ciclolectivo_id;
+
+                $idaseguir = $value->id.'-'.$ciclo_id;
             }
 
             Session::flash('message', 'EL REGISTRO HA SIDO BORRADO.');
@@ -786,11 +865,12 @@ highlight_string(var_export($examenfinal,true));
         $domicilio = '';
         $condicion = '';
         $docentes = '';
+        $mesaexamen_id = '';
         $nota = ['cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez'];
 
         $planestudios = PlanEstudio::find($planID);
 
-        $ciclolectivo_id = $planestudios->ciclolectivo_id;
+        $ciclolectivo_id = Input::get('cboCiclos');//$planestudios->ciclolectivo_id;
         $cohorte = $planestudios->codigoplan;
 
         $mesaexamen = MesaExamen::whereRaw('carrera_id ='.$carrera_id.' AND ciclolectivo_id ='.$ciclolectivo_id.' AND materia_id ='.$materia_id.' AND turnoexamen_id ='.$turnoexamen_id)->get();
@@ -798,6 +878,7 @@ highlight_string(var_export($examenfinal,true));
         if (count($mesaexamen) > 0) {
         	foreach ($mesaexamen as $value) {
         		$docentesasig = TribunalDocente::whereRaw('mesaexamen_id ='. $value->id)->get();
+                $mesaexamen_id = $value->id;
 
 	        	if (count($docentesasig) > 0) {
 		        	foreach ($docentesasig as $docente) {
@@ -835,12 +916,62 @@ highlight_string(var_export($examenfinal,true));
         	$apeynom = $alumnos[0]->apellido.', '. $alumnos[0]->nombre;
         	$domicilio = $alumnos[0]->calle.' - '. $alumnos[0]->numero;
 
-        	$examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id)->get();
+            /////////
+            $inscripcionfinal_id = InscripcionFinal::whereRaw('alumno_id ='.$alumno_id.' AND mesaexamen_id ='.$mesaexamen_id)->first()->id;
+            ////////
+            $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id.' AND inscripcionfinal_id ='.$inscripcionfinal_id)->get();
+
+            if (count($examenfinal) > 0) {
+                foreach ($examenfinal as $value) {
+                    $alumnopersona = Alumno::find($value->alumno_id)->persona_id;
+                    $personaalumno = Persona::find($alumnopersona);
+                    $persona = $personaalumno->apellido .', '. $personaalumno->nombre;
+                    $dni = $personaalumno->nrodocumento;
+
+                    $fecha_aprobacion = FechaHelper::getFechaImpresion($value->fecha_aprobacion);
+                    $nombremateria = Materia::find($materia_id)->nombremateria;
+                    
+                    $materias[] = ['id' => $value->id, 'fecha_aprobacion' => $fecha_aprobacion, 'docentes' => $docentes, 'alumno' => $persona, 'nombremateria' => $nombremateria, 'calif_final_num' => $value->calif_final_num, 'calif_final_let' => $value->calif_final_let, 'folio' => $value->folio, 'libro' => $value->libro, 'acta' => $value->acta, 'observaciones' => $value->observaciones, 'nroresolucion' => $nroresolucion, 'condicion' => $condicion, 'dni' => $dni];
+                }
+            } else {
+                $materias = [];
+            }
         } else {
-        	$examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id)->get();
+            /////////
+            $inscripcionfinal_id = InscripcionFinal::whereRaw('mesaexamen_id ='.$mesaexamen_id)->get();
+
+            if (count($inscripcionfinal_id) > 0) {
+                foreach ($inscripcionfinal_id as $inscripcionfinal) {
+                    $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planID.' AND turnoexamen_id ='.$turnoexamen_id.' AND materia_id ='.$materia_id.' AND inscripcionfinal_id ='.$inscripcionfinal->id)->get();
+
+                    if (count($examenfinal) > 0) {
+                        foreach ($examenfinal as $value) {
+                            $regularidades = Regularidades::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$value->alumno_id)->get();
+
+                            foreach ($regularidades as $regularidad) {
+                                if ($regularidad->regularizo == 1) {
+                                    $condicion = 'Regular';
+                                }
+                            }
+
+                            $alumnopersona = Alumno::find($value->alumno_id)->persona_id;
+                            $personaalumno = Persona::find($alumnopersona);
+                            $persona = $personaalumno->apellido .', '. $personaalumno->nombre;
+                            $dni = $personaalumno->nrodocumento;
+
+                            $fecha_aprobacion = FechaHelper::getFechaImpresion($value->fecha_aprobacion);
+                            $nombremateria = Materia::find($materia_id)->nombremateria;
+                            
+                            $materias[] = ['id' => $value->id, 'fecha_aprobacion' => $fecha_aprobacion, 'docentes' => $docentes, 'alumno' => $persona, 'nombremateria' => $nombremateria, 'calif_final_num' => $value->calif_final_num, 'calif_final_let' => $value->calif_final_let, 'folio' => $value->folio, 'libro' => $value->libro, 'acta' => $value->acta, 'observaciones' => $value->observaciones, 'nroresolucion' => $nroresolucion, 'condicion' => $condicion, 'dni' => $dni];
+                        }
+                    }
+                }
+            } else {
+                $materias = [];
+            }
         }
 
-        if (count($examenfinal) > 0) {
+        /*if (count($examenfinal) > 0) {
         	foreach ($examenfinal as $value) {
         		$regularidades = Regularidades::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$value->alumno_id)->get();
 
@@ -853,15 +984,16 @@ highlight_string(var_export($examenfinal,true));
     			$alumnopersona = Alumno::find($value->alumno_id)->persona_id;
     			$personaalumno = Persona::find($alumnopersona);
     			$persona = $personaalumno->apellido .', '. $personaalumno->nombre;
+                $dni = $personaalumno->nrodocumento;
 
 	        	$fecha_aprobacion = FechaHelper::getFechaImpresion($value->fecha_aprobacion);
 	        	$nombremateria = Materia::find($materia_id)->nombremateria;
 	        	
-	        	$materias[] = ['id' => $value->id, 'fecha_aprobacion' => $fecha_aprobacion, 'docentes' => $docentes, 'alumno' => $persona, 'nombremateria' => $nombremateria, 'calif_final_num' => $value->calif_final_num, 'calif_final_let' => $value->calif_final_let, 'folio' => $value->folio, 'libro' => $value->libro, 'acta' => $value->acta, 'observaciones' => $value->observaciones, 'nroresolucion' => $nroresolucion, 'condicion' => $condicion];
+	        	$materias[] = ['id' => $value->id, 'fecha_aprobacion' => $fecha_aprobacion, 'docentes' => $docentes, 'alumno' => $persona, 'nombremateria' => $nombremateria, 'calif_final_num' => $value->calif_final_num, 'calif_final_let' => $value->calif_final_let, 'folio' => $value->folio, 'libro' => $value->libro, 'acta' => $value->acta, 'observaciones' => $value->observaciones, 'nroresolucion' => $nroresolucion, 'condicion' => $condicion, 'dni' => $dni];
 	        }
         } else {
         	$materias = [];
-        }
+        }*/
         
         $turnos = TurnoExamen::all();
 
