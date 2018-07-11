@@ -288,7 +288,7 @@
 														<div class="checkbox-list">
 															<label class="col-md-8 col-sm-4 control-label">Fecha Vencimiento Seguro:</label>
 													 		<div class="input-icon col-md-3 col-sm-4">
-																<input type="date" name="fechaseguro" id="fechaseguro" placeholder="" class="form-control" value="<?php $fechavencimientoseguro; ?>">
+																<input type="date" name="fechaseguro" id="fechaseguro" placeholder="" class="form-control" value="<?php echo $fechavencimientoseguro; ?>">
 															</div><a class="btn blue-madison" id='btnAgregar'><i class="fa fa-plus"></i></a>
 														</div>
 													</div>
