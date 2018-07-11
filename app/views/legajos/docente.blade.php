@@ -41,27 +41,27 @@
 	$docentelegajo_id = 1;
 
 	if (!$docente->docentelegajo == null) {
-		if ($docente->docentelegajo->dni) $dni = 'CHECKED';
+		if ($docente->docentelegajo->dni) $dni = 'checked';
 		
-		if ($docente->docentelegajo->foto) $foto = 'CHECKED';
+		if ($docente->docentelegajo->foto) $foto = 'checked';
 
 		if ($docente->docentelegajo->cuil_cuit) $cuil_cuit = 'checked';
 
-		if ($docente->docentelegajo->partidanacimiento) $partidanacimiento = 'CHECKED';
+		if ($docente->docentelegajo->partidanacimiento) $partidanacimiento = 'checked';
 
-		if ($docente->docentelegajo->ficha_medica) $certificadobuenasalud = 'CHECKED';
+		if ($docente->docentelegajo->ficha_medica) $certificadobuenasalud = 'checked';
 
-		if ($docente->docentelegajo->titulosecundario) $titulosecundario = 'CHECKED';
+		if ($docente->docentelegajo->titulosecundario) $titulosecundario = 'checked';
 
-		if ($docente->docentelegajo->tituloprofesional) $constituloprofesional = 'CHECKED';
+		if ($docente->docentelegajo->tituloprofesional) $constituloprofesional = 'checked';
 
-		if ($docente->docentelegajo->cargos_actividades) $cargos_actividades = 'CHECKED';
+		if ($docente->docentelegajo->cargos_actividades) $cargos_actividades = 'checked';
 
-		if ($docente->docentelegajo->declaracion_jurada) $declaracion_jurada = 'CHECKED';
+		if ($docente->docentelegajo->declaracion_jurada) $declaracion_jurada = 'checked';
 
-		if ($docente->docentelegajo->seguro) $seguro = 'CHECKED';
+		if ($docente->docentelegajo->seguro) $seguro = 'checked';
 
-		if ($docente->docentelegajo->otros) $otros = 'CHECKED';
+		if ($docente->docentelegajo->otros) $otros = 'checked';
 
 		if ($docente->docentelegajo->fechavencimientoseguro) $fechavencimientoseguro = $docente->docentelegajo->fechavencimientoseguro;
 
@@ -215,11 +215,20 @@
 
 															<label>
 																<div class="checker {{$disabled}}">
-																	<span class="<?php echo $certificadobuenasalud; ?>">
-																		<input name="certificadobuenasalud" id='certificadobuenasalud' type="checkbox" <?php echo $certificadobuenasalud; ?>>
+																	<span class="<?php echo $cargos_actividades; ?>">
+																		<input name="fichapreinscripcion" id='fichapreinscripcion' type="checkbox" <?php echo $cargos_actividades; ?>>
 																	</span>
 																</div> 
-																Fotocopia Ficha Médica
+																Ficha Cargos y Actividades
+															</label>
+
+															<label>
+																<div class="checker {{$disabled}}">
+																	<span class="<?php echo $declaracion_jurada; ?>">
+																		<input name="constanciatrabajo" id='constanciatrabajo' type="checkbox" <?php echo $declaracion_jurada; ?>>
+																	</span>
+																</div> 
+																Fotocopia Declaración Jurada
 															</label>
 
 														</div>
@@ -247,20 +256,11 @@
 
 															<label>
 																<div class="checker {{$disabled}}">
-																	<span class="<?php echo $cargos_actividades; ?>">
-																		<input name="fichapreinscripcion" id='fichapreinscripcion' type="checkbox" <?php echo $cargos_actividades; ?>>
+																	<span class="<?php echo $certificadobuenasalud; ?>">
+																		<input name="certificadobuenasalud" id='certificadobuenasalud' type="checkbox" <?php echo $certificadobuenasalud; ?>>
 																	</span>
 																</div> 
-																Ficha Cargos y Actividades
-															</label>
-
-															<label>
-																<div class="checker {{$disabled}}">
-																	<span class="<?php echo $declaracion_jurada; ?>">
-																		<input name="constanciatrabajo" id='constanciatrabajo' type="checkbox" <?php echo $declaracion_jurada; ?>>
-																	</span>
-																</div> 
-																Fotocopia Declaración Jurada
+																Fotocopia Ficha Médica
 															</label>
 
 															<label>
@@ -656,13 +656,14 @@ function guardar_item_legajo(valor, campo) {
 	  data:{
 	      'legajoId': <?php echo $docentelegajo_id; ?>,
 	      'valor': valor,
-	      'campo': campo
+	      'campo': campo,
+	      'docente_id': <?php echo $docente->id; ?>
 	  },
 	  type: 'POST'
 	}).done(function(result) {
-	    if (result.tipo_mensaje == <?php echo AlumnosController::OPERACION_EXITOSA?>) {
+	    if (result.tipo_mensaje == <?php echo DocentesController::OPERACION_EXITOSA?>) {
 
-	    	toastr.success(result.mensaje, "Alumnos");
+	    	toastr.success(result.mensaje, "Docentes");
 	    	
 	    }
 	}).error(function(data){

@@ -9,7 +9,9 @@ class DocentesController extends BaseController {
     const OPERACION_FALLIDA = 2;
     const OPERACION_CANCELADA = 3;
     const OPERACION_INFO = 4;
+    const NO_EXISTE_DOCENTE = 5;
     const IMG_PATH = 'docentes/img-perfil/';
+    const IMG_DOC_PATH = 'docentes/documentos/';
     const IMG_PERFIL_WIDTH = 400;
     const IMG_WIDTH = 800;    
 
@@ -439,6 +441,7 @@ class DocentesController extends BaseController {
     {
         $legajo_id = Input::get('legajoId');
         $campo = Input::get('campo');
+        $docente_id = Input::get('docente_id');
 
         if ($campo == 'FECHA_SEGURO') {
             $fecha_vencimiento = Input::get('valor');
@@ -454,8 +457,29 @@ class DocentesController extends BaseController {
         $legajo = DocenteLegajo::find($legajo_id);
 
         if (count($legajo) > 0) {
-            # code...
+            $legajo = DocenteLegajo::find($legajo_id);
+        } else {
+            $legajos = new DocenteLegajo;
+            $legajos->docente_id = $docente_id;
+            $legajos->dni = 0;
+            $legajos->foto = 0;
+            $legajos->partidanacimiento = 0;
+            $legajos->ficha_medica = 0;
+            $legajos->cuil_cuit = 0;
+            $legajos->titulosecundario = 0;
+            $legajos->cargos_actividades = 0;
+            $legajos->tituloprofesional = 0;
+            $legajos->declaracion_jurada = 0;
+            $legajos->seguro = 0;
+            //$legajos->fechavencimientoseguro = $fecha_vencimiento;
+            $legajos->otros = 0;
+            $legajos->usuario_alta = Auth::user()->usuario;
+            $legajos->fecha_alta = date('Y-m-d');
+            $legajos->save();
+
+            $legajo = DocenteLegajo::whereRaw('docente_id ='.$docente_id)->first();
         }
+
         switch ($campo) {
             case 'DNI':
                 $legajo->dni = (int) Input::get('valor');
@@ -523,6 +547,109 @@ class DocentesController extends BaseController {
      * REFACTORING
      * mensajes de error en caso de no enviar la imagen
      */
+
+    public function postGuardardocumento()
+    {
+        $docente_id = Input::get('txtAlumnoDocumentoId');
+        $tipo_documento = Input::get('tipodocumento');
+        $docente_legajo_id = Input::get('txtAlumnoLegajoId');
+        $imagen = Input::file('archivoadjunto');
+
+        if ($imagen) {
+            $extension_valida = ImagenHelper::extensionValida($imagen->getClientOriginalName());
+
+            if (!$extension_valida) {
+                Session::flash('message', 'EL DOCUMENTO DEBE SER DEL TIPO PNG/JPG/GIF.');
+                Session::flash('message_type', self::OPERACION_FALLIDA);
+                return Redirect::to('docentes/legajo/' . $docente_id);
+            }
+        }
+
+        $data = array(
+            'tipo_documento' => $tipo_documento,
+            'imagen' => $imagen
+        );
+        $rules = array(
+            'tipo_documento' => 'required',
+            'imagen' => 'required'
+        );
+        $messages = array(
+            'required' => 'Campo Obligatorio',
+            'imagen.required' => "Debe seleccionar un Documento."
+        );
+
+        $validator = Validator::make($data, $rules, $messages);
+
+        if ($validator->fails()) {
+            Session::flash('message', 'ERROR AL INTENTAR GUARDAR UN DOCUMENTO.');
+            Session::flash('message_type', self::OPERACION_FALLIDA);
+            return Redirect::to('docentes/legajo/' . $docente_id)
+                ->withErrors($validator);
+        }
+
+        $docente_legajo_documento = new DocenteLegajoDocumento;
+
+        if ($imagen) {
+            $filename = $docente_id . '_' . $docente_legajo_id . '_' . uniqid() .  '.jpg';
+        }
+
+        // se guarda la imagen
+        if ($imagen) {
+            $imagen = Image::make($imagen->getRealPath());
+            $ancho = $imagen->width();
+            if ($ancho > self::IMG_WIDTH) $ancho = self::IMG_WIDTH;
+            $imagen->resize($ancho, null, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $imagen->save(self::IMG_DOC_PATH . $filename);
+        }
+
+        $docente_legajo_documento->docentelegajo_id = $docente_legajo_id;
+        $docente_legajo_documento->documento = $filename;
+        $docente_legajo_documento->tipodocumento = $tipo_documento;
+        $docente_legajo_documento->usuario_alta = Auth::user()->usuario;
+        $docente_legajo_documento->fecha_alta = date('Y-m-d');
+        $docente_legajo_documento->save();
+
+        Session::flash('message', 'DOCUMENTO GUARDADO CORRECTAMENTE.');
+        Session::flash('message_type', self::OPERACION_EXITOSA);
+        return Redirect::to('docentes/legajo/' . $docente_id);
+    }
+
+    public function postEditardocumento()
+    {
+        $documento_id = Input::get('idDocumentoHiddenModi');
+        $docente_id = Input::get('txtAlumnoDocumentoModiId');
+        $documento_descripcion = Input::get('txtDocumentoDescripcion');
+
+        if (trim($documento_descripcion) == '')
+            return Redirect::to('docentes/legajo/' . $docente_id);
+
+        $documento = DocenteLegajoDocumento::find($documento_id);
+        $documento->tipodocumento = $documento_descripcion;
+        $documento->save();
+        
+        return Redirect::to('docentes/legajo/' . $docente_id);
+    }
+
+    public function postBorrardocumento()
+    {
+        $documento_id = Input::get('idDocumentoHidden');
+        $docente_id = Input::get('txtAlumnoDocumentoId');
+        $imagen = '';
+        $documento = DocenteLegajoDocumento::find($documento_id);
+        if ($documento) {
+            $documento->delete();
+            // imagen fisica
+            $imagen = "docentes/documentos/" . $documento->documento;
+        }
+        // borro imagen fisica
+        if (file_exists($imagen)) unlink($imagen);
+
+        Session::flash('message', 'EL DOCUMENTO HA SIDO BORRADO.');
+        Session::flash('message_type', self::OPERACION_EXITOSA);
+        return Redirect::to('docentes/legajo/' . $docente_id);
+    }
 
     public function postBorrar()
     {
