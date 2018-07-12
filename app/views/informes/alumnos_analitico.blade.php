@@ -54,7 +54,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 				<div class="col-md-12">
 					<!-- COMIENZO TITULO & BREADCRUMB-->
 					<h3 class="page-title">
-					Informes <small> Estado de Cuentas</small>
+					Informes <small> Analítico del Alumno</small>
 					</h3>
 					<ul class="page-breadcrumb breadcrumb">
 						<!--li class="btn-group">
@@ -84,7 +84,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 							<i class="fa fa-angle-right"></i>
 						</li>
 						<li>
-							<a href="{{url('alumnos/informecuentaalumnos')}}">Estado de Cuentas</a>
+							<a href="{{url('alumnos/informeanaliticoalumnos')}}">Analítico</a>
 							<i class="fa fa-angle-right"></i>
 						</li>
 						<li>
@@ -130,7 +130,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 					<div class="portlet">
 						<div class="portlet-title">
 							<div class="caption">
-								<i class="fa fa-files-o"></i>Listado de Cuentas del Alumnos
+								<i class="fa fa-files-o"></i>Analítico del Alumno
 							</div>
 							<div class="actions">
 								<!--a href="{{url('cuotas/pagar')}}" {{$disabled}} class="btn default blue-stripe">
@@ -161,14 +161,6 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 								</div>
 
 								<div class="form-group">
-									<label class="col-md-2 col-sm-2 control-label" for="filtro">Ciclo Lectivo:</label>
-									<div class="col-md-2 col-sm-3">
-										<select name="cboCiclo" id="cboCiclo" class="table-group-action-input form-control">
-										</select>
-									</div>
-								</div>
-
-								<div class="form-group">
 									<label class="col-md-2 col-sm-2 control-label" for="cbocarrera">Carrera:</label>
 									<div class="col-md-6 col-sm-6">
 										<select name="cboCarrera" id="cboCarrera" class="table-group-action-input form-control">
@@ -186,7 +178,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 												</select>
 											</div>
 											<div class="col-md-4 col-sm-4">
-												<input class="form-control" name="txtalumno" id="txtalumno" type="text" value="">
+												<input class="form-control" name="txtalumno" id="txtalumno" type="text" value="30295559">
 												<input class="form-control" name="alumno_id" id="alumno_id" type="hidden" value="">
 											</div>
 											<div class="col-md-2 col-sm-2">
@@ -216,10 +208,10 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 										<thead>
 										<tr>
 											<th>
-												<center><i class="fa fa-calendar"></i> Fecha de Vencimiento</center>
+												<center><i class="fa fa-files-o"></i> Unidades Curriculares</center>
 											</th>
 											<th>
-												<center><i class="fa fa-files-o"></i> Tipo Movimiento</center>
+												<center><i class="fa fa-files-o"></i> Régimen</center>
 											</th>
 											<th>
 												<center><i class="glyphicon glyphicon-usd"></i> Efectivo</center>
@@ -321,7 +313,7 @@ $('input').keydown( function(e) {
 
 	$('#imprimir').on('click', function(e){
 		e.preventDefault();
-		window.open("{{url('cuotas/imprimirestadoalumno')}}?carrera_id=" + $('#cboCarrera').val() + '&ciclo_id=' + $('#cboCiclo').val() + '&alumno_id=' + $('#alumno_id').val());
+		window.open("{{url('cuotas/imprimirestadoalumno')}}?carrera_id=" + $('#cboCarrera').val() + '&alumno_id=' + $('#alumno_id').val());
 	});
 
     $('#btnBuscar').click(function() {
@@ -478,27 +470,26 @@ $('input').keydown( function(e) {
 
     });
 
-    $('#cboCiclo').change(function() {
+    $('#cboOrganizacion').change(function() {
+    	// 1 - limpiar todo
 
-        $('#cboCarrera').children().remove().end();
+    	limpiar_tabla();
+		$('#cboCarrera').children().remove().end();
 
-		limpiar_tabla();
-
-        if ($('#cboCiclo').val() == 0) return;
-
+		if ($('#cboOrganizacion').val() == 0) return;
+		
 		$.ajax({
-		  url: '{{url('inscripciones/obtenercarrerasporciclo')}}',
-		  data:{'ciclo_lectivo_id': $('#cboCiclo').val()},
+		  url: "{{url('organizacions/obtenercarreras')}}",
+		  data:{'organizacion_id': $('#cboOrganizacion').val()},
 		  type: 'POST'
 		}).done(function(carreras) {
 			console.log(carreras);
-
-			if (carreras == <?php echo InscripcionesController::NO_TIENE_INSCRIPCION  ?>) {
-				//alert('Este Ciclo Lectivo no tiene Carreras con Alumnos inscritos');
-				$('#divMensaje').html('<p class="form-control-static"><h4>' + 'Este Ciclo Lectivo no tiene Carreras con Alumnos inscritos!' + '</h4></p>');
-	    	    $('#MensajeCantidad').modal('show');
+			if (carreras == <?php echo OrganizacionsController::NO_TIENE_CARRERAS ?>) {
+				$('#modalMensajes').modal('show');
 				return;
-			}
+		    }
+
+			$("#table_asistencias").find("tr:gt(1)").remove();
 
 			$('#cboCarrera').append(
 		        $('<option></option>').val(0).html('Seleccionar')
@@ -506,47 +497,10 @@ $('input').keydown( function(e) {
 
 			$.each(carreras, function(key, value) {
 				$('#cboCarrera').append(
-			        $('<option></option>').val(value.carrera_id).html(value.carrera)
+			        $('<option></option>').val(value.id).html(value.carrera)
 			    );
 			});
-		}).error(function(data) {
-			console.log(data);
-		});
-
-    });
-
-    $('#cboOrganizacion').change(function() {
-    	// 1 - limpiar todo
-
-    	limpiar_tabla();
-		$('#cboCiclo').children().remove().end();
-		$('#cboCarrera').children().remove().end();
-
-		if ($('#cboOrganizacion').val() == 0) return;
-
-		$.ajax({
-		  url: '{{url('ciclolectivo/obtenercicloslectivos')}}',
-		  data:{'organizacion_id': $('#cboOrganizacion').val()},
-		  type: 'POST'
-		}).done(function(ciclos) {
-			console.log(ciclos);
-			if (ciclos == <?php echo CicloLectivoController::NO_EXISTE_CICLO ?>) {
-				//alert('La Organización no tiene Ciclos Lectivos Asignados');
-				$('#divMensaje').html('<p class="form-control-static"><h4>' + 'La Organización no tiene Ciclos Lectivos Asignados' + '</h4></p>');
-	    	    $('#MensajeCantidad').modal('show');
-				return;
-		    }
-
-			$('#cboCiclo').append(
-		        $('<option></option>').val(0).html('Seleccionar')
-		    );
-
-			$.each(ciclos, function(key, value) {
-				$('#cboCiclo').append(
-			        $('<option></option>').val(value.id).html(value.descripcion)
-			    );
-			});
-		}).error(function(data) {
+		}).error(function(data){
 			console.log(data);
 		});
 

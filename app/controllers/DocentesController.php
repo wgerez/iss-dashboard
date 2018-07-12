@@ -587,6 +587,30 @@ class DocentesController extends BaseController {
                 ->withErrors($validator);
         }
 
+        // PRIMERO CREAMOS SI NO EXISTE EL LEGAJO
+        if ($docente_legajo_id == 0) {
+            $legajos = new DocenteLegajo;
+            $legajos->docente_id = $docente_id;
+            $legajos->dni = 0;
+            $legajos->foto = 0;
+            $legajos->partidanacimiento = 0;
+            $legajos->ficha_medica = 0;
+            $legajos->cuil_cuit = 0;
+            $legajos->titulosecundario = 0;
+            $legajos->cargos_actividades = 0;
+            $legajos->tituloprofesional = 0;
+            $legajos->declaracion_jurada = 0;
+            $legajos->seguro = 0;
+            $legajos->otros = 0;
+            $legajos->usuario_alta = Auth::user()->usuario;
+            $legajos->fecha_alta = date('Y-m-d');
+            $legajos->save();
+
+            $legajo = DocenteLegajo::whereRaw('docente_id ='.$docente_id)->first();
+            $docente_legajo_id = $legajo->id;
+        }
+        //
+
         $docente_legajo_documento = new DocenteLegajoDocumento;
 
         if ($imagen) {

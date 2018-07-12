@@ -778,6 +778,22 @@ class AlumnosController extends BaseController {
             ->with('eliminar', Session::get('INFORME_ALUMNOS_ELIMINAR'));
     }
 
+    public function getInformeanaliticoalumnos()
+    {        
+        $organizaciones = Organizacion::lists('nombre', 'id');
+
+        array_unshift($organizaciones, 'Seleccionar');
+
+        return View::make('informes/alumnos_analitico')
+            ->with('menu', ModulosHelper::MENU_INFORMES)
+            ->with('submenu', ModulosHelper::SUBMENU_INFORMES_ALUMNOS)
+            ->with('organizaciones', $organizaciones)
+            ->with('leer', Session::get('INFORME_ALUMNOS_LEER'))
+            ->with('editar', Session::get('INFORME_ALUMNOS_EDITAR'))
+            ->with('imprimir', Session::get('INFORME_ALUMNOS_IMPRIMIR'))
+            ->with('eliminar', Session::get('INFORME_ALUMNOS_ELIMINAR'));
+    }
+
     public function postObtenercarreras()
     {
         $idOrg = Input::get('id');
