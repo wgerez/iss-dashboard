@@ -381,13 +381,13 @@
 												@if ($i > 0)
 
 												<div class="form-group">
-											        <center><label>Vista Previa</label></center>
+											        <center><label>Vista Documentos</label></center>
 													<ul class="grid cs-style-3">
 														@if ($imagen)
 															@foreach ($imagen as $image)
 																<li id="element{{$image['id']}}">
 																	<figure>
-																		<img id="imgvistaprevia" class="img-responsive" src="{{url('docentes/documentos')}}/{{$image['nombreimagen']}}" alt="vista previa documento">
+																		<img id="imgvistaprevia" class="img-responsive" src="{{url('docentes/documentos')}}/{{$image['nombreimagen']}}" alt="vista previa documento" data-id="{{$image['id']}}">
 																	</figure>
 																</li>
 															@endforeach	
@@ -407,6 +407,28 @@
 				</div>
 			</div>
 			<!-- FIN DEL CONTENIDO -->
+
+	<!-- /.modal-anular -->
+	<div class="modal fade" id="modalAnularInscripcion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+						<center><h4 class="modal-title"><strong>Vista Previa</strong></h4></center>
+					</div>
+					<div class="modal-body">
+						<img id="previa" class="img-responsive" src="" alt="vista previa documento">
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn default" data-dismiss="modal"><i class="fa fa-times-circle-o"></i> Cerrar</button>
+					</div>
+				</div>
+				<!-- /.modal-contenido -->
+			</div>
+		<!-- /.modal-dialog -->
+	</div>
+
+
 		</div>
 	</div>
 	<!-- FIN -->
@@ -529,7 +551,10 @@ $('#btnAgregar').live('click', function() {
 //--LEGAJOS
 $('.vistaprevia').live('click', function(){
 	var $arrid = $(this).parent().attr('id').split('_');
-	$('#imgvistaprevia').attr('src', $('#doc_'+$arrid[1]).val());  
+	$('#previa').attr('src', $('#doc_'+$arrid[1]).val());
+	//MUESTRO EL MODAL DE ADVERTENCIA
+	$('#modalAnularInscripcion').modal('show');
+	//$('#imgvistaprevia').attr('src', $('#doc_'+$arrid[1]).val());  
 });
 
 $('.btnEliminarDoc').live('click', function(e){
