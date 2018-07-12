@@ -368,8 +368,8 @@
 																	</td>
 																</tr>
 																<?php
+																$imagen[] = ['id' => $i, 'nombreimagen' => $documento->documento];
 																$i++;
-																$imagen = $documento->documento;
 																?>
 															@endforeach	
 														<?php } ?>															
@@ -379,18 +379,25 @@
 
 												<!-- TIENE IMAGEN DOCUMENTO -->
 												@if ($i > 0)
-													<div class="form-group">
-														<div class="col-md-12 col-sm-12 col-xs-12">
-															<fieldset>
-																<p><strong>Vista Previa</strong></p>
-																<center>
-																<div class="thumbnail">
-																    <img id="imgvistaprevia" class="img-responsive" src="{{url('docentes/documentos')}}/{{$imagen}}" alt="vista previa documento">
-																</div>
-																</center>
-															</fieldset>
-														</div>
-													</div>
+
+												<div class="form-group">
+											        <center><label>Vista Previa</label></center>
+													<ul class="grid cs-style-3">
+														@if ($imagen)
+															@foreach ($imagen as $image)
+																<li id="element{{$image['id']}}">
+																	<figure>
+																		<img id="imgvistaprevia" class="img-responsive" src="{{url('docentes/documentos')}}/{{$image['nombreimagen']}}" alt="vista previa documento">
+																		<!--figcaption>
+																			<a class="btn blue btnDeleteImage" data-id="{{$image['nombreimagen']}}" href="#"><i class="fa fa-trash-o"></i> Eliminar</a>
+																		</figcaption-->
+																	</figure>
+																</li>
+															@endforeach	
+														@endif	
+													</ul>
+												</div>
+
 												@endif												
 											</div>
 										</div>
