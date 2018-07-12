@@ -385,11 +385,11 @@
 													<ul class="grid cs-style-3">
 														@if ($imagen)
 															@foreach ($imagen as $image)
-																<li id="element{{$image['id']}}">
+																<center><ol id="element{{$image['id']}}">
 																	<figure>
-																		<img id="imgvistaprevia" class="img-responsive" src="{{url('docentes/documentos')}}/{{$image['nombreimagen']}}" alt="vista previa documento" data-id="{{$image['id']}}">
+																		<img id="imgvistaprevia" class="img-responsive" src="{{url('docentes/documentos')}}/{{$image['nombreimagen']}}" alt="vista previa documento" data-id="{{$image['id']}}" height="500" width="500">
 																	</figure>
-																</li>
+																</ol></center>
 															@endforeach	
 														@endif	
 													</ul>
