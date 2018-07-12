@@ -38,7 +38,7 @@
 	$seguro = '';
 	$otros = '';
 	$fechavencimientoseguro = '';
-	$docentelegajo_id = 1;
+	$docentelegajo_id = 0;
 
 	if (!$docente->docentelegajo == null) {
 		if ($docente->docentelegajo->dni) $dni = 'checked';
