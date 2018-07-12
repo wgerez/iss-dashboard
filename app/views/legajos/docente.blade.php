@@ -388,9 +388,6 @@
 																<li id="element{{$image['id']}}">
 																	<figure>
 																		<img id="imgvistaprevia" class="img-responsive" src="{{url('docentes/documentos')}}/{{$image['nombreimagen']}}" alt="vista previa documento">
-																		<!--figcaption>
-																			<a class="btn blue btnDeleteImage" data-id="{{$image['nombreimagen']}}" href="#"><i class="fa fa-trash-o"></i> Eliminar</a>
-																		</figcaption-->
 																	</figure>
 																</li>
 															@endforeach	
