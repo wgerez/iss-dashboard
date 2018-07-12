@@ -86,7 +86,12 @@ def swap_symlinks():
     run("ln -nfs %s/database.php %s/app/config/database.php" % (persist_dir, release_into))
     run("rm -rf %s/app/storage" % release_into)
 
+    run("rm -rf %s/public/alumnos" % release_into)
+    run("rm -rf %s/public/docentes" % release_into)
+
     run("ln -nfs %s/storage %s/app/storage" % (persist_dir, release_into))
+    run("ln -nfs %s/alumnos %s/public/alumnos" % (persist_dir, release_into))
+    run("ln -nfs %s/docentes %s/public/docentes" % (persist_dir, release_into))
 
 
     run("ln -nfs %s %s" % (release_into, current_release))
