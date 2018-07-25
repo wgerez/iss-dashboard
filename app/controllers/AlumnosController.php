@@ -803,6 +803,57 @@ class AlumnosController extends BaseController {
         return Response::json($carreras);
     }
 
+    public function postObteneranaliticoporalumno()
+    {
+        $organizacion_id = Input::get('organizacion');
+        $carrera_id = Input::get('carrera');
+        $alumno_id = Input::get('alumno_id');
+         
+        $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND organizacion_id ='.$organizacion_id.' AND alumno_id ='.$alumno_id)->get();
+
+        foreach ($examenfinal as $value) {
+            $materia = Materia::find($value->materia_id);
+
+            if ($value->calif_final_num > 5) {
+                $aprobo = 'SI';
+                $fecha_aprobacion = FechaHelper::getFechaImpresion($value->fecha_aprobacion);
+            } else {
+                $aprobo = 'NO';
+                $fecha_aprobacion = '-';
+            }
+
+            $parciales = Regularidades::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$materia->planestudio_id.' AND materia_id ='.$value->materia_id.' AND alumno_id ='.$alumno_id)->get();
+
+            foreach ($parciales as $parcial) {
+                if ($parcial->regularizo == 1) {
+                    $regularizo = 'SI';
+                    $promociono = '-';
+                    $fecha_regularizo = FechaHelper::getFechaImpresion($parcial->fecha_regularidad);
+                    //$porcion = explode("/", $fecha_regularidad);
+                    //$fecha_regularizo = $porcion[2].'-'.$porcion[1].'-'.$porcion[0];
+                } 
+
+                if ($parcial->regularizo == 0 || $parcial->regularizo == 2) {
+                    $regularizo = 'NO';
+                    $promociono = '-';
+                    $fecha_regularizo = '-';
+                }
+
+                if ($parcial->regularizo == 3) {
+                    $regularizo = '-';
+                    $promociono = 'SI';
+                    $fecha_regularizo = FechaHelper::getFechaImpresion($parcial->fecha_regularidad);
+                }
+            }
+
+            $analitico[] = ['materia' => $materia->nombremateria, 'regimen' => $materia->periodo, 'regularizado' => $regularizo, 'fecha_regularizacion' => $fecha_regularizo, 'promociono' => $promociono, 'aprobo' => $aprobo, 'fecha_aprobacion' => $fecha_aprobacion, 'calif_final_num' => $value->calif_final_num, 'calif_final_let' => $value->calif_final_let, 'libro' => $value->libro, 'folio' => $value->folio, 'acta' => $value->acta, 'observaciones' => $value->observaciones, 'aniocursado' => $materia->aniocursado];
+        }
+
+        /*highlight_string(var_export($analitico, true));
+        exit();*/
+        return Response::json($analitico);
+    }
+
 	public function postInformealumnosporcarrera()
 	{
 		$filtro         = Input::get('filtro');

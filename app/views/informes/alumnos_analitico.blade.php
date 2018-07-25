@@ -204,35 +204,51 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 							</div>
 							<div class="portlet-body">
 								<div class="box-body table-responsive no-padding">
-									<table class="table table-striped table-bordered table-hover" id="table_cuotas">
+									
+							<div class="form-group">
+								<div class="box-footer" align="center">
+							        <div id="div1">
+									<table class="table table-striped table-bordered table-hover" id="table_primero">
 										<thead>
 										<tr>
 											<th>
 												<center><i class="fa fa-files-o"></i> Unidades Curriculares</center>
 											</th>
 											<th>
-												<center><i class="fa fa-files-o"></i> Régimen</center>
+												<center><i class="glyphicon glyphicon-list-alt"></i> Régimen</center>
 											</th>
 											<th>
-												<center><i class="glyphicon glyphicon-usd"></i> Efectivo</center>
+												<center><i class="glyphicon glyphicon-tags"></i> Regularizado</center>
 											</th>
 											<th>
-												<center><i class="glyphicon glyphicon-credit-card"></i> Tarj. Crédito</center>
+												<center><i class="fa fa-calendar"></i> Fecha Regularizado</center>
 											</th>
 											<th>
-												<center><i class="glyphicon glyphicon-credit-card"></i> Tarj. Débito</center>
+												<center><i class="glyphicon glyphicon-ok-sign"></i> Promociono</center>
 											</th>
 											<th>
-												<center>Otros</center>
+												<center><i class="glyphicon glyphicon-check"></i> Aprobó</center>
 											</th>
 											<th>
-												<center><i class="fa fa-calendar"></i> Fecha de Pago</center>
+												<center><i class="fa fa-calendar"></i> Fecha de Aprobación</center>
 											</th>
 											<th>
-												<center><i class="glyphicon glyphicon-list-alt"></i> Nro. Comprobante</center>
+												<center><i class="glyphicon glyphicon-sort-by-order"></i> Calif. Final Número</center>
 											</th>
 											<th>
-												<center><i class="glyphicon glyphicon-pencil"></i> Acciones</center>
+												<center><i class="glyphicon glyphicon-sort-by-alphabet"></i> Calif. Letra</center>
+											</th>
+											<th>
+												<center><i class="glyphicon glyphicon-list"></i> Libro</center>
+											</th>
+											<th>
+												<center><i class="glyphicon glyphicon-pencil"></i> Folio</center>
+											</th>
+											<th>
+												<center><i class="glyphicon glyphicon-tag"></i> Acta</center>
+											</th>
+											<th>
+												<center><i class="glyphicon glyphicon-eye-open"></i> Observaciones Equivalencias</center>
 											</th>
 										</tr>
 										</thead>
@@ -241,6 +257,14 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 										
 										</tbody>
 									</table>
+							        </div>
+							        <br>
+							        <br>
+							        <div id="div2"></div>
+							        <br>
+							    </div>
+							</div>
+
 								</div>
 
 							<!-- MODAL-->
@@ -280,6 +304,8 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 
 @section('customjs')
 	//TableAdvanced.init();
+
+	$(div1).hide();
 	
 //Emular Tab al presionar Enter
 $('input').keydown( function(e) {
@@ -319,6 +345,8 @@ $('input').keydown( function(e) {
     $('#btnBuscar').click(function() {
     	var ciclo = $('#cboCiclo').val();
     	var carrera = $('#cboCarrera').val();
+    	var organizacion = $('#cboOrganizacion').val();
+    	$(div1).show();
     	
 			limpiar_tabla();
 
@@ -363,93 +391,48 @@ $('input').keydown( function(e) {
 				$('#divDNI').html('<p class="form-control-static">' + dni + '</p>');
 
 			    $.ajax({
-				  url: '{{url('cuotas/obtenercuentaporalumno')}}',
-				  data:{'alumno_id': alumno_id, 'ciclo': ciclo, 'carrera': carrera},
+				  url: '{{url('alumnos/obteneranaliticoporalumno')}}',
+				  data:{'alumno_id': alumno_id, 'carrera': carrera, 'organizacion': organizacion},
 				  type: 'POST'
-				}).done(function(cuotas) {
-					console.log(cuotas);
+				}).done(function(analitico) {
+					console.log(analitico);
 
-					$("#table_cuotas").find("tr:gt(0)").remove();
+					$("#table_primero").find("tr:gt(0)").remove();
+					//$("#div1").html("");
+					$("#table_segundo").find("tr:gt(0)").remove();
+					$("#div2").html("");
 				
-					if (cuotas.length == 0) {
+					if (analitico.length == 0) {
 						$("#imprimir").attr('disabled', 'disabled');
 					} else {
 						$("#imprimir").removeAttr("disabled");
+						//$(div1).show();
 					}
 
-					var efectivo = '';
-					var tarjetacredito = '';
-					var tarjetadebito = '';
-					var otros = '';
-					var bandera = true;
-					var mesa = 0;
-					var meses = ["Matricula", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-					var mespagocuotafin = 0;
-					var cuotaperiodopagohasta = 0;
-					var cicloslec = 0;
-					var fintabla = '';
-					var tr = '';
+					var anio = 'PRIMER AÑO';
 
-				    $.each(cuotas, function(key, value) {
-						if (value.activo == 'disabled') {
-							$("#imprimir").attr('disabled', 'disabled');
-						} else {
-							$("#imprimir").removeAttr("disabled");
+				    $.each(analitico, function(key, value) {
+						if (value.aniocursado == 1) {
+							if (anio == 'PRIMER AÑO') {
+					  			/*$("#div1").html("<center><label class='control-label text-info'><strong>"+anio+"</strong></label></center><table id='table_primero'><thead><tr><th><center><i class='fa fa-files-o'></i> Unidades Curriculares</center></th><th><center><i class='glyphicon glyphicon-list-alt'></i> Régimen</center></th><th><center><i class='glyphicon glyphicon-tags'></i> Regularizado</center></th><th><center><i class='fa fa-calendar'></i> Fecha Regularizado</center></th><th><center><i class='glyphicon glyphicon-ok-sign'></i> Promociono</center></th><th><center><i class='glyphicon glyphicon-check'></i> Aprobó</center></th><th><center><i class='fa fa-calendar'></i> Fecha de Aprobación</center></th><th><center><i class='glyphicon glyphicon-sort-by-order'></i> Calif. Final Número</center></th><th><center><i class='glyphicon glyphicon-sort-by-alphabet'></i> Calif. Letra</center></th><th><center><i class='glyphicon glyphicon-list'></i> Libro</center></th><th><center><i class='glyphicon glyphicon-pencil'></i> Folio</center></th><th><center><i class='glyphicon glyphicon-eye-open'></i> Observaciones Equivalencias</center></th></tr></thead><tbody></tbody></table>");*/
+
+					  			anio = 'SEGUNDO AÑO';
+					  		}
+
+					  		$('#table_primero > tbody').append('<tr><td><center>'+value.materia+'</center></td><td><center>'+value.regimen+'</center></td><td><center>'+value.regularizado+'</center></td><td><center>'+value.fecha_regularizacion+'</center></td><td><center>'+value.promociono+'</center></td><td><center>'+value.aprobo+'</center></td><td><center>'+value.fecha_aprobacion+'</center></td><td><center>'+value.calif_final_num+'</center></td><td><center>'+value.calif_final_let+'</center></td><td><center>'+value.libro+'</center></td><td><center>'+value.folio+'</center></td><td><center>'+value.acta+'</center></td><td><center>'+value.observaciones+'</center></td></tr>');
 						}
 
-				    	if (value.efectivo == 0) {
-					    	efectivo = '';
-					    } else {
-						    efectivo = '$' + parseInt(value.efectivo);
+						if (value.aniocursado == 2) {
+							$(div2).show();
+							if (anio == 'SEGUNDO AÑO') {
+					  			$("#div2").html("<center><label class='control-label text-info'>"+anio+"</label></center><table  id='table_primero'><thead><tr><th><center><i class='fa fa-files-o'></i> Unidades Curriculares</center></th><th><center><i class='glyphicon glyphicon-list-alt'></i> Régimen</center></th><th><center><i class='glyphicon glyphicon-tags'></i> Regularizado</center></th><th><center><i class='fa fa-calendar'></i> Fecha Regularizado</center></th><th><center><i class='glyphicon glyphicon-ok-sign'></i> Promociono</center></th><th><center><i class='glyphicon glyphicon-check'></i> Aprobó</center></th><th><center><i class='fa fa-calendar'></i> Fecha de Aprobación</center></th><th><center><i class='glyphicon glyphicon-sort-by-order'></i> Calif. Final Número</center></th><th><center><i class='glyphicon glyphicon-sort-by-alphabet'></i> Calif. Letra</center></th><th><center><i class='glyphicon glyphicon-list'></i> Libro</center></th><th><center><i class='glyphicon glyphicon-pencil'></i> Folio</center></th><th><center><i class='glyphicon glyphicon-tag'></i> Acta</center></th><th><center><i class='glyphicon glyphicon-eye-open'></i> Observaciones Equivalencias</center></th></tr></thead><tbody></tbody></table>");
+
+					  			anio = 'TERCER AÑO';
+					  		}
+
+					  		$('#table_segundo > tbody').append('<tr><td><center>'+value.fechavencimientomatricula+'</center></td><td><center>'+value.tipomovimiento+'</center></td><td><center>'+efectivo+'</center></td><td><center>'+tarjetacredito+'</center></td><td><center>'+tarjetadebito+'</center></td><td><center>'+otros+'</center></td><td><center>'+value.fechapago+'</center></td><td><center>'+value.nrocomprobante+'</center></td></tr>');
 						}
-
-				    	if (value.tarjetacredito == 0) {
-					    	tarjetacredito = '';
-					    } else {
-						    tarjetacredito = '$' + parseInt(value.tarjetacredito);
-						}
-
-				    	if (value.tarjetadebito == 0) {
-					    	tarjetadebito = '';
-					    } else {
-						    tarjetadebito = '$' + parseInt(value.tarjetadebito);
-						}
-
-				    	if (value.otros == 0) {
-					    	otros = '';
-					    } else {
-						    otros = '$' + parseInt(value.otros);
-						}
-
-						mespagocuotafin = value.mespagocuotafin;
-						cuotaperiodopagohasta = value.cuotaperiodopagohasta;
-						cicloslec = value.cicloslec;
-
-						if (value.tipomovimiento == 'Matricula') {
-							fintabla = '<td><center><a target="_blank" href="{{url('matriculas/imprimirreciboadeuda')}}?carrera='+carrera+'&ciclo='+ciclo+'&alumno='+alumno_id+'&matricula='+value.matricula_id+'" '+value.activo+' data-id="" class="btn default btn-xs red"><i title="Imprimir" class="glyphicon glyphicon-print"></i></a></center></td></tr>';
-						} else {
-							fintabla = '<td><center><a target="_blank" href="{{url('cuotas/imprimirrecibo')}}?txt_pago_id='+value.matricula_id+'" '+value.activo+' data-id="" class="btn default btn-xs red"><i title="Imprimir" class="glyphicon glyphicon-print"></i></a></center></td></tr>';
-						}
-
-						if (value.activo == 'disabled') {
-							tr = "class='danger'";
-							fintabla = '<td><center></center></td></tr>';
-							$("#imprimir").removeAttr("disabled");
-						} else {
-							tr = "";
-						}
-
-						$('#table_cuotas > tbody').append('<tr '+tr+'><td><center>'+value.fechavencimientomatricula+'</center></td><td><center>'+value.tipomovimiento+'</center></td><td><center>'+efectivo+'</center></td><td><center>'+tarjetacredito+'</center></td><td><center>'+tarjetadebito+'</center></td><td><center>'+otros+'</center></td><td><center>'+value.fechapago+'</center></td><td><center>'+value.nrocomprobante+'</center></td>'+fintabla);
-
-						mesa = value.mescuota;
 					});
-
-					var mesaseguir = parseInt(mesa) + 1;
-					var mespagocuotafins = parseInt(mespagocuotafin) + 1;
-
-					for (i = parseInt(mesaseguir); i < parseInt(mespagocuotafins); i++) {
-						$('#table_cuotas > tbody').append('<tr class="danger"><td><center>'+cuotaperiodopagohasta+'/'+i+'/'+cicloslec+'</center></td><td><center>Cta. '+meses[i]+'</center></td><td><center></center></td><td><center></center></td><td><center></center></td><td><center></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr>');
-					}
 
 				}).error(function(data) {
 					console.log(data);
@@ -508,7 +491,7 @@ $('input').keydown( function(e) {
 
     function limpiar_tabla() {
 	    var n = 0;
-		$('#table_cuotas tr').each(function() {
+		$('#table_primero tr').each(function() {
 		   if (n > 0) $(this).remove();
 		   n++;
 		});
