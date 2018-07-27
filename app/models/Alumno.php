@@ -66,7 +66,7 @@ class Alumno extends \Eloquent {
     {
         $result = DB::table('personas', 'alumnos', 'localidades', 'provincias')
                 ->select(DB::raw('personas.id as persona_id, personas.apellido, personas.nombre,
-                    personas.numero, personas.calle, personas.nrodocumento, alumnos.id as alumno_id,
+                    personas.numero, personas.calle, personas.nrodocumento, personas.fechanacimiento, alumnos.id as alumno_id,
                     localidades.descripcion as localidad, provincias.descripcion as provincia'))
                 ->join('alumnos', 'personas.id', '=', 'alumnos.persona_id')
                 ->join('localidades', 'personas.localidad_id', '=', 'localidades.id')

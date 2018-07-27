@@ -808,50 +808,202 @@ class AlumnosController extends BaseController {
         $organizacion_id = Input::get('organizacion');
         $carrera_id = Input::get('carrera');
         $alumno_id = Input::get('alumno_id');
+        $materias = [];
          
         $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND organizacion_id ='.$organizacion_id.' AND alumno_id ='.$alumno_id)->get();
 
-        foreach ($examenfinal as $value) {
-            $materia = Materia::find($value->materia_id);
-
-            if ($value->calif_final_num > 5) {
-                $aprobo = 'SI';
-                $fecha_aprobacion = FechaHelper::getFechaImpresion($value->fecha_aprobacion);
-            } else {
-                $aprobo = 'NO';
-                $fecha_aprobacion = '-';
+        if (count($examenfinal) > 0) {
+            foreach ($examenfinal as $examenfina) {
+                array_push($materias, $examenfina->materia_id);
             }
 
-            $parciales = Regularidades::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$materia->planestudio_id.' AND materia_id ='.$value->materia_id.' AND alumno_id ='.$alumno_id)->get();
+            $resultado = array_unique($materias);
+            sort($resultado);
 
-            foreach ($parciales as $parcial) {
-                if ($parcial->regularizo == 1) {
-                    $regularizo = 'SI';
-                    $promociono = '-';
-                    $fecha_regularizo = FechaHelper::getFechaImpresion($parcial->fecha_regularidad);
-                    //$porcion = explode("/", $fecha_regularidad);
-                    //$fecha_regularizo = $porcion[2].'-'.$porcion[1].'-'.$porcion[0];
-                } 
+            foreach ($resultado as $value) {
+                $materia = Materia::find($value);
 
-                if ($parcial->regularizo == 0 || $parcial->regularizo == 2) {
-                    $regularizo = 'NO';
-                    $promociono = '-';
-                    $fecha_regularizo = '-';
+                $parciales = Regularidades::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$materia->planestudio_id.' AND materia_id ='.$value.' AND alumno_id ='.$alumno_id)->get();
+
+                foreach ($parciales as $parcial) {
+                    if ($parcial->regularizo == 1) {
+                        $regularizo = 'SI';
+                        $promociono = '-';
+                        $fecha_regularizo = FechaHelper::getFechaImpresion($parcial->fecha_regularidad);
+                        //$porcion = explode("/", $fecha_regularidad);
+                        //$fecha_regularizo = $porcion[2].'-'.$porcion[1].'-'.$porcion[0];
+                    } 
+
+                    if ($parcial->regularizo == 0 || $parcial->regularizo == 2) {
+                        $regularizo = 'NO';
+                        $promociono = '-';
+                        $fecha_regularizo = '-';
+                    }
+
+                    if ($parcial->regularizo == 3) {
+                        $regularizo = '-';
+                        $promociono = 'SI';
+                        $fecha_regularizo = FechaHelper::getFechaImpresion($parcial->fecha_regularidad);
+                    }
                 }
 
-                if ($parcial->regularizo == 3) {
-                    $regularizo = '-';
-                    $promociono = 'SI';
-                    $fecha_regularizo = FechaHelper::getFechaImpresion($parcial->fecha_regularidad);
+                $examenfinales = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND organizacion_id ='.$organizacion_id.' AND alumno_id ='.$alumno_id.' AND materia_id ='.$value.' AND planestudio_id ='.$materia->planestudio_id.' AND calif_final_num > 5')->get();
+
+                if (count($examenfinales) > 0) {
+                    foreach ($examenfinales as $examen) {
+                        $aprobo = 'SI';
+                        $fecha_aprobacion = FechaHelper::getFechaImpresion($examen->fecha_aprobacion);
+
+                        $analitico[] = ['materia_id' => $examen->materia_id, 'materia' => $materia->nombremateria, 'regimen' => $materia->periodo, 'regularizado' => $regularizo, 'fecha_regularizacion' => $fecha_regularizo, 'promociono' => $promociono, 'aprobo' => $aprobo, 'fecha_aprobacion' => $fecha_aprobacion, 'calif_final_num' => $examen->calif_final_num, 'calif_final_let' => $examen->calif_final_let, 'libro' => $examen->libro, 'folio' => $examen->folio, 'acta' => $examen->acta, 'observaciones' => $examen->observaciones, 'aniocursado' => $materia->aniocursado];
+                    }
+                } else {
+                    $examenfinales = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND organizacion_id ='.$organizacion_id.' AND alumno_id ='.$alumno_id.' AND materia_id ='.$value.' AND planestudio_id ='.$materia->planestudio_id.' AND calif_final_num < 6')->get();
+
+                    if (count($examenfinales) > 0) {
+                        foreach ($examenfinales as $examen) {
+                            $calif_final_num = $examen->calif_final_num;
+                            $calif_final_let = $examen->calif_final_let;
+                            $libro = $examen->libro;
+                            $folio = $examen->folio;
+                            $acta = $examen->acta;
+                            $observaciones = $examen->observaciones;
+                        }
+
+                        $aprobo = 'NO';
+                        $fecha_aprobacion = '-';
+
+                        $analitico[] = ['materia_id' => $value, 'materia' => $materia->nombremateria, 'regimen' => $materia->periodo, 'regularizado' => $regularizo, 'fecha_regularizacion' => $fecha_regularizo, 'promociono' => $promociono, 'aprobo' => $aprobo, 'fecha_aprobacion' => $fecha_aprobacion, 'calif_final_num' => $calif_final_num, 'calif_final_let' => $calif_final_let, 'libro' => $libro, 'folio' => $folio, 'acta' => $acta, 'observaciones' => $observaciones, 'aniocursado' => $materia->aniocursado];
+                    }
                 }
             }
-
-            $analitico[] = ['materia' => $materia->nombremateria, 'regimen' => $materia->periodo, 'regularizado' => $regularizo, 'fecha_regularizacion' => $fecha_regularizo, 'promociono' => $promociono, 'aprobo' => $aprobo, 'fecha_aprobacion' => $fecha_aprobacion, 'calif_final_num' => $value->calif_final_num, 'calif_final_let' => $value->calif_final_let, 'libro' => $value->libro, 'folio' => $value->folio, 'acta' => $value->acta, 'observaciones' => $value->observaciones, 'aniocursado' => $materia->aniocursado];
         }
 
         /*highlight_string(var_export($analitico, true));
         exit();*/
         return Response::json($analitico);
+    }
+
+    public function getImprimiranaliticoalumno()
+    {
+        $organizacion_id = Input::get('organizacion_id');
+        $carrera_id = Input::get('carrera_id');
+        $alumno_id = Input::get('alumno_id');
+
+        $materias = [];
+         
+        $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND organizacion_id ='.$organizacion_id.' AND alumno_id ='.$alumno_id)->get();
+
+        if (count($examenfinal) > 0) {
+            foreach ($examenfinal as $examenfina) {
+                array_push($materias, $examenfina->materia_id);
+            }
+
+            $resultado = array_unique($materias);
+            sort($resultado);
+
+            foreach ($resultado as $value) {
+                $materia = Materia::find($value);
+
+                $parciales = Regularidades::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$materia->planestudio_id.' AND materia_id ='.$value.' AND alumno_id ='.$alumno_id)->get();
+
+                foreach ($parciales as $parcial) {
+                    if ($parcial->regularizo == 1) {
+                        $regularizo = 'SI';
+                        $promociono = '-';
+                        $fecha_regularizo = FechaHelper::getFechaImpresion($parcial->fecha_regularidad);
+                        //$porcion = explode("/", $fecha_regularidad);
+                        //$fecha_regularizo = $porcion[2].'-'.$porcion[1].'-'.$porcion[0];
+                    } 
+
+                    if ($parcial->regularizo == 0 || $parcial->regularizo == 2) {
+                        $regularizo = 'NO';
+                        $promociono = '-';
+                        $fecha_regularizo = '-';
+                    }
+
+                    if ($parcial->regularizo == 3) {
+                        $regularizo = '-';
+                        $promociono = 'SI';
+                        $fecha_regularizo = FechaHelper::getFechaImpresion($parcial->fecha_regularidad);
+                    }
+                }
+
+                $examenfinales = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND organizacion_id ='.$organizacion_id.' AND alumno_id ='.$alumno_id.' AND materia_id ='.$value.' AND planestudio_id ='.$materia->planestudio_id.' AND calif_final_num > 5')->get();
+
+                if (count($examenfinales) > 0) {
+                    foreach ($examenfinales as $examen) {
+                        $aprobo = 'SI';
+                        $fecha_aprobacion = FechaHelper::getFechaImpresion($examen->fecha_aprobacion);
+
+                        $analitico[] = ['materia_id' => $examen->materia_id, 'materia' => $materia->nombremateria, 'regimen' => $materia->periodo, 'regularizado' => $regularizo, 'fecha_regularizacion' => $fecha_regularizo, 'promociono' => $promociono, 'aprobo' => $aprobo, 'fecha_aprobacion' => $fecha_aprobacion, 'calif_final_num' => $examen->calif_final_num, 'calif_final_let' => $examen->calif_final_let, 'libro' => $examen->libro, 'folio' => $examen->folio, 'acta' => $examen->acta, 'observaciones' => $examen->observaciones, 'aniocursado' => $materia->aniocursado];
+                    }
+                } else {
+                    $examenfinales = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND organizacion_id ='.$organizacion_id.' AND alumno_id ='.$alumno_id.' AND materia_id ='.$value.' AND planestudio_id ='.$materia->planestudio_id.' AND calif_final_num < 6')->get();
+
+                    if (count($examenfinales) > 0) {
+                        foreach ($examenfinales as $examen) {
+                            $calif_final_num = $examen->calif_final_num;
+                            $calif_final_let = $examen->calif_final_let;
+                            $libro = $examen->libro;
+                            $folio = $examen->folio;
+                            $acta = $examen->acta;
+                            $observaciones = $examen->observaciones;
+                        }
+
+                        $aprobo = 'NO';
+                        $fecha_aprobacion = '-';
+
+                        $analitico[] = ['materia_id' => $value, 'materia' => $materia->nombremateria, 'regimen' => $materia->periodo, 'regularizado' => $regularizo, 'fecha_regularizacion' => $fecha_regularizo, 'promociono' => $promociono, 'aprobo' => $aprobo, 'fecha_aprobacion' => $fecha_aprobacion, 'calif_final_num' => $calif_final_num, 'calif_final_let' => $calif_final_let, 'libro' => $libro, 'folio' => $folio, 'acta' => $acta, 'observaciones' => $observaciones, 'aniocursado' => $materia->aniocursado];
+                    }
+                }
+            }
+        }
+
+        $alumnos = Alumno::getAlumnoPorAlumnoId($alumno_id);
+        $alumno = (count($alumnos)) ? $alumnos[0] : '';
+
+        $apeynom = $alumno->apellido.', '.$alumno->nombre;
+        $fecha_nac = FechaHelper::getFechaImpresion($alumno->fechanacimiento);
+        $lugarnacimiento = $alumno->provincia.', '.$fecha_nac;
+
+        $titulosecundario = AlumnoLegajo::whereRaw('alumno_id ='.$alumno_id)->first()->titulosecundario;
+
+        $cohorte = PlanEstudio::find($materia->planestudio_id)->codigoplan;
+
+        $contactotel = ContactoPersona::whereRaw('contacto_id=1 AND persona_id ='.$alumno->persona_id)->first();
+        $telefono = '';
+
+        if (count($contactotel) > 0) {
+            $telefono = $contactotel->descripcion;
+        } else {
+            $contactotel = ContactoPersona::whereRaw('contacto_id=2 AND persona_id ='.$alumno->persona_id)->first();
+
+            if (count($contactotel) > 0) {
+                $telefono = $contactotel->descripcion;
+            }
+        }
+
+        if ($titulosecundario == 1) {
+            $titulopresentado = 'SI';
+        } else {
+            $titulopresentado = 'NO';
+        }
+
+        $carrera = Carrera::find($carrera_id)->carrera;
+
+        $datoalumno[] = ['carrera' => $carrera, 'apeynom' => $apeynom, 'nrodocumento' => $alumno->nrodocumento, 'calle' => $alumno->calle, 'cohorte' => $cohorte, 'lugarnacimiento' => $lugarnacimiento, 'titulopresentado' => $titulopresentado, 'telefono' => $telefono];
+
+        /*highlight_string(var_export($datoalumno, true));
+        exit();*/
+
+        $pdf = PDF::loadView(
+            'informes.pdf.analiticoalumno',
+            [
+              'datoalumno' => $datoalumno,
+              'analitico' => $analitico
+            ]
+        );
+        return $pdf->setOrientation('landscape')->stream();
     }
 
 	public function postInformealumnosporcarrera()
