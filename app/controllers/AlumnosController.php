@@ -876,6 +876,8 @@ class AlumnosController extends BaseController {
                     }
                 }
             }
+        } else {
+            $analitico = [];
         }
 
         /*highlight_string(var_export($analitico, true));
@@ -890,7 +892,7 @@ class AlumnosController extends BaseController {
         $alumno_id = Input::get('alumno_id');
 
         $materias = [];
-         
+        
         $examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND organizacion_id ='.$organizacion_id.' AND alumno_id ='.$alumno_id)->get();
 
         if (count($examenfinal) > 0) {

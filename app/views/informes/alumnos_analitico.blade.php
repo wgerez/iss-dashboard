@@ -380,6 +380,12 @@ $('input').keydown( function(e) {
 
 				if (alumno == <?php echo AlumnosController::NO_EXISTE_ALUMNO ?>) {
 					$('#divMensaje').html('<p class="form-control-static"><h4>' + 'No se ha encontrado ningun registro!' + '</h4></p>');
+					$('#alumno_id').val('');
+				    $('#txt_persona_id').val('');
+				    $('#txt_persona_id_verInfo').val('');
+				    $('#nombreAlumno').text('');
+					$('#divDNI').html('<p class="form-control-static"></p>');
+					$("#imprimir").attr('disabled', 'disabled');
 	    	    	$('#MensajeCantidad').modal('show');
 					return;
 			    }
@@ -468,7 +474,7 @@ $('input').keydown( function(e) {
     $('#cboCarrera').change(function() {
 
     	limpiar_tabla();
-
+    	$("#imprimir").attr('disabled', 'disabled');
         if ($('#cboCarrera').val() == 0) return;
 
     });
@@ -477,6 +483,7 @@ $('input').keydown( function(e) {
     	// 1 - limpiar todo
 
     	limpiar_tabla();
+    	$("#imprimir").attr('disabled', 'disabled');
 		$('#cboCarrera').children().remove().end();
 
 		if ($('#cboOrganizacion').val() == 0) return;
