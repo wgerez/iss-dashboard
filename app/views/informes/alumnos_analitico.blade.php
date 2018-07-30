@@ -172,13 +172,14 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 									<div class="form-body">
 										<div class="form-group">
 											<label  class="col-md-2 col-sm-2 control-label">Alumno:</label>
-											<div class="col-md-2 col-sm-2">
+											<div class="col-md-3 col-sm-3">
 												<select name="cboFiltroAlumno" id="cboFiltroAlumno" class="table-group-action-input form-control">
 													<option value="1">DNI</option>
+													<option value="2">Apellido, Nombres</option>
 												</select>
 											</div>
 											<div class="col-md-4 col-sm-4">
-												<input class="form-control" name="txtalumno" id="txtalumno" type="text" value="30295559">
+												<input class="form-control" name="txtalumno" id="txtalumno" type="text" value="">
 												<input class="form-control" name="alumno_id" id="alumno_id" type="hidden" value="">
 											</div>
 											<div class="col-md-2 col-sm-2">
@@ -325,17 +326,23 @@ $('input').keydown( function(e) {
 	$("#imprimir").attr('disabled', 'disabled');
 	//$("#txtalumno").attr('disabled', 'disabled');
 
-	/*$('#cboFiltroAlumno').click(function() {
+	$('#cboFiltroAlumno').click(function() {
 		if ($('#cboFiltroAlumno').val() == 2) {
-	        $('#txtalumno').removeAttr("disabled");
+	        $('#txtalumno').val("");
+	        $('#alumno_id').val("");
+	        $("#imprimir").attr('disabled', 'disabled');
+	        //$('#txtalumno').removeAttr("disabled");
 	    }
 
 	    if ($('#cboFiltroAlumno').val() == 1) {
 	        $('#txtalumno').val("");
 	        $('#alumno_id').val("");
-	    	$("#txtalumno").attr('disabled', 'disabled');
+	        $("#imprimir").attr('disabled', 'disabled');
+	    	//$("#txtalumno").attr('disabled', 'disabled');
 	    }
-	});*/
+
+	    $('#txtalumno').focus();
+	});
 
 	$('#cboOrganizacion').select2({
 		placeholder: "Seleccione",
@@ -348,19 +355,27 @@ $('input').keydown( function(e) {
 	});
 
     $('#btnBuscar').click(function() {
+    	if ($('#cboCiclo').val() == 0) return;
+
+    	if ($('#cboCarrera').val() == 0) return;
+
+    	if ($('#cboOrganizacion').val() == 0) return;
+
     	var ciclo = $('#cboCiclo').val();
     	var carrera = $('#cboCarrera').val();
     	var organizacion = $('#cboOrganizacion').val();
+
     	$(div1).show();
     	
 			limpiar_tabla();
 
 			/* VALIDACIONES DEL BOTON BUSCAR */
 		    if ($.trim($('#txtalumno').val()) == '') {
-		    	$('#divMensaje').html('<p class="form-control-static"><h4>' + 'Ingrese DNI del Alumno!' + '</h4></p>');
+		    	$('#divMensaje').html('<p class="form-control-static"><h4>' + 'Ingrese Datos del Alumno!' + '</h4></p>');
 	    	    $('#MensajeCantidad').modal('show');
 		    	return;
 		    }
+
 		    if ($('#cboFiltroAlumno').val() == 1) {
 		        if ($.trim($('#txtalumno').val()) == '') {
 		    	    $('#divMensaje').html('<p class="form-control-static"><h4>' + 'Debe ingresar el DNI del Alumno!' + '</h4></p>');
@@ -368,6 +383,15 @@ $('input').keydown( function(e) {
 		    	    return;
 		    	}
 		    	url_destino = "{{url('alumnos/obteneralumnopordni')}}";
+		    }
+
+		    if ($('#cboFiltroAlumno').val() == 2) {
+		        if ($.trim($('#txtalumno').val()) == '') {
+		    	    $('#divMensaje').html('<p class="form-control-static"><h4>' + 'Debe ingresar Apellido y nombres del Alumno!' + '</h4></p>');
+	    	    	$('#MensajeCantidad').modal('show');
+		    	    return;
+		    	}
+		    	url_destino = "{{url('alumnos/obteneralumnoporapellidoynombre')}}";
 		    }
 
 		    /* OBTENGO EL ALUMNO */
