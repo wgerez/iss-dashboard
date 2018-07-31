@@ -319,15 +319,15 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 	$("#div2").hide();
 	$("#div3").hide();
 	
-//Emular Tab al presionar Enter
-$('input').keydown( function(e) {
+	//Emular Tab al presionar Enter
+	/*$('input').keydown( function(e) {
         var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
         if(key == 13) {
             e.preventDefault();
             var inputs = $(this).closest('form').find(':input:visible');
             inputs.eq( inputs.index(this)+ 1 ).focus();
         }
- });
+ 	});*/
 
 	$("#imprimir").attr('disabled', 'disabled');
 	//$("#txtalumno").attr('disabled', 'disabled');
@@ -360,7 +360,25 @@ $('input').keydown( function(e) {
 		window.open("{{url('alumnos/imprimiranaliticoalumno')}}?carrera_id=" + $('#cboCarrera').val() + '&alumno_id=' + $('#alumno_id').val() + '&organizacion_id=' + $('#cboOrganizacion').val());
 	});
 
+	/* DESHABILITO EL ENTER EN EL CONTROL */
+	$('#txtalumno').keypress(function(e) {
+	    if (e.which == 13) {
+	    	ConsultarAnalitico();
+	    	return false;
+	    }
+	});
+
     $('#btnBuscar').click(function() {
+    	if ($('#cboCiclo').val() == 0) return;
+
+    	if ($('#cboCarrera').val() == 0) return;
+
+    	if ($('#cboOrganizacion').val() == 0) return;
+
+		ConsultarAnalitico();
+	});
+
+	function ConsultarAnalitico() {
     	if ($('#cboCiclo').val() == 0) return;
 
     	if ($('#cboCarrera').val() == 0) return;
@@ -529,14 +547,14 @@ $('input').keydown( function(e) {
 			});
 		
 		$("#imprimir").removeAttr("disabled");
-    });
+    }
 
     $('#cboCarrera').change(function() {
-
     	limpiar_tabla();
     	$("#imprimir").attr('disabled', 'disabled');
         if ($('#cboCarrera').val() == 0) return;
 
+	    $('#txtalumno').focus();
     });
 
     $('#cboOrganizacion').change(function() {
