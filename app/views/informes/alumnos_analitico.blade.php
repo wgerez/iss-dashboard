@@ -209,7 +209,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 							<div class="form-group">
 								<div class="box-footer" align="center">
 							        <div id="div1">
-							        	<center><label id="anio" class='control-label text-info'></label></center>
+							        	<center><label id="anio" class='control-label text-info'><strong></strong></label></center>
 									<table class="table table-striped table-bordered table-hover" id="table_primero">
 										<thead>
 										<tr>
@@ -266,6 +266,12 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 							        <br>
 							        <br>
 							        <div id="div3"></div>
+							        <br>
+							        <br>
+							        <div id="div4"></div>
+							        <br>
+							        <br>
+							        <div id="div5"></div>
 							        <br>
 							    </div>
 							</div>
@@ -435,8 +441,13 @@ $('input').keydown( function(e) {
 					$("#table_primero").find("tr:gt(0)").remove();
 					//$("#div1").html("");
 					$("#table_segundo").find("tr:gt(0)").remove();
+					$("#table_tercer").find("tr:gt(0)").remove();
+					$("#table_cuarto").find("tr:gt(0)").remove();
+					$("#table_quinto").find("tr:gt(0)").remove();
 					$("#div2").html("");
 					$("#div3").html("");
+					$("#div4").html("");
+					$("#div5").html("");
 				
 					if (analitico.length == 0) {
 						$("#imprimir").attr('disabled', 'disabled');
@@ -478,10 +489,35 @@ $('input').keydown( function(e) {
 					  			$("#div3").html("<center><label class='control-label text-info'>"+anio+"</label></center><table class='table table-striped table-bordered table-hover' id='table_tercer'><thead><tr><th><center><i class='fa fa-files-o'></i> Unidades Curriculares</center></th><th><center><i class='glyphicon glyphicon-list-alt'></i> Régimen</center></th><th><center><i class='glyphicon glyphicon-tags'></i> Regularizado</center></th><th><center><i class='fa fa-calendar'></i> Fecha Regularizado</center></th><th><center><i class='glyphicon glyphicon-ok-sign'></i> Promociono</center></th><th><center><i class='glyphicon glyphicon-check'></i> Aprobó</center></th><th><center><i class='fa fa-calendar'></i> Fecha de Aprobación</center></th><th><center><i class='glyphicon glyphicon-sort-by-order'></i> Calif. Final Número</center></th><th><center><i class='glyphicon glyphicon-sort-by-alphabet'></i> Calif. Letra</center></th><th><center><i class='glyphicon glyphicon-list'></i> Libro</center></th><th><center><i class='glyphicon glyphicon-pencil'></i> Folio</center></th><th><center><i class='glyphicon glyphicon-tag'></i> Acta</center></th><th><center><i class='glyphicon glyphicon-eye-open'></i> Observaciones Equivalencias</center></th></tr></thead><tbody></tbody></table>");
 
 					  			anio = 'CUARTO AÑO';
+
+								$("#div4").show();
 					  		}
 
 					  		$('#table_tercer > tbody').append('<tr><td><center>'+value.materia+'</center></td><td><center>'+value.regimen+'</center></td><td><center>'+value.regularizado+'</center></td><td><center>'+value.fecha_regularizacion+'</center></td><td><center>'+value.promociono+'</center></td><td><center>'+value.aprobo+'</center></td><td><center>'+value.fecha_aprobacion+'</center></td><td><center>'+value.calif_final_num+'</center></td><td><center>'+value.calif_final_let+'</center></td><td><center>'+value.libro+'</center></td><td><center>'+value.folio+'</center></td><td><center>'+value.acta+'</center></td><td><center>'+value.observaciones+'</center></td></tr>');
 						}
+
+						if (value.aniocursado == 4) {
+							if (anio == 'CUARTO AÑO') {
+					  			$("#div4").html("<center><label class='control-label text-info'>"+anio+"</label></center><table class='table table-striped table-bordered table-hover' id='table_cuarto'><thead><tr><th><center><i class='fa fa-files-o'></i> Unidades Curriculares</center></th><th><center><i class='glyphicon glyphicon-list-alt'></i> Régimen</center></th><th><center><i class='glyphicon glyphicon-tags'></i> Regularizado</center></th><th><center><i class='fa fa-calendar'></i> Fecha Regularizado</center></th><th><center><i class='glyphicon glyphicon-ok-sign'></i> Promociono</center></th><th><center><i class='glyphicon glyphicon-check'></i> Aprobó</center></th><th><center><i class='fa fa-calendar'></i> Fecha de Aprobación</center></th><th><center><i class='glyphicon glyphicon-sort-by-order'></i> Calif. Final Número</center></th><th><center><i class='glyphicon glyphicon-sort-by-alphabet'></i> Calif. Letra</center></th><th><center><i class='glyphicon glyphicon-list'></i> Libro</center></th><th><center><i class='glyphicon glyphicon-pencil'></i> Folio</center></th><th><center><i class='glyphicon glyphicon-tag'></i> Acta</center></th><th><center><i class='glyphicon glyphicon-eye-open'></i> Observaciones Equivalencias</center></th></tr></thead><tbody></tbody></table>");
+
+					  			anio = 'QUINTO AÑO';
+
+								$("#div5").show();
+					  		}
+
+					  		$('#table_cuarto > tbody').append('<tr><td><center>'+value.materia+'</center></td><td><center>'+value.regimen+'</center></td><td><center>'+value.regularizado+'</center></td><td><center>'+value.fecha_regularizacion+'</center></td><td><center>'+value.promociono+'</center></td><td><center>'+value.aprobo+'</center></td><td><center>'+value.fecha_aprobacion+'</center></td><td><center>'+value.calif_final_num+'</center></td><td><center>'+value.calif_final_let+'</center></td><td><center>'+value.libro+'</center></td><td><center>'+value.folio+'</center></td><td><center>'+value.acta+'</center></td><td><center>'+value.observaciones+'</center></td></tr>');
+						}
+
+						if (value.aniocursado == 5) {
+							if (anio == 'QUINTO AÑO') {
+					  			$("#div5").html("<center><label class='control-label text-info'>"+anio+"</label></center><table class='table table-striped table-bordered table-hover' id='table_quinto'><thead><tr><th><center><i class='fa fa-files-o'></i> Unidades Curriculares</center></th><th><center><i class='glyphicon glyphicon-list-alt'></i> Régimen</center></th><th><center><i class='glyphicon glyphicon-tags'></i> Regularizado</center></th><th><center><i class='fa fa-calendar'></i> Fecha Regularizado</center></th><th><center><i class='glyphicon glyphicon-ok-sign'></i> Promociono</center></th><th><center><i class='glyphicon glyphicon-check'></i> Aprobó</center></th><th><center><i class='fa fa-calendar'></i> Fecha de Aprobación</center></th><th><center><i class='glyphicon glyphicon-sort-by-order'></i> Calif. Final Número</center></th><th><center><i class='glyphicon glyphicon-sort-by-alphabet'></i> Calif. Letra</center></th><th><center><i class='glyphicon glyphicon-list'></i> Libro</center></th><th><center><i class='glyphicon glyphicon-pencil'></i> Folio</center></th><th><center><i class='glyphicon glyphicon-tag'></i> Acta</center></th><th><center><i class='glyphicon glyphicon-eye-open'></i> Observaciones Equivalencias</center></th></tr></thead><tbody></tbody></table>");
+
+					  			anio = 'SEXTO AÑO';
+					  		}
+
+					  		$('#table_quinto > tbody').append('<tr><td><center>'+value.materia+'</center></td><td><center>'+value.regimen+'</center></td><td><center>'+value.regularizado+'</center></td><td><center>'+value.fecha_regularizacion+'</center></td><td><center>'+value.promociono+'</center></td><td><center>'+value.aprobo+'</center></td><td><center>'+value.fecha_aprobacion+'</center></td><td><center>'+value.calif_final_num+'</center></td><td><center>'+value.calif_final_let+'</center></td><td><center>'+value.libro+'</center></td><td><center>'+value.folio+'</center></td><td><center>'+value.acta+'</center></td><td><center>'+value.observaciones+'</center></td></tr>');
+						}
+
 					});
 
 				}).error(function(data) {
