@@ -1,12 +1,12 @@
 @extends('layouts.informes.contenedor')
 
 @section('cuerpo')
-  <h3><center>Analitico de Alumno</center></h3>
+  <h3><center>Analítico de Alumno</center></h3>
   @if (isset($datoalumno))
       @foreach ($datoalumno as $datoalumn)
         <h3><center>{{$datoalumn['carrera']}}</center></h3>
         <h4>Alumno: {{$datoalumn['apeynom']}}. &nbsp;&nbsp;&nbsp; DNI: {{$datoalumn['nrodocumento']}} &nbsp;&nbsp;&nbsp; Domicilio: {{$datoalumn['calle']}} &nbsp;&nbsp;&nbsp; Cohorte: {{$datoalumn['cohorte']}}</h4>
-        <h4>Lugar y Fecha de Nacimiento: {{$datoalumn['lugarnacimiento']}} &nbsp;&nbsp;&nbsp; Titulo Presentado: {{$datoalumn['titulopresentado']}} &nbsp;&nbsp;&nbsp; Tel/Cel: {{$datoalumn['telefono']}}</h4>
+        <h4>Lugar y Fecha de Nacimiento: {{$datoalumn['lugarnacimiento']}} &nbsp;&nbsp;&nbsp; Título Presentado: {{$datoalumn['titulopresentado']}} &nbsp;&nbsp;&nbsp; Tel/Cel: {{$datoalumn['telefono']}}</h4>
       @endforeach
   @endif
   <?php
@@ -23,7 +23,7 @@
         <td><strong><center>Régimen</center></strong></td>
         <td><strong><center>Regularizado</center></strong></td>
         <td><strong><center>Fecha Regularización</center></strong></td>
-        <td><strong><center>Promociono</center></strong></td>
+        <td><strong><center>Promocionó</center></strong></td>
         <td><strong><center>Aprobó</center></strong></td>
         <td><strong><center>Fecha Aprobación</center></strong></td>
         <td><strong><center>Calif. Final Número</center></strong></td>
@@ -80,7 +80,7 @@
         <td><strong><center>Régimen</center></strong></td>
         <td><strong><center>Regularizado</center></strong></td>
         <td><strong><center>Fecha Regularización</center></strong></td>
-        <td><strong><center>Promociono</center></strong></td>
+        <td><strong><center>Promocionó</center></strong></td>
         <td><strong><center>Aprobó</center></strong></td>
         <td><strong><center>Fecha Aprobación</center></strong></td>
         <td><strong><center>Calif. Final Número</center></strong></td>
@@ -140,7 +140,7 @@
         <td><strong><center>Régimen</center></strong></td>
         <td><strong><center>Regularizado</center></strong></td>
         <td><strong><center>Fecha Regularización</center></strong></td>
-        <td><strong><center>Promociono</center></strong></td>
+        <td><strong><center>Promocionó</center></strong></td>
         <td><strong><center>Aprobó</center></strong></td>
         <td><strong><center>Fecha Aprobación</center></strong></td>
         <td><strong><center>Calif. Final Número</center></strong></td>
@@ -200,7 +200,7 @@
         <td><strong><center>Régimen</center></strong></td>
         <td><strong><center>Regularizado</center></strong></td>
         <td><strong><center>Fecha Regularización</center></strong></td>
-        <td><strong><center>Promociono</center></strong></td>
+        <td><strong><center>Promocionó</center></strong></td>
         <td><strong><center>Aprobó</center></strong></td>
         <td><strong><center>Fecha Aprobación</center></strong></td>
         <td><strong><center>Calif. Final Número</center></strong></td>
@@ -260,7 +260,7 @@
         <td><strong><center>Régimen</center></strong></td>
         <td><strong><center>Regularizado</center></strong></td>
         <td><strong><center>Fecha Regularización</center></strong></td>
-        <td><strong><center>Promociono</center></strong></td>
+        <td><strong><center>Promocionó</center></strong></td>
         <td><strong><center>Aprobó</center></strong></td>
         <td><strong><center>Fecha Aprobación</center></strong></td>
         <td><strong><center>Calif. Final Número</center></strong></td>
