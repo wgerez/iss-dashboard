@@ -21,10 +21,10 @@
       <tr>
         <td><strong><center>Unidades Curriculares</center></strong></td>
         <td><strong><center>Régimen</center></strong></td>
-        <td><strong><center>Regularizado</center></strong></td>
+        <!--td><strong><center>Regularizado</center></strong></td-->
         <td><strong><center>Fecha Regularización</center></strong></td>
         <td><strong><center>Promocionó</center></strong></td>
-        <td><strong><center>Aprobó</center></strong></td>
+        <!--td><strong><center>Aprobó</center></strong></td-->
         <td><strong><center>Fecha Aprobación</center></strong></td>
         <td><strong><center>Calif. Final Número</center></strong></td>
         <td><strong><center>Calif. Final Letra</center></strong></td>
@@ -43,10 +43,10 @@
               <tr>
                 <td><center>{{$analitic['materia']}}</center></td>
                 <td><center>{{$analitic['regimen']}}</center></td>
-                <td><center>{{$analitic['regularizado']}}</center></td>
+                <!--td><center>{{$analitic['regularizado']}}</center></td-->
                 <td><center>{{$analitic['fecha_regularizacion']}}</center></td>
                 <td><center>{{$analitic['promociono']}}</center></td>
-                <td><center>{{$analitic['aprobo']}}</center></td>
+                <!--td><center>{{$analitic['aprobo']}}</center></td-->
                 <td><center>{{$analitic['fecha_aprobacion']}}</center></td>
                 <td><center>{{$analitic['calif_final_num']}}</center></td>
                 <td><center>({{$analitic['calif_final_let']}})</center></td>
@@ -78,10 +78,10 @@
       <tr>
         <td><strong><center>Unidades Curriculares</center></strong></td>
         <td><strong><center>Régimen</center></strong></td>
-        <td><strong><center>Regularizado</center></strong></td>
+        <!--td><strong><center>Regularizado</center></strong></td-->
         <td><strong><center>Fecha Regularización</center></strong></td>
         <td><strong><center>Promocionó</center></strong></td>
-        <td><strong><center>Aprobó</center></strong></td>
+        <!--td><strong><center>Aprobó</center></strong></td-->
         <td><strong><center>Fecha Aprobación</center></strong></td>
         <td><strong><center>Calif. Final Número</center></strong></td>
         <td><strong><center>Calif. Final Letra</center></strong></td>
@@ -100,10 +100,10 @@
               <tr>
                 <td><center>{{$analitic['materia']}}</center></td>
                 <td><center>{{$analitic['regimen']}}</center></td>
-                <td><center>{{$analitic['regularizado']}}</center></td>
+                <!--td><center>{{$analitic['regularizado']}}</center></td-->
                 <td><center>{{$analitic['fecha_regularizacion']}}</center></td>
                 <td><center>{{$analitic['promociono']}}</center></td>
-                <td><center>{{$analitic['aprobo']}}</center></td>
+                <!--td><center>{{$analitic['aprobo']}}</center></td-->
                 <td><center>{{$analitic['fecha_aprobacion']}}</center></td>
                 <td><center>{{$analitic['calif_final_num']}}</center></td>
                 <td><center>({{$analitic['calif_final_let']}})</center></td>
@@ -138,10 +138,10 @@
       <tr>
         <td><strong><center>Unidades Curriculares</center></strong></td>
         <td><strong><center>Régimen</center></strong></td>
-        <td><strong><center>Regularizado</center></strong></td>
+        <!--td><strong><center>Regularizado</center></strong></td-->
         <td><strong><center>Fecha Regularización</center></strong></td>
         <td><strong><center>Promocionó</center></strong></td>
-        <td><strong><center>Aprobó</center></strong></td>
+        <!--td><strong><center>Aprobó</center></strong></td-->
         <td><strong><center>Fecha Aprobación</center></strong></td>
         <td><strong><center>Calif. Final Número</center></strong></td>
         <td><strong><center>Calif. Final Letra</center></strong></td>
@@ -160,10 +160,10 @@
               <tr>
                 <td><center>{{$analitic['materia']}}</center></td>
                 <td><center>{{$analitic['regimen']}}</center></td>
-                <td><center>{{$analitic['regularizado']}}</center></td>
+                <!--td><center>{{$analitic['regularizado']}}</center></td-->
                 <td><center>{{$analitic['fecha_regularizacion']}}</center></td>
                 <td><center>{{$analitic['promociono']}}</center></td>
-                <td><center>{{$analitic['aprobo']}}</center></td>
+                <!--td><center>{{$analitic['aprobo']}}</center></td-->
                 <td><center>{{$analitic['fecha_aprobacion']}}</center></td>
                 <td><center>{{$analitic['calif_final_num']}}</center></td>
                 <td><center>({{$analitic['calif_final_let']}})</center></td>
@@ -198,10 +198,10 @@
       <tr>
         <td><strong><center>Unidades Curriculares</center></strong></td>
         <td><strong><center>Régimen</center></strong></td>
-        <td><strong><center>Regularizado</center></strong></td>
+        <!--td><strong><center>Regularizado</center></strong></td-->
         <td><strong><center>Fecha Regularización</center></strong></td>
         <td><strong><center>Promocionó</center></strong></td>
-        <td><strong><center>Aprobó</center></strong></td>
+        <!--td><strong><center>Aprobó</center></strong></td-->
         <td><strong><center>Fecha Aprobación</center></strong></td>
         <td><strong><center>Calif. Final Número</center></strong></td>
         <td><strong><center>Calif. Final Letra</center></strong></td>
@@ -220,10 +220,10 @@
               <tr>
                 <td><center>{{$analitic['materia']}}</center></td>
                 <td><center>{{$analitic['regimen']}}</center></td>
-                <td><center>{{$analitic['regularizado']}}</center></td>
+                <!--td><center>{{$analitic['regularizado']}}</center></td-->
                 <td><center>{{$analitic['fecha_regularizacion']}}</center></td>
                 <td><center>{{$analitic['promociono']}}</center></td>
-                <td><center>{{$analitic['aprobo']}}</center></td>
+                <!--td><center>{{$analitic['aprobo']}}</center></td-->
                 <td><center>{{$analitic['fecha_aprobacion']}}</center></td>
                 <td><center>{{$analitic['calif_final_num']}}</center></td>
                 <td><center>({{$analitic['calif_final_let']}})</center></td>
@@ -258,10 +258,10 @@
       <tr>
         <td><strong><center>Unidades Curriculares</center></strong></td>
         <td><strong><center>Régimen</center></strong></td>
-        <td><strong><center>Regularizado</center></strong></td>
+        <!--td><strong><center>Regularizado</center></strong></td-->
         <td><strong><center>Fecha Regularización</center></strong></td>
         <td><strong><center>Promocionó</center></strong></td>
-        <td><strong><center>Aprobó</center></strong></td>
+        <!--td><strong><center>Aprobó</center></strong></td-->
         <td><strong><center>Fecha Aprobación</center></strong></td>
         <td><strong><center>Calif. Final Número</center></strong></td>
         <td><strong><center>Calif. Final Letra</center></strong></td>
@@ -280,10 +280,10 @@
               <tr>
                 <td><center>{{$analitic['materia']}}</center></td>
                 <td><center>{{$analitic['regimen']}}</center></td>
-                <td><center>{{$analitic['regularizado']}}</center></td>
+                <!--td><center>{{$analitic['regularizado']}}</center></td-->
                 <td><center>{{$analitic['fecha_regularizacion']}}</center></td>
                 <td><center>{{$analitic['promociono']}}</center></td>
-                <td><center>{{$analitic['aprobo']}}</center></td>
+                <!--td><center>{{$analitic['aprobo']}}</center></td-->
                 <td><center>{{$analitic['fecha_aprobacion']}}</center></td>
                 <td><center>{{$analitic['calif_final_num']}}</center></td>
                 <td><center>({{$analitic['calif_final_let']}})</center></td>

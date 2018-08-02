@@ -859,7 +859,7 @@ class AlumnosController extends BaseController {
 
                             $analitico[] = ['materia_id' => $examen->materia_id, 'materia' => $materia->nombremateria, 'regimen' => $materia->periodo, 'regularizado' => $regularizo, 'fecha_regularizacion' => $fecha_regularizo, 'promociono' => $promociono, 'aprobo' => $aprobo, 'fecha_aprobacion' => $fecha_aprobacion, 'calif_final_num' => $examen->calif_final_num, 'calif_final_let' => $examen->calif_final_let, 'libro' => $examen->libro, 'folio' => $examen->folio, 'acta' => $examen->acta, 'observaciones' => $examen->observaciones, 'aniocursado' => $materia->aniocursado];
                         }
-                    } else {
+                    } /*else {
                         $examenfinales = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND organizacion_id ='.$organizacion_id.' AND alumno_id ='.$alumno_id.' AND materia_id ='.$value.' AND planestudio_id ='.$materia->planestudio_id.' AND calif_final_num < 6')->get();
 
                         if (count($examenfinales) > 0) {
@@ -877,7 +877,7 @@ class AlumnosController extends BaseController {
 
                             $analitico[] = ['materia_id' => $value, 'materia' => $materia->nombremateria, 'regimen' => $materia->periodo, 'regularizado' => $regularizo, 'fecha_regularizacion' => $fecha_regularizo, 'promociono' => $promociono, 'aprobo' => $aprobo, 'fecha_aprobacion' => $fecha_aprobacion, 'calif_final_num' => $calif_final_num, 'calif_final_let' => $calif_final_let, 'libro' => $libro, 'folio' => $folio, 'acta' => $acta, 'observaciones' => $observaciones, 'aniocursado' => $materia->aniocursado];
                         }
-                    }
+                    }*/
                 }
             } else {
                 $analitico = [];
@@ -943,7 +943,7 @@ class AlumnosController extends BaseController {
 
                         $analitico[] = ['materia_id' => $examen->materia_id, 'materia' => $materia->nombremateria, 'regimen' => $materia->periodo, 'regularizado' => $regularizo, 'fecha_regularizacion' => $fecha_regularizo, 'promociono' => $promociono, 'aprobo' => $aprobo, 'fecha_aprobacion' => $fecha_aprobacion, 'calif_final_num' => $examen->calif_final_num, 'calif_final_let' => $examen->calif_final_let, 'libro' => $examen->libro, 'folio' => $examen->folio, 'acta' => $examen->acta, 'observaciones' => $examen->observaciones, 'aniocursado' => $materia->aniocursado];
                     }
-                } else {
+                } /*else {
                     $examenfinales = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND organizacion_id ='.$organizacion_id.' AND alumno_id ='.$alumno_id.' AND materia_id ='.$value.' AND planestudio_id ='.$materia->planestudio_id.' AND calif_final_num < 6')->get();
 
                     if (count($examenfinales) > 0) {
@@ -961,7 +961,7 @@ class AlumnosController extends BaseController {
 
                         $analitico[] = ['materia_id' => $value, 'materia' => $materia->nombremateria, 'regimen' => $materia->periodo, 'regularizado' => $regularizo, 'fecha_regularizacion' => $fecha_regularizo, 'promociono' => $promociono, 'aprobo' => $aprobo, 'fecha_aprobacion' => $fecha_aprobacion, 'calif_final_num' => $calif_final_num, 'calif_final_let' => $calif_final_let, 'libro' => $libro, 'folio' => $folio, 'acta' => $acta, 'observaciones' => $observaciones, 'aniocursado' => $materia->aniocursado];
                     }
-                }
+                }*/
             }
         }
 
