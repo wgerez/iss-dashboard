@@ -482,6 +482,45 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 		var activo = 'disabled';
 		var txtalumno = $('#txtalumno').val();
     	var fechadesde = $('#fechadesde').val();
+    	var fechainicio = $('#fechainicio').val();
+    	var fechafin = $('#fechafin').val();
+
+		var hoy = new Date();
+		var dd = hoy.getDate();
+		var mm = hoy.getMonth()+1; //hoy es 0!
+		var yyyy = hoy.getFullYear();
+
+		if(dd < 10) {
+		    dd = '0'+dd;
+		}
+
+		if(mm < 10) {
+		    mm = '0'+mm;
+		}
+
+		var fechahoy = yyyy+'-'+mm+'-'+dd;
+
+    	if (fechadesde == '') {
+	    	fechadesde = yyyy+'-'+mm+'-'+dd;
+	    } else {
+		    if (fechadesde > fechahoy) {
+			    $('#divMensaje').html('<p class="form-control-static"><h4>' + 'No puede seleccionar una fecha mayor a la actual!' + '</h4></p>');
+	    		$('#MensajeCantidad').modal('show');
+		    	return;
+			}
+
+			if (fechainicio > fechadesde) {
+			    $('#divMensaje').html('<p class="form-control-static"><h4>' + 'La fecha no se encuentra en el ciclo lectivo!' + '</h4></p>');
+	    		$('#MensajeCantidad').modal('show');
+		    	return;
+			}
+		}
+
+	    if (fechadesde > fechafin) {
+		    $('#divMensaje').html('<p class="form-control-static"><h4>' + 'La fecha seleccionada no se encuentra en el ciclo lectivo!' + '</h4></p>');
+    		$('#MensajeCantidad').modal('show');
+	    	return;
+		}
 
 		if (!txtalumno == '') {
 			$.ajax({
