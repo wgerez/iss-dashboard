@@ -234,13 +234,19 @@ class InscripcionmateriasController extends BaseController
 			}
 		}
 
-		$detallematricula = DetalleMatriculaPago::whereRaw('inscripcion_id ='.$inscripcion_id.' AND alumno_id ='.$alumno_id)->get();
-
-		if (count($detallematricula) > 0) {
+		$beca = Beca::whereRaw('inscripcion_id =' . $inscripcion_id . ' and becado=1')->get();
+        
+		if (count($beca) > 0) {
 			$matricula = 1;
         } else {
-			$matricula = 0;
-        }
+			$detallematricula = DetalleMatriculaPago::whereRaw('inscripcion_id ='.$inscripcion_id.' AND alumno_id ='.$alumno_id)->get();
+
+			if (count($detallematricula) > 0) {
+				$matricula = 1;
+	        } else {
+				$matricula = 0;
+	        }
+	    }
 
         return $matricula;
     }
