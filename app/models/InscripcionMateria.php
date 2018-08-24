@@ -29,4 +29,9 @@ class InscripcionMateria extends \Eloquent {
 	{
 		return $this->belongsTo('Materia');
 	}
+	
+    public function ciclolectivo()
+    {
+        return $this->belongsTo('CicloLectivo');
+    }
 }

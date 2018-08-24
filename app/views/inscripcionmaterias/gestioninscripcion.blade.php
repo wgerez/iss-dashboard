@@ -138,6 +138,20 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 										<label class="control-label {{ $ciclo_act['text'] }}" id="estadoCiclo">{{ $ciclo_act['activo'] }}</label>
 									</div-->
 								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label" for="cboCiclos">Ciclo Lectivo:</label>
+									<div class="col-md-4 col-sm-10">
+										<select name="cboCiclos" id="cboCiclos" class="table-group-action-input form-control">
+											<option value="0">Seleccione</option>
+											@if (isset($ciclos))
+												@foreach ($ciclos as $ciclo)
+													<option value="{{$ciclo->id}}"<?php if ($ciclo->id == $ciclo_id) echo "selected"; ?>>{{$ciclo->descripcion}}</option>
+												@endforeach
+											@endif
+										</select>
+									</div>
+								</div>
 							</div> <!-- FIN PORTLET-BODY -->
 							<!--div class="form-group">
 								<label class="col-md-2 control-label" for="tituloplan">Docente:</label>
@@ -217,6 +231,9 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 											<center><i class="fa fa-edit"></i> Plan/Estudio</center>
 										</th>
 										<th>
+											<center><i class="fa fa-edit"></i> Ciclo Lectivo</center>
+										</th>
+										<th>
 											<center><i class="fa fa-list-ol"></i> Materias Asignadas</center>
 										</th>
 										<!--th>
@@ -241,6 +258,9 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 															</td>
 															<td>
 																<center>{{ $mat_ins['plan'] }}</center>
+															</td>
+															<td>
+																<center>{{ $mat_ins['ciclo'] }}</center>
 															</td>
 															<td>
 																<center>{{ $mat_ins['nombre'] }}</center>
@@ -369,7 +389,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 			$.each(materiasdisponibles, function(key, value){
 				$.ajax({
 					url: "{{url('inscripcionmaterias/obtenercorrelatividad')}}",
-					data: {'alumnoid': $('#alumnoid').val(), 'planid': $('#planEstudio').val(), 'carrera_id': $('#carreras').val(), 'materiasdisponibles': value},
+					data: {'alumnoid': $('#alumnoid').val(), 'planid': $('#planEstudio').val(), 'cboCiclos': $('#cboCiclos').val(), 'carrera_id': $('#carreras').val(), 'materiasdisponibles': value},
 					type: 'POST'					
 				}).done(function(materias){
 					console.log(materias);
@@ -385,7 +405,6 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 				});
 			})	
 		}
-
 	});
 
 	var url_destino = "{{url('alumnos/obteneralumnopordni')}}";
@@ -394,7 +413,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 
 	$('#imprimir').on('click', function(e){
 		e.preventDefault();
-		window.open("{{url('inscripcionmaterias/pdfimprimirlistado')}}?organizacion=" + $('#organizacion').val() + '&planEstudio=' + $('#planEstudio').val() + '&carreras=' + $('#carreras').val() + '&alumnoid=' + $('#alumnoid').val() + '&documento=' + $('#documento').val());
+		window.open("{{url('inscripcionmaterias/pdfimprimirlistado')}}?organizacion=" + $('#organizacion').val() + '&planEstudio=' + $('#planEstudio').val() + '&cboCiclos=' + $('#cboCiclos').val() + '&carreras=' + $('#carreras').val() + '&alumnoid=' + $('#alumnoid').val() + '&documento=' + $('#documento').val());
 	});
 
 	$("#btnBuscarAlumno").on('click', function(){
@@ -415,6 +434,12 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 			$('#nombreAlumno').text("");
 			return false;
 		}
+		
+		if ($('#cboCiclos').val() == '0') {
+    		$('#divMensaje').html('<p class="form-control-static"><h4>' + 'Debe seleccionar los datos a buscar' + '</h4></p>');
+    		$('#MensajeCantidad').modal('show');
+	    	return;
+	    }
 
 		Ejecutarbusqueda();
 	});
@@ -444,7 +469,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 				//UNA VEZ QUE SE DETECTA AL ALUMNO, COMPROBAMOS SI TIENE ABONADO LA MATRICULA
 				$.ajax({
 					url: "{{url('inscripcionmaterias/obtenermatricula')}}",
-					data: {'alumnoid': $('#alumnoid').val(), 'plan_id': $('#planEstudio').val(), 'carrera_id': $('#carreras').val()},
+					data: {'alumnoid': $('#alumnoid').val(), 'plan_id': $('#planEstudio').val(), 'carrera_id': $('#carreras').val(), 'cboCiclos': $('#cboCiclos').val()},
 					type: 'POST',
 					dataType: 'json',
 					cache: false					
@@ -462,7 +487,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 					//UNA VEZ QUE SE DETECTA AL ALUMNO, COMPROBAMOS SI ESTÁ INSCRIPTO EN LA CARRERA SELECCIONADA
 					$.ajax({
 						url: url_alumno,
-						data: {'alumnoid': $('#alumnoid').val(), 'plan_id': $('#planEstudio').val(), 'carrera_id': $('#carreras').val()},
+						data: {'alumnoid': $('#alumnoid').val(), 'plan_id': $('#planEstudio').val(), 'carrera_id': $('#carreras').val(), 'cboCiclos': $('#cboCiclos').val()},
 						type: 'POST',
 						dataType: 'json',
 						cache: false					
@@ -480,7 +505,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 									    $('<option selected></option>').val(value.id).html(value.nombre)
 								    );
 
-									$('#table_permisos > tbody:last-child').append('<tr><td><center>'+ value.fecha +'</center></td><td><center>'+ value.carrera +'</center></td><td><center>'+ value.anio +'°</center></td><td><center>'+ value.plan +'</center></td><td><center>'+ value.nombre +'</center></td><!--td><center><a href="#" data-id="'+ value.id +'" class="btn default btn-xs red btnEliminarMaterias"><i title="Eliminar" class="fa fa-trash-o"></i></a></center></td--></tr>');
+									$('#table_permisos > tbody:last-child').append('<tr><td><center>'+ value.fecha +'</center></td><td><center>'+ value.carrera +'</center></td><td><center>'+ value.anio +'°</center></td><td><center>'+ value.plan +'</center></td><td><center>'+ value.ciclo +'</center></td><td><center>'+ value.nombre +'</center></td><!--td><center><a href="#" data-id="'+ value.id +'" class="btn default btn-xs red btnEliminarMaterias"><i title="Eliminar" class="fa fa-trash-o"></i></a></center></td--></tr>');
 
 									$('#imprimir').removeAttr("disabled",'false');
 								} else {
@@ -516,25 +541,49 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 		});
 	}
 
+	$('#cboCiclos').on('change', function() {
+		$('#estadoCiclo').removeClass( "text-info" ).addClass( "text-danger" ).text('');
+		if ($('#cboCiclos').val() == 0) return;
+		
+		$('#materiasdisponibles').children().remove().end();
+		$('#materiasdisponibles').multiSelect('refresh');
+		$('#table_permisos tbody tr').each(function() {
+		    $(this).remove();
+		});
+		$('#nombreAlumno').text('');
+		$('#divDNI').html('<p class="form-control-static"></p>');
+	});
+
 	$('#planEstudio').on('change', function() {
 		$('#estadoCiclo').removeClass( "text-info" ).addClass( "text-danger" ).text('');
-		if ($('#planEstudio').val() == 0) return;
-		var request = "{{url('inscripcionmaterias/obtenerciclolectivoactivo')}}";
+		$('#cboCiclos').children().remove().end();
+		if ($('#organizacion').val() == 0) return;
 
 		$.ajax({
-			url: request,
-			data: {'plan_id': $("#planEstudio").val()},
-			type: 'POST',
-			dataType: 'json',
-			cache: false	
-		}).done(function(ciclo){
-			if (ciclo == '1') {
-				$('#estadoCiclo').removeClass( "text-danger" ).addClass( "text-info" ).text('Activo');	
-			} else {
-				$('#estadoCiclo').removeClass( "text-info" ).addClass( "text-danger" ).text('No Activo');
-			}
-		}).error(function(err){
-			console.log("Error: "+err);
+		  url: '{{url('ciclolectivo/obtenercicloslectivos')}}',
+		  data:{'organizacion_id': $('#organizacion').val()},
+		  type: 'POST'
+		}).done(function(ciclos) {
+			console.log(ciclos);
+
+			if (ciclos == <?php echo CicloLectivoController::NO_EXISTE_CICLO ?>) {
+				$('#divMensaje').html('<p class="form-control-static"><h4>' + 'La Organización no tiene Ciclos Lectivos Asignados' + '</h4></p>');
+	    	    $('#MensajeCantidad').modal('show');
+				return;
+		    }
+
+			$('#cboCiclos').append(
+		        $('<option></option>').val(0).html('Seleccionar')
+		    );
+
+			$.each(ciclos, function(key, value) {
+				$('#cboCiclos').append(
+			        $('<option></option>').val(value.id).html(value.descripcion)
+			    );
+			});
+
+		}).error(function(data) {
+			console.log(data);
 		});
 
 		$('#materiasdisponibles').children().remove().end();

@@ -7,7 +7,7 @@
         exit();*/
 ?>
 <h3><center>INSCRIPCIÓN MATERIAS A CURSAR</center></h3>
-<h3>Carrera: {{$carrera}}</h3><!--h3>Ciclo Lectivo: {{$ciclo}}</h3-->
+<h3>Carrera: {{$carrera}}</h3><h3>Ciclo Lectivo: {{$ciclo}}</h3>
   <table class="collapse">
     <thead>
       <tr>

@@ -133,6 +133,20 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 										<label class="control-label text-info" id="estadoCiclo"></label>
 									</div-->
 								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label" for="cboCiclos">Ciclo Lectivo:</label>
+									<div class="col-md-4 col-sm-10">
+										<select name="cboCiclos" id="cboCiclos" class="table-group-action-input form-control">
+											<option value="0">Seleccione</option>
+											@if (isset($ciclos))
+												@foreach ($ciclos as $ciclo)
+													<option value="{{$ciclo->id}}"<?php if ($ciclo->id == $ciclo_id) echo "selected"; ?>>{{$ciclo->descripcion}}</option>
+												@endforeach
+											@endif
+										</select>
+									</div>
+								</div>
 							</div> <!-- FIN PORTLET-BODY -->
 					</div>
 					<br>
@@ -364,7 +378,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 
 	$('#imprimir').on('click', function(e){
 		e.preventDefault();
-		window.open("{{url('inscripcionmaterias/pdfimprimirlistado')}}?organizacion=" + $('#organizacion').val() + '&planEstudio=' + $('#planEstudio').val() + '&carreras=' + $('#carreras').val() + '&alumnoid=' + $('#alumnoid').val() + '&documento=' + $('#documento').val());
+		window.open("{{url('inscripcionmaterias/pdfimprimirlistado')}}?organizacion=" + $('#organizacion').val() + '&planEstudio=' + $('#planEstudio').val() + '&carreras=' + $('#carreras').val() + '&cboCiclos=' + $('#cboCiclos').val() + '&alumnoid=' + $('#alumnoid').val() + '&documento=' + $('#documento').val());
 	});
 
 	$('#cboFiltroAlumno').on('change', function(){
@@ -457,25 +471,49 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 
 	});
 
+	$('#cboCiclos').on('change', function() {
+		$('#estadoCiclo').removeClass( "text-info" ).addClass( "text-danger" ).text('');
+		if ($('#cboCiclos').val() == 0) return;
+		
+		$('#materiasdisponibles').children().remove().end();
+		$('#materiasdisponibles').multiSelect('refresh');
+		$('#table_permisos tbody tr').each(function() {
+		    $(this).remove();
+		});
+		$('#nombreAlumno').text('');
+		$('#divDNI').html('<p class="form-control-static"></p>');
+	});
+
 	$('#planEstudio').on('change', function() {
 		$('#estadoCiclo').removeClass( "text-info" ).addClass( "text-danger" ).text('');
-		if ($('#planEstudio').val() == 0) return;
-		var request = "{{url('inscripcionmaterias/obtenerciclolectivoactivo')}}";
+		$('#cboCiclos').children().remove().end();
+		if ($('#organizacion').val() == 0) return;
 
 		$.ajax({
-			url: request,
-			data: {'plan_id': $("#planEstudio").val()},
-			type: 'POST',
-			dataType: 'json',
-			cache: false	
-		}).done(function(ciclo){
-			if (ciclo == '1') {
-				$('#estadoCiclo').removeClass( "text-danger" ).addClass( "text-info" ).text('Activo');	
-			} else {
-				$('#estadoCiclo').removeClass( "text-info" ).addClass( "text-danger" ).text('No Activo');
-			}
-		}).error(function(err){
-			console.log("Error: "+err);
+		  url: '{{url('ciclolectivo/obtenercicloslectivos')}}',
+		  data:{'organizacion_id': $('#organizacion').val()},
+		  type: 'POST'
+		}).done(function(ciclos) {
+			console.log(ciclos);
+
+			if (ciclos == <?php echo CicloLectivoController::NO_EXISTE_CICLO ?>) {
+				$('#divMensaje').html('<p class="form-control-static"><h4>' + 'La Organización no tiene Ciclos Lectivos Asignados' + '</h4></p>');
+	    	    $('#MensajeCantidad').modal('show');
+				return;
+		    }
+
+			$('#cboCiclos').append(
+		        $('<option></option>').val(0).html('Seleccionar')
+		    );
+
+			$.each(ciclos, function(key, value) {
+				$('#cboCiclos').append(
+			        $('<option></option>').val(value.id).html(value.descripcion)
+			    );
+			});
+
+		}).error(function(data) {
+			console.log(data);
 		});
 
 		$('#materiasdisponibles').children().remove().end();

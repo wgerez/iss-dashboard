@@ -102,6 +102,7 @@ class InscripcionmateriasController extends BaseController
 		$carrera_id = Input::get('carreras');
 		$plan_id = Input::get('planEstudio');
 		$id = Input::get('organizacion');
+		$ciclo_id = Input::get('cboCiclos');
 
 		if ($id == 0 || $plan_id == 0 || $carrera_id == 0) {
 			$carrera_id = '';
@@ -131,7 +132,7 @@ class InscripcionmateriasController extends BaseController
 				}
 			} else {
 				$materias = Materia::whereRaw('carrera_id ='. $carrera_id .' AND planestudio_id ='. $plan_id)->get();
-				$countalumnoins = InscripcionMateria::whereRaw('planestudio_id ='.$plan_id.' AND carrera_id ='.$carrera_id)->get();
+				$countalumnoins = InscripcionMateria::whereRaw('planestudio_id ='.$plan_id.' AND carrera_id ='.$carrera_id.' AND ciclolectivo_id ='. $ciclo_id)->get();
 			}
 
 			//OBTENGO TODAS LAS MATERIAS Y LAS MATERIAS INSCRIPTAS LAS CHEQUEO
@@ -160,8 +161,8 @@ class InscripcionmateriasController extends BaseController
 					$alumno_id = $alumnosinscriptos[$i]['alumno_id'];
 
 					foreach ($materias as $materia) {
-						$mat = InscripcionMateria::whereRaw('planestudio_id ='.$plan_id.' AND materia_id ='.$materia->id.' AND alumno_id ='.$alumno_id)->count();
-						$datos = InscripcionMateria::whereRaw('planestudio_id ='.$plan_id.' AND materia_id ='.$materia->id.' AND alumno_id ='.$alumno_id)->first();
+						$mat = InscripcionMateria::whereRaw('planestudio_id ='.$plan_id.' AND materia_id ='.$materia->id.' AND alumno_id ='.$alumno_id.' AND ciclolectivo_id ='. $ciclo_id)->count();
+						$datos = InscripcionMateria::whereRaw('planestudio_id ='.$plan_id.' AND materia_id ='.$materia->id.' AND alumno_id ='.$alumno_id.' AND ciclolectivo_id ='. $ciclo_id)->first();
 
 						if ($mat > 0) {
 							$fecha = FechaHelper::getFechaImpresion($datos->fecha_alta);
@@ -190,6 +191,7 @@ class InscripcionmateriasController extends BaseController
 		}
 
 		$organizaciones = Organizacion::lists('nombre', 'id');
+		$ciclos = CicloLectivo::all();
 
 		if (count($alumnosinscriptos) == 0) $habilita = false;
 
@@ -204,6 +206,8 @@ class InscripcionmateriasController extends BaseController
 			'carreras'          => $carreras,
 			'plan_id'           => $plan_id,
 			'planes'            => $planes,
+			'ciclo_id'          => $ciclo_id,
+			'ciclos'            => $ciclos,
 			'planestudio' 		=> $planestudio,
 			'alumnosinscriptos' => $alumnosinscriptos,
 			'dni' 				=> $dni,
@@ -222,10 +226,11 @@ class InscripcionmateriasController extends BaseController
 		$alumno_id = Input::get('alumnoid');//33456209
 		$plan_id = Input::get('plan_id');
 		$carrera_id = Input::get('carrera_id');
+		$ciclo_id = Input::get('cboCiclos');
 
 		$alumnocarrera = AlumnoCarrera::getDatosInscripcionAlumno($alumno_id);//getCarrerasInscripciones($alumno_id);//231);
 
-		$ciclo_id = PlanEstudio::find($plan_id)->ciclolectivo_id;
+		//$ciclo_id = PlanEstudio::find($plan_id)->ciclolectivo_id;
 		$inscripcion_id = '';
 
 		foreach ($alumnocarrera as $value) {
@@ -256,20 +261,21 @@ class InscripcionmateriasController extends BaseController
 		$alumno_id = Input::get('alumnoid');//33456209
 		$plan_id = Input::get('plan_id');
 		$carrera_id = Input::get('carrera_id');
+		$ciclo_id = Input::get('cboCiclos');
 
 		$alumnocarrera = AlumnoCarrera::getDatosInscripcionAlumno($alumno_id);//getCarrerasInscripciones($alumno_id);//231);
 		
 		$materias = Materia::whereRaw('carrera_id ='. $carrera_id .' AND planestudio_id ='. $plan_id)->get();
 		
 		$mat_insc = [];
-		$countalumnoins = InscripcionMateria::whereRaw('alumno_id ='.$alumno_id.' AND carrera_id ='. $carrera_id .' AND planestudio_id ='. $plan_id)->get();
+		$countalumnoins = InscripcionMateria::whereRaw('alumno_id ='.$alumno_id.' AND carrera_id ='. $carrera_id .' AND planestudio_id ='. $plan_id.' AND ciclolectivo_id ='. $ciclo_id)->get();
 		
 		if (count($countalumnoins) > 0) {
 			foreach ($materias as $materia) {
-				$mat = InscripcionMateria::whereRaw('materia_id ='.$materia->id.' AND alumno_id ='.$alumno_id.' AND carrera_id ='. $carrera_id .' AND planestudio_id ='. $plan_id)->get();
+				$mat = InscripcionMateria::whereRaw('materia_id ='.$materia->id.' AND alumno_id ='.$alumno_id.' AND carrera_id ='. $carrera_id .' AND planestudio_id ='. $plan_id .' AND ciclolectivo_id ='. $ciclo_id)->get();
 				
 				if (count($mat) > 0) {
-					$datos = InscripcionMateria::whereRaw('materia_id ='.$materia->id.' AND alumno_id ='.$alumno_id.' AND carrera_id ='. $carrera_id .' AND planestudio_id ='. $plan_id)->first();
+					$datos = InscripcionMateria::whereRaw('materia_id ='.$materia->id.' AND alumno_id ='.$alumno_id.' AND carrera_id ='. $carrera_id .' AND planestudio_id ='. $plan_id .' AND ciclolectivo_id ='. $ciclo_id)->first();
 					$selected = true;
 					$fecha = FechaHelper::getFechaImpresion($datos->fecha_alta);
 					$plan = $materia->planestudio->codigoplan;
@@ -281,6 +287,8 @@ class InscripcionmateriasController extends BaseController
 					$inscripcion = '';
 				}
 
+				$ciclo = CicloLectivo::find($ciclo_id)->descripcion;
+
 				array_push($mat_insc, [
 										'nombre' 		=> $materia->nombremateria, 
 										'id' 			=> $materia->id, 
@@ -289,6 +297,7 @@ class InscripcionmateriasController extends BaseController
 										'carrera'		=> $materia->carrera->carrera,
 										'fecha'			=> $fecha,
 										'plan' 			=> $plan,
+										'ciclo'			=> $ciclo,
 										'anio' 			=> $materia->aniocursado
 									]);			
 			}
@@ -340,7 +349,7 @@ class InscripcionmateriasController extends BaseController
 		$planestudio_id = Input::get('planid');
 		$materiasi = '';
 		$materiano = '';
-		$ciclo_id = PlanEstudio::find($planestudio_id)->ciclolectivo_id;
+		$ciclo_id = Input::get('cboCiclos');
 
 		$corr = Correlatividad::where('materia_id', '=', $materiains)->first();
 
@@ -351,7 +360,7 @@ class InscripcionmateriasController extends BaseController
 
 			if (count($corrcur) > 0) {
 				foreach ($corrcur as $value) {
-					$inscripcionmateria = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumno_id.' AND carrera_id= '.$carrera_id.' AND materia_id= '.$value->materia_id)->get();
+					$inscripcionmateria = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumno_id.' AND carrera_id= '.$carrera_id.' AND materia_id= '.$value->materia_id .' AND ciclolectivo_id ='. $ciclo_id)->get();
 
 					if (count($inscripcionmateria) > 0) {
 				        $materiainfo = Materia::find($value->materia_id);
@@ -449,7 +458,7 @@ class InscripcionmateriasController extends BaseController
 
 			if (count($corraprobada) > 0) {
 				foreach ($corraprobada as $corraprobad) {
-					$inscripcionmateria = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumno_id.' AND carrera_id= '.$carrera_id.' AND materia_id= '.$corraprobad->materia_id)->get();
+					$inscripcionmateria = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumno_id.' AND carrera_id= '.$carrera_id.' AND materia_id= '.$corraprobad->materia_id .' AND ciclolectivo_id ='. $ciclo_id)->get();
 
 					if (count($inscripcionmateria) > 0) {
 						$examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planestudio_id.' AND materia_id ='.$corraprobad->materia_id.' AND alumno_id ='.$alumno_id)->get();
@@ -473,7 +482,7 @@ class InscripcionmateriasController extends BaseController
 
 			if (count($corrfinal) > 0) {
 				foreach ($corrfinal as $corrfina) {
-					$inscripcionmateria = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumno_id.' AND carrera_id= '.$carrera_id.' AND materia_id= '.$corrfina->materia_id)->get();
+					$inscripcionmateria = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumno_id.' AND carrera_id= '.$carrera_id.' AND materia_id= '.$corrfina->materia_id .' AND ciclolectivo_id ='. $ciclo_id)->get();
 
 					if (count($inscripcionmateria) > 0) {
 						$examenfinal = ExamenFinal::whereRaw('carrera_id ='.$carrera_id.' AND planestudio_id ='.$planestudio_id.' AND materia_id ='.$corrfina->materia_id.' AND alumno_id ='.$alumno_id)->get();
@@ -532,6 +541,7 @@ class InscripcionmateriasController extends BaseController
 		
 		$carrerains = Input::get('carreras');
 		$planestudio_id = Input::get('planes');
+		$ciclo_id = Input::get('cboCiclos');
 		$rowsdelete = InscripcionMateria::where('alumno_id', '=', $alumnoid)->get();
 
 		if (count($rowsdelete) == 0) {
@@ -542,20 +552,21 @@ class InscripcionmateriasController extends BaseController
 				$newmateria->alumno_id 		= $alumnoid;
 				$newmateria->materia_id 	= $materiains;
 				$newmateria->carrera_id 	= $carrerains;
+				$newmateria->ciclolectivo_id = $ciclo_id;
 	            $newmateria->usuario_alta   = Auth::user()->usuario;
 	            $newmateria->fecha_alta     = date('Y-m-d');
 
 	            $newmateria->save();
 			}
 		} else {
-			$rowsdelete = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumnoid.' AND carrera_id= '.$carrerains)->get();
+			$rowsdelete = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumnoid.' AND carrera_id= '.$carrerains .' AND ciclolectivo_id ='. $ciclo_id)->get();
 			$rowsmat = count($materiasinscriptas);
 			$rowscant = count($rowsdelete);
 			$eliminamateria = array();
 			
 	        if ($rowsmat > $rowscant) {
 				foreach ($materiasinscriptas as $materiains) {
-					$rowspr = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumnoid.' AND carrera_id= '.$carrerains.' AND materia_id= '.$materiains)->first();
+					$rowspr = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumnoid.' AND carrera_id= '.$carrerains.' AND materia_id= '.$materiains.' AND ciclolectivo_id ='. $ciclo_id)->first();
 
 					if (count($rowspr) == 0) {
 						$newmateria = new InscripcionMateria;
@@ -564,6 +575,7 @@ class InscripcionmateriasController extends BaseController
 						$newmateria->alumno_id 		= $alumnoid;
 						$newmateria->materia_id 	= $materiains;
 						$newmateria->carrera_id 	= $carrerains;
+						$newmateria->ciclolectivo_id = $ciclo_id;
 			            $newmateria->usuario_alta   = Auth::user()->usuario;
 			            $newmateria->fecha_alta     = date('Y-m-d');
 
@@ -585,7 +597,7 @@ class InscripcionmateriasController extends BaseController
 				}
 
 				for ($i=0; $i < count($eliminamateria); $i++) { 
-					$materiaeliminar = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumnoid.' AND carrera_id= '.$carrerains.' AND materia_id= '.$eliminamateria[$i])->first();
+					$materiaeliminar = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumnoid.' AND carrera_id= '.$carrerains.' AND materia_id= '.$eliminamateria[$i].' AND ciclolectivo_id ='. $ciclo_id)->first();
 
 					$materiaeliminar->delete();
 				}
@@ -593,7 +605,7 @@ class InscripcionmateriasController extends BaseController
 		}
 
 		if (count($materiasinscriptas) > 0) {
-			$rowspr = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumnoid.' AND carrera_id= '.$carrerains)->get();
+			$rowspr = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumnoid.' AND carrera_id= '.$carrerains.' AND ciclolectivo_id ='. $ciclo_id)->get();
 
 			if (count($rowspr) > 0) {
 				foreach ($rowspr as $value) {
@@ -636,10 +648,11 @@ class InscripcionmateriasController extends BaseController
 		
 		$carrerains = Input::get('carreras');
 		$planestudio_id = Input::get('planes');
+		$ciclo_id = Input::get('cboCiclos');
 
 		/*highlight_string(var_export($rowscant,true));
         exit;*/
-		$rowsdelete = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumnoid.' AND carrera_id= '.$carrerains)->get();
+		$rowsdelete = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumnoid.' AND carrera_id= '.$carrerains.' AND ciclolectivo_id ='. $ciclo_id)->get();
 
 		$rowsmat = count($materiasinscriptas);
 		$rowscant = count($rowsdelete);
@@ -647,7 +660,7 @@ class InscripcionmateriasController extends BaseController
 		
         if ($rowsmat > $rowscant) {
 			foreach ($materiasinscriptas as $materiains) {
-				$rowspr = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumnoid.' AND carrera_id= '.$carrerains.' AND materia_id= '.$materiains)->first();
+				$rowspr = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumnoid.' AND carrera_id= '.$carrerains.' AND materia_id= '.$materiains.' AND ciclolectivo_id ='. $ciclo_id)->first();
 
 				if (count($rowspr) > 0) $inscripcion_id = $rowspr->id;
 
@@ -658,6 +671,7 @@ class InscripcionmateriasController extends BaseController
 					$newmateria->alumno_id 		= $alumnoid;
 					$newmateria->materia_id 	= $materiains;
 					$newmateria->carrera_id 	= $carrerains;
+					$newmateria->ciclolectivo_id = $ciclo_id;
 		            $newmateria->usuario_alta   = Auth::user()->usuario;
 		            $newmateria->fecha_alta     = date('Y-m-d');
 
@@ -681,14 +695,14 @@ class InscripcionmateriasController extends BaseController
 			}
 
 			for ($i=0; $i < count($eliminamateria); $i++) { 
-				$materiaeliminar = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumnoid.' AND carrera_id= '.$carrerains.' AND materia_id= '.$eliminamateria[$i])->first();
+				$materiaeliminar = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumnoid.' AND carrera_id= '.$carrerains.' AND materia_id= '.$eliminamateria[$i].' AND ciclolectivo_id ='. $ciclo_id)->first();
 
 				$materiaeliminar->delete();
 			}
 		}
 
 		if (count($materiasinscriptas) > 0) {
-			$rowspr = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumnoid.' AND carrera_id= '.$carrerains)->get();
+			$rowspr = InscripcionMateria::whereRaw('planestudio_id= '.$planestudio_id.' AND alumno_id= '.$alumnoid.' AND carrera_id= '.$carrerains.' AND ciclolectivo_id ='. $ciclo_id)->get();
 
 			if (count($rowspr) > 0) {
 				foreach ($rowspr as $value) {
@@ -726,16 +740,17 @@ class InscripcionmateriasController extends BaseController
 		$carrera_id = $rows->carrera_id;//$alumnocarrera[0]->carrera_id;
 		$planestudio_id = $rows->planestudio_id;
 		$alumnoid = $rows->alumno_id;
+		$ciclo_id = $rows->ciclolectivo_id;
 
 		$materias = Materia::whereRaw('carrera_id ='. $carrera_id .' AND planestudio_id ='. $planestudio_id)->get();
 		
 		$mat_insc = [];
-		$countalumnoins = InscripcionMateria::whereRaw('planestudio_id ='.$planestudio_id.' AND carrera_id ='.$carrera_id.' AND alumno_id ='.$alumnoid)->count(); //where('id', '=',$inscripcion_id)->count();
+		$countalumnoins = InscripcionMateria::whereRaw('planestudio_id ='.$planestudio_id.' AND carrera_id ='.$carrera_id.' AND alumno_id ='.$alumnoid.' AND ciclolectivo_id ='. $ciclo_id)->count(); //where('id', '=',$inscripcion_id)->count();
 		
 		if ($countalumnoins > 0) {
 			foreach ($materias as $materia) {
-				$mat = InscripcionMateria::whereRaw('planestudio_id ='.$planestudio_id.' AND materia_id ='.$materia->id.' AND alumno_id ='.$alumnoid)->count();
-				$datos = InscripcionMateria::whereRaw('planestudio_id ='.$planestudio_id.' AND materia_id ='.$materia->id.' AND alumno_id ='.$alumnoid)->first();
+				$mat = InscripcionMateria::whereRaw('planestudio_id ='.$planestudio_id.' AND materia_id ='.$materia->id.' AND alumno_id ='.$alumnoid.' AND ciclolectivo_id ='. $ciclo_id)->count();
+				$datos = InscripcionMateria::whereRaw('planestudio_id ='.$planestudio_id.' AND materia_id ='.$materia->id.' AND alumno_id ='.$alumnoid.' AND ciclolectivo_id ='. $ciclo_id)->first();
 				//$mat = InscripcionMateria::where('materia_id', '=',$materia->id)->count();
 				//$datos = InscripcionMateria::where('materia_id', '=',$materia->id)->first();
 				if ($mat > 0) {
@@ -748,6 +763,8 @@ class InscripcionmateriasController extends BaseController
 					$plan = false;
 				}
 
+				$ciclo = CicloLectivo::find($ciclo_id)->descripcion;
+
 				array_push($mat_insc, [
 										'nombre' 	=> $materia->nombremateria, 
 										'id' 		=> $materia->id, 
@@ -755,6 +772,7 @@ class InscripcionmateriasController extends BaseController
 										'carrera'	=> $materia->carrera->carrera,
 										'fecha'		=> $fecha,
 										'plan' 		=> $plan,
+										'ciclo'		=> $ciclo,
 										'anio' 		=> $materia->aniocursado
 									]);			
 			}
@@ -811,6 +829,7 @@ class InscripcionmateriasController extends BaseController
 		$carrera_id = Input::get('carreras');
 		$plan_id = Input::get('planEstudio');
 		$id = Input::get('organizacion');
+		$ciclo_id = Input::get('cboCiclos');
 
         $carreras = Carrera::find($carrera_id)->carrera;
         $planes = PlanEstudio::find($plan_id)->ciclolectivo_id;
@@ -828,7 +847,7 @@ class InscripcionmateriasController extends BaseController
 			$habilita = true;
 		} else {
 			$materias = Materia::whereRaw('carrera_id ='. $carrera_id .' AND planestudio_id ='. $plan_id)->get();
-			$countalumnoins = InscripcionMateria::whereRaw('planestudio_id ='.$plan_id.' AND carrera_id ='.$carrera_id)->get();
+			$countalumnoins = InscripcionMateria::whereRaw('planestudio_id ='.$plan_id.' AND carrera_id ='.$carrera_id.' AND ciclolectivo_id ='. $ciclo_id)->get();
 		}
 
 		//OBTENGO TODAS LAS MATERIAS Y LAS MATERIAS INSCRIPTAS LAS CHEQUEO
@@ -857,8 +876,8 @@ class InscripcionmateriasController extends BaseController
 				$alumno_id = $alumnosinscriptos[$i]['alumno_id'];
 
 				foreach ($materias as $materia) {
-					$mat = InscripcionMateria::whereRaw('planestudio_id ='.$plan_id.' AND materia_id ='.$materia->id.' AND alumno_id ='.$alumno_id)->count();
-					$datos = InscripcionMateria::whereRaw('planestudio_id ='.$plan_id.' AND materia_id ='.$materia->id.' AND alumno_id ='.$alumno_id)->first();
+					$mat = InscripcionMateria::whereRaw('planestudio_id ='.$plan_id.' AND materia_id ='.$materia->id.' AND alumno_id ='.$alumno_id.' AND ciclolectivo_id ='. $ciclo_id)->count();
+					$datos = InscripcionMateria::whereRaw('planestudio_id ='.$plan_id.' AND materia_id ='.$materia->id.' AND alumno_id ='.$alumno_id.' AND ciclolectivo_id ='. $ciclo_id)->first();
 
 					if ($mat > 0) {
 						$fecha = FechaHelper::getFechaImpresion($datos->fecha_alta);
@@ -908,6 +927,7 @@ class InscripcionmateriasController extends BaseController
         $planID = $insc_materia->planestudio_id;
         $carrera_id = $insc_materia->carrera_id;
         $materia_id = $insc_materia->materia_id;
+        $ciclo_id = $insc_materia->ciclolectivo_id;
 
         if ($alumno_id == '') $alumno_id = 0;
 
@@ -916,15 +936,15 @@ class InscripcionmateriasController extends BaseController
         $insc_materia->delete();
 
         if ($alumno_id == 0) {
-        	$insc_materias = InscripcionMateria::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND materia_id ='.$materia_id)->get();
+        	$insc_materias = InscripcionMateria::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND materia_id ='.$materia_id.' AND ciclolectivo_id ='. $ciclo_id)->get();
         } else {
-        	$insc_materias = InscripcionMateria::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id)->get();
+        	$insc_materias = InscripcionMateria::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id.' AND ciclolectivo_id ='. $ciclo_id)->get();
         }
         
         if (count($insc_materias) > 0) {
             Session::flash('message', 'LA MATERIA <b>' . $nombremateria . '</b> SE HA ELIMINADO.');
             Session::flash('message_type', self::OPERACION_EXITOSA);
-            return Redirect::to('inscripcionmaterias/obtenerinscripto/'. $alumno_id.'-'.$planID.'-'.$carrera_id);
+            return Redirect::to('inscripcionmaterias/obtenerinscripto/'. $alumno_id.'-'.$planID.'-'.$carrera_id.'-'.$ciclo_id);
         } else {
             Session::flash('message', 'HUBO ALGUN PROBLEMA AL INTENTAR ELIMINAR LA MATERIA');
             Session::flash('message_type', self::OPERACION_FALLIDA);
@@ -938,6 +958,7 @@ class InscripcionmateriasController extends BaseController
         $alumno_id = $porcion[0];
 		$plan_id = $porcion[1];
 		$carrera_id = $porcion[2];
+		$ciclo_id = $porcion[3];
 
         $dni = '';//33456209
 		$id = 1;
@@ -966,7 +987,7 @@ class InscripcionmateriasController extends BaseController
 			}
 		} else {
 			$materias = Materia::whereRaw('carrera_id ='. $carrera_id .' AND planestudio_id ='. $plan_id)->get();
-			$countalumnoins = InscripcionMateria::whereRaw('planestudio_id ='.$plan_id.' AND carrera_id ='.$carrera_id)->get();
+			$countalumnoins = InscripcionMateria::whereRaw('planestudio_id ='.$plan_id.' AND carrera_id ='.$carrera_id.' AND ciclolectivo_id ='. $ciclo_id)->get();
 		}
 
 		//OBTENGO TODAS LAS MATERIAS Y LAS MATERIAS INSCRIPTAS LAS CHEQUEO
@@ -995,13 +1016,14 @@ class InscripcionmateriasController extends BaseController
 				$alumno_id = $alumnosinscriptos[$i]['alumno_id'];
 
 				foreach ($materias as $materia) {
-					$mat = InscripcionMateria::whereRaw('planestudio_id ='.$plan_id.' AND materia_id ='.$materia->id.' AND alumno_id ='.$alumno_id)->count();
-					$datos = InscripcionMateria::whereRaw('planestudio_id ='.$plan_id.' AND materia_id ='.$materia->id.' AND alumno_id ='.$alumno_id)->first();
+					$mat = InscripcionMateria::whereRaw('planestudio_id ='.$plan_id.' AND materia_id ='.$materia->id.' AND alumno_id ='.$alumno_id.' AND ciclolectivo_id ='. $ciclo_id)->count();
+					$datos = InscripcionMateria::whereRaw('planestudio_id ='.$plan_id.' AND materia_id ='.$materia->id.' AND alumno_id ='.$alumno_id.' AND ciclolectivo_id ='. $ciclo_id)->first();
 
 					if ($mat > 0) {
 						$fecha = FechaHelper::getFechaImpresion($datos->fecha_alta);
 						$plan = $materia->planestudio->codigoplan;
 						$inscripcion = $datos->id;
+						$ciclo = CicloLectivo::find($ciclo_id)->descripcion;
 
 						array_push($mat_insc, [
 											'alumno_id'		=> $datos->alumno_id,
@@ -1011,6 +1033,7 @@ class InscripcionmateriasController extends BaseController
 											//'carrera'		=> $materia->carrera->carrera,
 											'fecha'			=> $fecha,
 											'plan' 			=> $plan,
+											'ciclo' 			=> $ciclo,
 											'anio' 			=> $materia->aniocursado
 										]);
 					}
@@ -1024,6 +1047,7 @@ class InscripcionmateriasController extends BaseController
 		}
 
 		$organizaciones = Organizacion::lists('nombre', 'id');
+		$ciclos = CicloLectivo::all();
 
 		if ($id == 0 || $plan_id == 0 || $carrera_id == 0) {
 			array_unshift($organizaciones, 'Seleccionar');
@@ -1035,6 +1059,8 @@ class InscripcionmateriasController extends BaseController
 			'carrera_id'        => $carrera_id,
 			'carreras'          => $carreras,
 			'plan_id'           => $plan_id,
+			'ciclo_id'			=> $ciclo_id,
+			'ciclos'			=> $ciclos,
 			'planes'            => $planes,
 			'planestudio' 		=> $planestudio,
 			'alumnosinscriptos' => $alumnosinscriptos,
