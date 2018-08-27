@@ -4,8 +4,8 @@
 <p align="right">Fecha de Impresión: {{date('d/m/Y')}} - {{Auth::user()->usuario}}</p>
   <center><h3>Listado de Asistencias</h3></center>
   
-<p><strong>Carrera: {{$carreras}}</strong></p><p><strong>Plan de Estudio: {{$planes}}</strong></p>
-<p><strong>Materia: {{$materia}}</strong></p><p><strong>Docente: {{$docentes}}</strong></p>
+<p><strong>Carrera: {{$carreras}}</strong></p><p><strong>Plan de Estudio: {{$planes}}</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Ciclo Lectivo: {{$ciclo}}</strong></p>
+<p><strong>Materia: {{$materia}}</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Docente: {{$docentes}}</strong></p>
 <!--p><strong>Fecha de Asistencia:</strong> {{$fecha}}</p--> 
 <?php 
 

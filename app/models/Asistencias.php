@@ -33,4 +33,9 @@ class Asistencias extends \Eloquent {
 	{
 		return $this->belongsTo('Docente');
 	}
+	
+    public function ciclolectivo()
+    {
+        return $this->belongsTo('CicloLectivo');
+    }
 }

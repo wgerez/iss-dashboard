@@ -193,6 +193,7 @@ class AsistenciaController extends \BaseController {
         $carrid = Input::get('carrera_id');
         $planID = Input::get('plan_id');
         $materia_id = Input::get('materia_id');
+        $cboCiclos = Input::get('cboCiclos');
 
         if ($materia_id == '') {
             $materias = Materia::where('carrera_id', '=', $carrid)->where('planestudio_id', '=', $planID)->get();
@@ -283,7 +284,7 @@ class AsistenciaController extends \BaseController {
         $carrera_id = Input::get('cboCarrera');
         $planID = Input::get('cboPlan');
         $materia_id = Input::get('cboMaterias');
-        //$docente_id = Input::get('cboDocente');
+        $ciclo_id = Input::get('cboCiclos');
         $fechacons = Input::get('fechadesde');
         $fechadesde = Input::get('fechadesde');
         $dni = Input::get('txtalumno');//30294929
@@ -415,14 +416,14 @@ class AsistenciaController extends \BaseController {
         $docent = Persona::where('id', '=', $docente->persona_id)->first();
         $apeynom = $docent->apellido.', '.$docent->nombre;
         $docentes[] = ['id' => $docente->id, 'apeynom' => $apeynom];*/
-        $ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
-        $asistencias = Asistencias::whereRaw('planestudio_id ='.$planID.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id)->get();
+        //$ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+        $asistencias = Asistencias::whereRaw('planestudio_id ='.$planID.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id.' AND ciclolectivo_id ='. $ciclo_id)->get();
 
         if ($dni == '') {
-        	$datos = InscripcionMateria::whereRaw('planestudio_id ='. $planID .' AND materia_id ='. $materia_id .' AND carrera_id ='. $carrera_id)->get();
+        	$datos = InscripcionMateria::whereRaw('planestudio_id ='.$planID.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id.' AND ciclolectivo_id ='. $ciclo_id)->get();
         } else {
         	$alumno = Alumno::getAlumnoPorDni($dni);
-        	$datos = InscripcionMateria::whereRaw('planestudio_id ='. $planID .' AND alumno_id ='. $alumno[0]->alumno_id .' AND materia_id ='. $materia_id .' AND carrera_id ='. $carrera_id)->get();
+        	$datos = InscripcionMateria::whereRaw('planestudio_id ='.$planID.' AND alumno_id ='.$alumno[0]->alumno_id.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id.' AND ciclolectivo_id ='. $ciclo_id)->get();
         }
         
 		$alumnos = [];
@@ -493,7 +494,7 @@ class AsistenciaController extends \BaseController {
 				$nombre = $alumnoss->persona->nombre;
 				$nrodocumento = $alumnoss->persona->nrodocumento;
 
-                $asistencias = Asistencias::whereRaw('alumno_id ='.$resultado[$i].' AND planestudio_id ='.$planID.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id.' AND lunesfecha ="'.$fechalunescons.'"')->get();
+                $asistencias = Asistencias::whereRaw('alumno_id ='.$resultado[$i].' AND planestudio_id ='.$planID.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id.' AND ciclolectivo_id ='. $ciclo_id.' AND lunesfecha ="'.$fechalunescons.'"')->get();
 
                 if (count($asistencias) > 0) {
                     foreach ($asistencias as $asistencia) {
@@ -742,18 +743,21 @@ class AsistenciaController extends \BaseController {
             array(
                 'cboCarrera'      => Input::get('cboCarrera'),
                 'cboPlan'         => Input::get('cboPlan'),
+                'cboCiclos'       => Input::get('cboCiclos'),
                 'cboMaterias'     => Input::get('cboMaterias'),
                 'cboDocente'      => Input::get('txtDocente')
             ),
             array(
                 'cboCarrera'      => 'required',
                 'cboPlan'         => 'required',
+                'cboCiclos'         => 'required',
                 'cboMaterias'     => 'required',
                 'cboDocente'      => 'required'
             ),
             array(
                 'required' 		=> 'Campo Obligatorio',
                 'required' 		=> 'Campo Obligatorio',
+                'required'      => 'Campo Obligatorio',
                 'required' 		=> 'Campo Obligatorio',
                 'required' 		=> 'Campo Obligatorio'
             )
@@ -762,6 +766,7 @@ class AsistenciaController extends \BaseController {
         $orgid = Input::get('cboOrganizacion');
         $carrera_id = Input::get('cboCarrera');
         $planID = Input::get('cboPlan');
+        $ciclo_id = Input::get('cboCiclos');
         $materia_id = Input::get('cboMaterias');
         $docente_id = Input::get('txtDocente');
         $fechadesde = Input::get('fechadesde');
@@ -903,7 +908,7 @@ class AsistenciaController extends \BaseController {
         $fechafin = '';
         
         if ($materiass->periodo == 'Anual') {
-            $ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+            //$ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
 
             $ciclos = CicloLectivo::find($ciclo_id);
             $fechainic = FechaHelper::getFechaImpresion($ciclos->fechainicio);
@@ -937,7 +942,7 @@ class AsistenciaController extends \BaseController {
             }
         } else {
             $cuatri = $materiass->cuatrimestre;
-            $ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+            //$ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
 
             $ciclos = PeriodoLectivo::whereRaw('ciclolectivo_id ='. $ciclo_id)->get();
 
@@ -1069,9 +1074,9 @@ class AsistenciaController extends \BaseController {
                 ->withInput();
         } else {
             if ($alumno_id == '') {
-                $datos = InscripcionMateria::whereRaw('planestudio_id ='.$planID.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id)->get();
+                $datos = InscripcionMateria::whereRaw('planestudio_id ='.$planID.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id.' AND ciclolectivo_id ='. $ciclo_id)->get();
             } else {
-                $datos = InscripcionMateria::whereRaw('planestudio_id ='.$planID.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id.' AND alumno_id ='.$alumno_id)->get();
+                $datos = InscripcionMateria::whereRaw('planestudio_id ='.$planID.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id.' AND alumno_id ='.$alumno_id.' AND ciclolectivo_id ='. $ciclo_id)->get();
             }
         	
         	$idaseguir = '';
@@ -1081,12 +1086,12 @@ class AsistenciaController extends \BaseController {
         		$inscripciones[] = ['alumno_id' => $value->alumno_id];
         	}
 
-            $ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+            //$ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
 
         	for ($j=0; $j < count($inscripciones); $j++) { 
         		$alumnoid = $inscripciones[$j]['alumno_id'];
 
-        		$asistenciass = Asistencias::whereRaw('alumno_id ='.$alumnoid.' AND planestudio_id ='.$planID.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id.' AND lunesfecha ="'.$fechalunescons.'"')->first();
+        		$asistenciass = Asistencias::whereRaw('alumno_id ='.$alumnoid.' AND planestudio_id ='.$planID.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id.' AND ciclolectivo_id ='. $ciclo_id.' AND lunesfecha ="'.$fechalunescons.'"')->first();
         		$presentelu = 0;
                 $presentema = 0;
                 $presentemi = 0;
@@ -1214,6 +1219,7 @@ class AsistenciaController extends \BaseController {
                         if ($presentesa == 2) $asistencias->sabado = 2;
                     }
 
+                    $asistencias->ciclolectivo_id = $ciclo_id;
                     $asistencias->usuario_modi  = Auth::user()->usuario;  
                     $asistencias->fecha_modi    = date('Y-m-d');
                         
@@ -1245,6 +1251,7 @@ class AsistenciaController extends \BaseController {
                     $asistencias->viernes           = 0;
                     $asistencias->sabadofecha       = $fechasabados;
                     $asistencias->sabado            = 0;
+                    $asistencias->ciclolectivo_id   = $ciclo_id;
                     $asistencias->usuario_alta      = Auth::user()->usuario;  
                     $asistencias->fecha_alta        = date('Y-m-d');
                     
@@ -1423,6 +1430,7 @@ class AsistenciaController extends \BaseController {
         $carrera_id = $asistenciass->carrera_id;
         $materia_id = $asistenciass->materia_id;
         $planID = $asistenciass->planestudio_id;
+        $ciclo_id = $asistenciass->ciclolectivo_id;
 
         $asignaciones = AsignarDocente::whereRaw('carrera_id='. $carrera_id .' AND materia_id='. $materia_id .' AND planestudio_id='. $planID)->first();
 
@@ -1467,13 +1475,13 @@ class AsistenciaController extends \BaseController {
         $apeynom = $docent->apellido.', '.$docent->nombre;
         $docentes[] = ['id' => $docente->id, 'apeynom' => $apeynom];
         
-        $ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
-        $asistencias = Asistencias::whereRaw('planestudio_id ='.$planID.' AND materia_id ='.$asistenciass->materia_id.' AND carrera_id ='.$asistenciass->carrera_id)->get();
+        //$ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+        $asistencias = Asistencias::whereRaw('planestudio_id ='.$planID.' AND materia_id ='.$asistenciass->materia_id.' AND carrera_id ='.$asistenciass->carrera_id.' AND ciclolectivo_id ='.$ciclo_id)->get();
 
         $meses = ['vacio', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
         $dias = ['vacio', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
 
-        $datos = InscripcionMateria::whereRaw('planestudio_id ='. $planID .' AND materia_id ='. $asistenciass->materia_id .' AND carrera_id ='. $asistenciass->carrera_id)->get();
+        $datos = InscripcionMateria::whereRaw('planestudio_id ='. $planID .' AND materia_id ='. $asistenciass->materia_id .' AND carrera_id ='. $asistenciass->carrera_id.' AND ciclolectivo_id ='.$ciclo_id)->get();
 		$alumnos = [];
 		$alumnosinscriptos = [];
 		$materia_id = $asistenciass->materia_id;
@@ -1497,7 +1505,7 @@ class AsistenciaController extends \BaseController {
 				$nombre = $alumnoss->persona->nombre;
 				$nrodocumento = $alumnoss->persona->nrodocumento;
 
-				$asistencias = Asistencias::whereRaw('alumno_id ='.$resultado[$i].' AND planestudio_id ='.$planID.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id.' AND lunesfecha ="'.$fechalunescons.'"')->get();
+				$asistencias = Asistencias::whereRaw('alumno_id ='.$resultado[$i].' AND planestudio_id ='.$planID.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id.' AND ciclolectivo_id ='.$ciclo_id.' AND lunesfecha ="'.$fechalunescons.'"')->get();
 
                 if (count($asistencias) > 0) {
                     foreach ($asistencias as $asistencia) {
@@ -1622,14 +1630,14 @@ class AsistenciaController extends \BaseController {
         $materiass = Materia::find($materia_id);
         
         if ($materiass->periodo == 'Anual') {
-            $ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+            //$ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
 
             $ciclos = CicloLectivo::find($ciclo_id);
             $fechainicio = FechaHelper::getFechaImpresion($ciclos->fechainicio);
             $fechafin = FechaHelper::getFechaImpresion($ciclos->fechafin);
         } else {
             $cuatri = $materiass->cuatrimestre;
-            $ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+            //$ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
 
             $ciclos = PeriodoLectivo::whereRaw('ciclolectivo_id ='. $ciclo_id)->get();
 
@@ -1677,6 +1685,7 @@ class AsistenciaController extends \BaseController {
         $org_id = 1;
 
 		$habilita = true;
+        $ciclos = CicloLectivo::all();
 
         return View::make('asistencias.listado',[
             'organizaciones'  	=> $organizaciones,
@@ -1687,6 +1696,8 @@ class AsistenciaController extends \BaseController {
             'materias'        	=> $materias,
             'planID'     	  	=> $planID,
             'planes'          	=> $planes,
+            'ciclo_id'          => $ciclo_id,
+            'ciclos'            => $ciclos,
             'docente_id'        => $docente_id,
             'docentes'          => $docentes,
             'dias'          	=> $dias,
@@ -1723,6 +1734,7 @@ class AsistenciaController extends \BaseController {
     {
         $carrera_id = Input::get('carrera_id');
         $planID = Input::get('planID');
+        $ciclo_id = Input::get('cboCiclos');
         $materia_id = Input::get('materia_id');
         $docente_id = Input::get('docente_id');
         $fechadesde = Input::get('fechadesde');
@@ -1905,13 +1917,13 @@ class AsistenciaController extends \BaseController {
         $docentes = $docent->apellido.', '.$docent->nombre;
         /*$docentes[] = ['id' => $docente->id, 'apeynom' => $apeynom];
         $asistencias = Asistencias::whereRaw('planestudio_id ='.$planID.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id)->get();*/
-        $ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+        //$ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
 
         if ($dni == '') {
-            $datos = InscripcionMateria::whereRaw('planestudio_id ='. $planID .' AND materia_id ='. $materia_id .' AND carrera_id ='. $carrera_id)->get();
+            $datos = InscripcionMateria::whereRaw('planestudio_id ='. $planID .' AND materia_id ='. $materia_id .' AND carrera_id ='. $carrera_id.' AND ciclolectivo_id ='.$ciclo_id)->get();
         } else {
             $alumno = Alumno::getAlumnoPorDni($dni);
-            $datos = InscripcionMateria::whereRaw('planestudio_id ='. $planID .' AND alumno_id ='. $alumno[0]->alumno_id .' AND materia_id ='. $materia_id .' AND carrera_id ='. $carrera_id)->get();
+            $datos = InscripcionMateria::whereRaw('planestudio_id ='. $planID .' AND alumno_id ='. $alumno[0]->alumno_id .' AND materia_id ='. $materia_id .' AND carrera_id ='. $carrera_id.' AND ciclolectivo_id ='.$ciclo_id)->get();
         }
         
         $alumnos = [];
@@ -1932,7 +1944,7 @@ class AsistenciaController extends \BaseController {
                 $nombre = $alumnoss->persona->nombre;
                 $nrodocumento = $alumnoss->persona->nrodocumento;
 
-                $asistencias = Asistencias::whereRaw('alumno_id ='.$resultado[$i].' AND planestudio_id ='.$planID.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id.' AND lunesfecha ="'.$fechalunescons.'"')->get();
+                $asistencias = Asistencias::whereRaw('alumno_id ='.$resultado[$i].' AND planestudio_id ='.$planID.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id.' AND ciclolectivo_id ='.$ciclo_id.' AND lunesfecha ="'.$fechalunescons.'"')->get();
 
                 if (count($asistencias) > 0) {
                     foreach ($asistencias as $asistencia) {
@@ -2118,12 +2130,15 @@ class AsistenciaController extends \BaseController {
             $fechaimp = '';
         }
 
+        $ciclo = CicloLectivo::find($ciclo_id)->descripcion;
+
         /*highlight_string(var_export($alumnosinscriptos,true));
         exit;*/
         $pdf = PDF::loadView('informes.pdf.asistencias', [
             'alumnosinscriptos' =>  $alumnosinscriptos,
             'carreras'          =>  $carreras,
             'planes'            =>  $planes,
+            'ciclo'             =>  $ciclo,
             'materia'           =>  $materia,
             'docentes'          =>  $docentes,
             'fecha'             =>  $fecha,
