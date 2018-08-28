@@ -105,6 +105,7 @@ class InscripcionmateriasController extends BaseController
 		$plan_id = Input::get('planEstudio');
 		$id = Input::get('organizacion');
 		$ciclo_id = Input::get('cboCiclos');
+		$apeynom = '';
 
 		if ($id == 0 || $plan_id == 0 || $carrera_id == 0) {
 			$carrera_id = '';
