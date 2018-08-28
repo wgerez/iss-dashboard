@@ -23,6 +23,7 @@ class InscripcionmateriasController extends BaseController
 		$alumnosinscriptos = array();
 		$habilita = false;
 		$dni = '';
+		$apeynom = '';
 
 		array_unshift($organizaciones, 'Seleccionar');
 
@@ -31,7 +32,7 @@ class InscripcionmateriasController extends BaseController
 			'alumnosinscriptos' => $alumnosinscriptos,
 			'dni' 				=> $dni,
 			'habilita' 			=> $habilita,
-			//'carreras'          => $carreras,
+			'apeynom'          	=> $apeynom,
 			//'planes'            => $planes,
 		    'menu'              => ModulosHelper::MENU_GESTION_ACADEMICA,
             'submenu'           => ModulosHelper::SUBMENU_INSCRIPCIONES_MATERIAS,
@@ -75,6 +76,7 @@ class InscripcionmateriasController extends BaseController
 		$alumnosinscriptos = array();
 		$habilita = false;
 		$dni = '';
+		$apeynom = '';
 
 		array_unshift($organizaciones, 'Seleccionar');
 		
@@ -83,7 +85,7 @@ class InscripcionmateriasController extends BaseController
 			'alumnosinscriptos' => $alumnosinscriptos,
 			'dni' 				=> $dni,
 			'habilita' 			=> $habilita,
-			//'carreras'          => $carreras,
+			'apeynom'          	=> $apeynom,
 			//'planes'            => $planes,
 		    'menu'              => ModulosHelper::MENU_GESTION_ACADEMICA,
             'submenu'           => ModulosHelper::SUBMENU_INSCRIPCIONES_MATERIAS,
@@ -128,6 +130,7 @@ class InscripcionmateriasController extends BaseController
 				$materias = Materia::whereRaw('carrera_id ='. $carrera_id .' AND planestudio_id ='. $plan_id)->get();
 				if (count($alumnoid) > 0) {
 					$countalumnoins = InscripcionMateria::where('alumno_id', '=',$alumnoid[0]->alumno_id)->get();
+					$apeynom = $alumnoid[0]->apellido.', '.$alumnoid[0]->nombre;
 					$habilita = true;
 				}
 			} else {
@@ -211,6 +214,7 @@ class InscripcionmateriasController extends BaseController
 			'planestudio' 		=> $planestudio,
 			'alumnosinscriptos' => $alumnosinscriptos,
 			'dni' 				=> $dni,
+			'apeynom' 			=> $apeynom,
 			'habilita' 			=> $habilita,
 		    'menu'              => ModulosHelper::MENU_GESTION_ACADEMICA,
             'submenu'           => ModulosHelper::SUBMENU_INSCRIPCIONES_MATERIAS,
@@ -799,6 +803,7 @@ class InscripcionmateriasController extends BaseController
 		//array_unshift($organizaciones, 'Seleccionar');
 
 		$planes =	PlanEstudio::all();
+		$ciclos =	CicloLectivo::all();
 		$carreras = Carrera::all();
 		$habilita = true;
 
@@ -810,6 +815,8 @@ class InscripcionmateriasController extends BaseController
             ->with('carreras', $carreras)
             ->with('planestudio_id', $planestudio_id)
             ->with('planes', $planes)
+            ->with('ciclo_id', $ciclo_id)
+            ->with('ciclos', $ciclos)
             ->with('ciclo_act', $ciclo_act[0])
             ->with('mat_insc', $mat_insc)
             ->with('habilita', $habilita)
@@ -833,7 +840,7 @@ class InscripcionmateriasController extends BaseController
 
         $carreras = Carrera::find($carrera_id)->carrera;
         $planes = PlanEstudio::find($plan_id)->ciclolectivo_id;
-        $ciclo = CicloLectivo::find($planes)->descripcion;
+        $ciclo = CicloLectivo::find($ciclo_id)->descripcion;
 		$planestudio = '';
 		$habilita = false;
 		$alumnosinscriptos = [];

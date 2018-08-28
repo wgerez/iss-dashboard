@@ -191,11 +191,9 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 
 							<div class="form-group">
 								<label class="col-md-2 control-label" >Apellido y Nombre:</label>
-								<div class="col-md-4 col-sm-10">
-									<label id="nombreAlumno" class="control-label text-info" id="nombreAlumno"></label>
-								</div>
+								<div class="col-md-4 col-sm-10 text-info" id="nombreAlumno"><?php if ($apeynom != '') echo '<p class="form-control-static">'. $apeynom .'</p>'; ?></div>
 								<label  class="col-md-2 col-sm-2 control-label">DNI:</label>
-								<div class="col-md-2 col-sm-4 text-info" id='divDNI'></div>
+								<div class="col-md-2 col-sm-4 text-info" id='divDNI'><?php if ($dni != '') echo '<p class="form-control-static">'. $dni .'</p>'; ?></div>
 							</div>
 
 							<div class="form-group">

@@ -209,6 +209,7 @@ class AsistenciaController extends \BaseController {
         $carrid = Input::get('carrera_id');
         $planID = Input::get('planID');
         $materia_id = Input::get('materia_id');
+        $ciclo_id = Input::get('cboCiclos');
         $materias= [];
         $fechainicio = '';
         $fechafin = '';
@@ -216,7 +217,7 @@ class AsistenciaController extends \BaseController {
         $materiass = Materia::find($materia_id);
         
         if ($materiass->periodo == 'Anual') {
-            $ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+            //$ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
 
             $ciclos = CicloLectivo::find($ciclo_id);
             $fechaini = FechaHelper::getFechaImpresion($ciclos->fechainicio);
@@ -227,7 +228,7 @@ class AsistenciaController extends \BaseController {
             $fechafin = $fechafi;
         } else {
             $cuatri = $materiass->cuatrimestre;
-            $ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
+            //$ciclo_id = PlanEstudio::find($planID)->ciclolectivo_id;
 
             $ciclos = PeriodoLectivo::whereRaw('ciclolectivo_id ='. $ciclo_id)->get();
 

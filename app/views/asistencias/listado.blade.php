@@ -753,14 +753,18 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 
 			$.ajax({
 			  url: "{{url('asistencias/obtenerfechas')}}",
-			  data:{'materia_id': materia_id, 'carrera_id': carrera_id, 'planID': planID},
+			  data:{'materia_id': materia_id, 'carrera_id': carrera_id, 'planID': planID, 'cboCiclos': cboCiclos},
 			  type: 'POST'
 			}).done(function(materias) {
 				console.log(materias);
 				
 				$.each(materias, function(key, value) {
-					if (value.fechainicio == null) {
+					if (value.fechainicio == null || value.fechainicio == '') {
 						$('#divMensaje').html('<p class="form-control-static"><h4><center>' + 'LA MATERIA NO POSEE FECHA INICIO Y FECHA FIN!' + '</center></h4></p>');
+						//$('#cboMaterias').val(0);
+				    	$('#cboCarrera').val(0);
+				        $('#cboPlan').val(0);
+				        $('#cboCiclos').val(0);
 			    		$('#MensajeCantidad').modal('show');
 				    	return;
 				    }
