@@ -835,7 +835,7 @@ class RegularidadesController extends \BaseController {
         $docente_id = Input::get('docente_id');
         $ciclo_id = Input::get('ciclo_id');
 
-        $regularidades = Regularidades::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND materia_id ='.$materia_id)->get();
+        $regularidades = Regularidades::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND materia_id ='.$materia_id.' AND ciclolectivo_id ='.$ciclo_id)->get();
         $alumnos = [];
         $materias = [];
 
@@ -860,7 +860,7 @@ class RegularidadesController extends \BaseController {
 
                 foreach ($alumnoss as $alumno) {
                     $apeynom = $alumno->apellido.', '.$alumno->nombre;
-                    $regularidade = Regularidades::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND alumno_id ='.$alumno->alumno_id.' AND materia_id ='.$materia_id)->get();
+                    $regularidade = Regularidades::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND alumno_id ='.$alumno->alumno_id.' AND materia_id ='.$materia_id.' AND ciclolectivo_id ='.$ciclo_id)->get();
 
                     $materias[] = ['alumno' => $apeynom, 'regularidad' => $regularidade, 'porcentaje_asistencia' => $porcentaje_asistencia];
                 }
@@ -870,8 +870,8 @@ class RegularidadesController extends \BaseController {
         $carreras = Carrera::find($carrera_id)->carrera;
         $nombremateria = Materia::find($materia_id)->nombremateria;
         $aniocursado = Materia::find($materia_id)->aniocursado;
-        $codigoplan = PlanEstudio::find($planID)->ciclolectivo_id;
-        $ciclo = CicloLectivo::find($codigoplan)->descripcion;
+        //$codigoplan = PlanEstudio::find($planID)->ciclolectivo_id;
+        $ciclo = CicloLectivo::find($ciclo_id)->descripcion;
         
         $docente = Docente::find($docente_id);
         $docent = Persona::where('id', '=', $docente->persona_id)->first();

@@ -336,26 +336,32 @@ class InscripcionFinalesController extends BaseController
         //$ciclo = PlanEstudio::find($plan_id)->ciclolectivo_id;
         $ciclo = CicloLectivo::whereRaw('organizacion_id = 1 AND activo=1')->first()->id;
 
-        // validar que tenga pagada la matricula del siglo lectivo actual
-        $matricula = Matricula::where('carrera_id', '=', $carr_id)->where('ciclolectivo_id', '=', $ciclo)->first();
+        $beca = Beca::whereRaw('carrera_id ='.$carr_id.' AND alumno_id ='.$alumno_id.' AND ciclolectivo_id ='.$ciclo.' AND becado=1')->get();
+        
+        if (count($beca) > 0) {
+            $estado = 0;
+        } else {
+            // validar que tenga pagada la matricula del siglo lectivo actual
+            $matricula = Matricula::where('carrera_id', '=', $carr_id)->where('ciclolectivo_id', '=', $ciclo)->first();
 
-        if ($matricula) {
-            $pagomatricula = DetalleMatriculaPago::where('alumno_id', '=', $alumno_id)->where('matricula_id', '=', $matricula->id)->where('mescuota', '=', 0)->where('totalparcial', '=', 0)->first();
+            if ($matricula) {
+                $pagomatricula = DetalleMatriculaPago::where('alumno_id', '=', $alumno_id)->where('matricula_id', '=', $matricula->id)->where('mescuota', '=', 0)->where('totalparcial', '=', 0)->first();
 
-            if ($pagomatricula) {
-                $estado = 0;
-            } else {
-                $estado = 1;
-                $matriculas = 1;
-            }
+                if ($pagomatricula) {
+                    $estado = 0;
+                } else {
+                    $estado = 1;
+                    $matriculas = 1;
+                }
 
-            $pagocuota = DetalleCuotaPago::where('alumno_id', '=', $alumno_id)->where('matricula_id', '=', $matricula->id)->where('mescuota', '=',  (int)  date('m'))->first();
+                $pagocuota = DetalleCuotaPago::where('alumno_id', '=', $alumno_id)->where('matricula_id', '=', $matricula->id)->where('mescuota', '=',  (int)  date('m'))->first();
 
-            if ($pagocuota) {
-                $estado = 0;
-            } else {
-                $estado = 2;
-                $cuota = 1;
+                if ($pagocuota) {
+                    $estado = 0;
+                } else {
+                    $estado = 2;
+                    $cuota = 1;
+                }
             }
         }
 
