@@ -1,12 +1,12 @@
 from __future__ import with_statement
 from time import time
 
-from fabric.api import cd, run, env
+from fabric.api import cd, run, env, roles
 from fabric.decorators import task
 from fabric.contrib.files import exists
 
 env.use_ssh_config = True
-env.hosts = ['issadmin']
+
 
 releases_dir = "/home/deploy/issadmin/releases"
 git_branch = "master"
@@ -16,8 +16,13 @@ persist_dir = "/home/deploy/issadmin/persist"
 next_release = "%(time).0f" % {'time': time()}
 current_release = "/home/deploy/issadmin/current"
 
+env.roledefs = {
+    'test': ['issqa'],
+    'production': ['iss']
+} 
+
 @task
-def deployqa(migrate='no'):
+def deploy(migrate='no'):
     init()
     update_git()
     create_release()
