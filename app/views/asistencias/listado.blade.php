@@ -193,7 +193,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 												@endforeach
 											@endif
 										</select>
-										<input class="form-control" name="txtDocente" id="txtDocente" type="hidden" value="">
+										<input class="form-control" name="txtDocente" id="txtDocente" type="hidden" value="{{$docente_id}}">
 									</div>
 								</div>
 
@@ -202,7 +202,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 										<div class="form-group">
 											<label  class="col-md-2 col-sm-2 control-label">Alumno:</label>
 											<div class="col-md-4 col-sm-4">
-												<select name="cboFiltroAlumno" id="cboFiltroAlumno" class="table-group-action-input form-control" <?php if (isset($alumnosinscriptos)) echo "disabled"; ?>>
+												<select name="cboFiltroAlumno" id="cboFiltroAlumno" class="table-group-action-input form-control" <?php //if (isset($alumnosinscriptos)) echo "disabled"; ?>>
 													<option value="1">Todos</option>
 													<option value="2" <?php if (!$dni == '') echo "selected"; ?>>DNI</option>
 												</select>
@@ -249,7 +249,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 									<div id="divavisofechaing" class="col-md-3 <?php if ($errors->has('fechadesde')) echo 'has-error' ?>">
 										<div class="input-icon right">
 											<i class="fa fa-exclamation tooltips iconoerrorfechaing" style="display:none" data-original-title="Fecha Incorrecta." data-container="body"></i>
-											<input type="date" class="form-control" name="fechadesde" id="fechadesde" placeholder="" value="<?php if (isset($fechadesdes)) echo $fechadesdes; ?>" <?php if (isset($alumnosinscriptos)) echo "disabled"; ?>>
+											<input type="date" class="form-control" name="fechadesde" id="fechadesde" placeholder="" value="<?php if (isset($fechadesdes)) echo $fechadesdes; ?>" <?php //if (isset($alumnosinscriptos)) echo "disabled"; ?>>
 											<!-- mostrar cuando exista error -->
 									    	@if ($errors->has('fechadesde'))
 										    	<span class="help-block">{{ $errors->first('fechadesde') }}</span>
@@ -261,13 +261,13 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 									<div class="col-md-2 col-sm-2">
 										<center>
 											<label class="control-label" for="asistencias">Asistencia
-											<input type="checkbox" class="form-control" id="asistencias" name="asistencias" <?php if (isset($alumnosinscriptos)) echo "disabled"; ?>></label>
+											<input type="checkbox" class="form-control" id="asistencias" name="asistencias" <?php //if (isset($alumnosinscriptos)) echo "disabled"; ?>></label>
 										</center>
 									</div>
 
 									<div class="col-md-2 col-sm-2">
 										<!--button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Buscar</button-->
-										<a class="btn blue-madison" id='btnBuscar' <?php if (isset($alumnosinscriptos)) echo "disabled"; ?>>
+										<a class="btn blue-madison" id='btnBuscar' <?php //if (isset($alumnosinscriptos)) echo "disabled"; ?>>
 											<i class="fa fa-search"></i> Buscar
 										</a>
 									</div>
@@ -472,6 +472,11 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 	    if ($(this).is(':checked')) {
 	        var activo = 'enabled';
 			Inscripciones(activo);
+	        $("#cboCarrera").removeAttr("disabled");
+	        $("#cboPlan").removeAttr("disabled");
+	        $("#cboCiclos").removeAttr("disabled");
+	        $("#cboMaterias").removeAttr("disabled");
+	        $("#cboDocente").removeAttr("disabled");
 			$("#btnConfirmar").removeAttr("disabled");
 	    } else {
 	        var activo = 'disabled';

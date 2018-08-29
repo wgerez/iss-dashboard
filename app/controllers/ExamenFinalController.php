@@ -923,6 +923,14 @@ class ExamenFinalController extends \BaseController {
 
             if (count($examenfinal) > 0) {
                 foreach ($examenfinal as $value) {
+                    $regularidades = Regularidades::whereRaw('planestudio_id ='.$planID.' AND carrera_id ='.$carrera_id.' AND materia_id ='.$materia_id.' AND alumno_id ='.$alumno_id)->get();
+
+                    foreach ($regularidades as $regularidad) {
+                        if ($regularidad->regularizo == 1) {
+                            $condicion = 'Regular';
+                        }
+                    }
+
                     $alumnopersona = Alumno::find($value->alumno_id)->persona_id;
                     $personaalumno = Persona::find($alumnopersona);
                     $persona = $personaalumno->apellido .', '. $personaalumno->nombre;

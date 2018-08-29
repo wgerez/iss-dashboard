@@ -71,6 +71,7 @@ class AsistenciaController extends \BaseController {
 		$sabadomes = (string)(int)$porcion[1];
 
 		$dni = '';
+        $docente_id = '';
         $fecha = '';
 		$habilita = false;
 
@@ -93,6 +94,7 @@ class AsistenciaController extends \BaseController {
             ->with('dias', $dias)
             ->with('habilita', $habilita)
             ->with('dni', $dni)
+            ->with('docente_id', $docente_id)
             ->with('fecha', $fecha)
             ->with('menu', ModulosHelper::MENU_GESTION_ACADEMICA)
             ->with('submenu', ModulosHelper::SUBMENU_ASISTENCIA)
@@ -1068,16 +1070,16 @@ class AsistenciaController extends \BaseController {
     	}*/
 
         if ($validator->fails()) {
-            Session::flash('message', 'ERROR AL INTENTAR GUARDAR LAS ASISTENCIAS.');
+            Session::flash('message', 'ERROR AL INTENTAR GUARDAR LAS ASISTENCIAS!.');
             Session::flash('message_type', self::OPERACION_FALLIDA);
             return Redirect::to('asistencias/listado')
                 ->withErrors($validator)
                 ->withInput();
         } else {
             if ($alumno_id == '') {
-                $datos = InscripcionMateria::whereRaw('planestudio_id ='.$planID.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id.' AND ciclolectivo_id ='. $ciclo_id)->get();
+                $datos = InscripcionMateria::whereRaw('planestudio_id ='.$planID.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id.' AND ciclolectivo_id ='.$ciclo_id)->get();
             } else {
-                $datos = InscripcionMateria::whereRaw('planestudio_id ='.$planID.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id.' AND alumno_id ='.$alumno_id.' AND ciclolectivo_id ='. $ciclo_id)->get();
+                $datos = InscripcionMateria::whereRaw('planestudio_id ='.$planID.' AND materia_id ='.$materia_id.' AND carrera_id ='.$carrera_id.' AND alumno_id ='.$alumno_id.' AND ciclolectivo_id ='.$ciclo_id)->get();
             }
         	
         	$idaseguir = '';
@@ -1432,6 +1434,7 @@ class AsistenciaController extends \BaseController {
         $materia_id = $asistenciass->materia_id;
         $planID = $asistenciass->planestudio_id;
         $ciclo_id = $asistenciass->ciclolectivo_id;
+        $docente_id = $asistenciass->docente_id;
 
         $asignaciones = AsignarDocente::whereRaw('carrera_id='. $carrera_id .' AND materia_id='. $materia_id .' AND planestudio_id='. $planID)->first();
 
