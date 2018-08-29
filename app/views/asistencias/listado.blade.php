@@ -468,17 +468,6 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 	    }
 	});
 
-	$('#txtalumno').keydown( function(e) {
-	    var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
-	    if(key == 13) {
-	        e.preventDefault();
-	        var activo = 'disabled';
-	        $("#asistencias").removeAttr("disabled");
-	        Inscripciones(activo);
-	        $('#btnBuscar').focus();
-	    }
-	});
-
 	$("#asistencias").change(function () {
 	    if ($(this).is(':checked')) {
 	        var activo = 'enabled';
@@ -488,6 +477,91 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 	        var activo = 'disabled';
 			Inscripciones(activo);
 			$("#btnConfirmar").attr('disabled', 'disabled');
+	    }
+	});
+
+	$('#txtalumno').keydown( function(e) {
+	    var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
+	    if(key == 13) {
+	        e.preventDefault();
+	        var activo = 'disabled';
+			var txtalumno = $('#txtalumno').val();
+	    	var fechadesde = $('#fechadesde').val();
+	    	var fechainicio = $('#fechainicio').val();
+	    	var fechafin = $('#fechafin').val();
+
+			var hoy = new Date();
+			var dd = hoy.getDate();
+			var mm = hoy.getMonth()+1; //hoy es 0!
+			var yyyy = hoy.getFullYear();
+
+			if(dd < 10) {
+			    dd = '0'+dd;
+			}
+
+			if(mm < 10) {
+			    mm = '0'+mm;
+			}
+
+			var fechahoy = yyyy+'-'+mm+'-'+dd;
+
+	    	if (fechadesde == '') {
+		    	fechadesde = yyyy+'-'+mm+'-'+dd;
+		    } else {
+			    if (fechadesde > fechahoy) {
+				    $('#divMensaje').html('<p class="form-control-static"><h4>' + 'No puede seleccionar una fecha mayor a la actual!' + '</h4></p>');
+		    		$('#MensajeCantidad').modal('show');
+			    	return;
+				}
+
+				if (fechainicio > fechadesde) {
+				    $('#divMensaje').html('<p class="form-control-static"><h4>' + 'La fecha no se encuentra en el ciclo lectivo!' + '</h4></p>');
+		    		$('#MensajeCantidad').modal('show');
+			    	return;
+				}
+			}
+
+		    if (fechadesde > fechafin) {
+			    $('#divMensaje').html('<p class="form-control-static"><h4>' + 'La fecha seleccionada no se encuentra en el ciclo lectivo!' + '</h4></p>');
+	    		$('#MensajeCantidad').modal('show');
+		    	return;
+			}
+
+			if (!txtalumno == '') {
+				$.ajax({
+				  url: '{{url('alumnos/obteneralumnopordni')}}',
+				  data: {'txt_alumno': txtalumno},
+				  type: 'POST'
+				}).done(function(alumno) {
+					console.log(alumno);
+
+					if (alumno == <?php echo AlumnosController::NO_EXISTE_ALUMNO ?>) {
+						$('#divMensaje').html('<p class="form-control-static"><h4>' + 'El Alumno no existe!' + '</h4></p>');
+			    		$('#MensajeCantidad').modal('show');
+				    	return;
+					}
+
+					var name = alumno.apellido + ", " + alumno.nombre;
+					var alumnoid = alumno.alumno_id;
+					$('#alumno_id').val(alumno.alumno_id);
+					name.toUpperCase();
+					$('#nombreAlumno').text(name);
+					$('#divDNI').html('<p class="form-control-static">' + alumno.nrodocumento + '</p>');
+					//$('#icodni').removeClass('fa-warning').addClass("fa-check");
+					//$('#divdni').removeClass('has-error').addClass("has-success");
+
+				}).error(function(data) {
+					console.log(data);
+				});
+			}
+
+	    	if (fechadesde == '') {
+	    		activo = 'disabled';
+	    	}
+		
+	        $("#asistencias").removeAttr("disabled");
+	        Inscripciones(activo);
+	        $('#btnBuscar').focus();
 	    }
 	});
 
