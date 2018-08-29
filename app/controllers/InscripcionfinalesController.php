@@ -822,10 +822,10 @@ class InscripcionFinalesController extends BaseController
         $turno = TurnoExamen::where('id', '=', $turno_id)->first();
 
         $pdf = PDF::loadView('informes.pdf.listadomateriasfinalestotal', 
-            ['materias'=>$materias,
-             'carrera'=>$carrera,
-             'alumno'=>$alumno,
-             'turno'=>$turno
+            ['materias' =>  $materias,
+             'carrera'  =>  $carrera,
+             'alumno'   =>  $alumno,
+             'turno'    =>  $turno
             ]);
         return $pdf->setOrientation('landscape')->stream();
     }

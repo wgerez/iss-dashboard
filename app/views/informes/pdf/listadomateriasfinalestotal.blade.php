@@ -4,21 +4,24 @@
 <br>
   <div>
     <h6> 
-      <p>
+      <p><strong>Carrera:</strong> 
       <?php if (isset($carrera->carrera)) {
-          echo $carrera->carrera;}?>
+          echo $carrera->carrera;
+        } ?>
       </p>
     </h6>
     <h4> 
-      <p>Turno: 
+      <p><strong> Turno:</strong>  
       <?php if (isset($turno->descripcion)) {
-          echo $turno->descripcion;}?>
+          echo $turno->descripcion;
+        } ?>
       </p>
     </h4>
     <h4> 
-      <p>Alumno: 
-      <?php if (isset($alumno->persona->apellido)) {
-          echo$alumno->persona->apellido .' '. $alumno->persona->nombre;}?>
+      <p><strong> Alumno:</strong>  
+      <?php if (count($alumno) > 0) {
+          echo $alumno->persona->apellido .', '. $alumno->persona->nombre;
+        } ?>
       </p>
     </h4>
    
