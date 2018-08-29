@@ -325,7 +325,6 @@ class InscripcionFinalesController extends BaseController
         $mesas = [];
         $carr_id = Input::get('id');
         $plan_id = Input::get('plan_id');
-        //$ciclo = CicloLectivo::where('descripcion', '=', Input::get('ciclo_id'))->first();
         $turno_id = Input::get('turno_id');
         $alumno_id = Input::get('alumno_id');
         $llamado = Input::get('llamado');
@@ -407,13 +406,18 @@ class InscripcionFinalesController extends BaseController
                         if ($regular) {
                             //verificar que no exista el re
                             $existe = InscripcionFinal::where('alumno_id', '=', $alumno_id)->where('mesaexamen_id', '=', $tp->id)->first();
+                            
                             if (!$existe) {
                                 $examenfinal = ExamenFinal::whereRaw('alumno_id ='.$alumno_id.' AND carrera_id ='.$carr_id.' AND planestudio_id ='.$plan_id.' AND materia_id ='.$tp->materia_id)->get();
-
-                                foreach ($examenfinal as $value) {
-                                    if ($value->calif_final_num < 5 || $value->asistencia == 1) {
-                                        $mesas[] = ['id' => $tp->id, 'materia' => $materia->nombremateria];
+                                
+                                if (count($examenfinal) > 0) {
+                                    foreach ($examenfinal as $value) {
+                                        if ($value->calif_final_num < 5 || $value->asistencia == 1) {
+                                            $mesas[] = ['id' => $tp->id, 'materia' => $materia->nombremateria];
+                                        }
                                     }
+                                } else {
+                                    $mesas[] = ['id' => $tp->id, 'materia' => $materia->nombremateria];
                                 }
                             }
                         }
