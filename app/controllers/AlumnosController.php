@@ -2302,7 +2302,20 @@ exit();*/
 
     public function getInformeauditoriaalumnos()
     {
-        $alumnosall = Alumno::all();
+        $organizaciones = Organizacion::lists('nombre', 'id');
+
+        array_unshift($organizaciones, 'Seleccionar');
+
+        return View::make('informes/alumnos_auditoria')
+            ->with('menu', ModulosHelper::MENU_INFORMES)
+            ->with('submenu', ModulosHelper::SUBMENU_INFORMES_ALUMNOS)
+            ->with('organizaciones', $organizaciones)
+            ->with('leer', Session::get('INFORME_ALUMNOS_LEER'))
+            ->with('editar', Session::get('INFORME_ALUMNOS_EDITAR'))
+            ->with('imprimir', Session::get('INFORME_ALUMNOS_IMPRIMIR'))
+            ->with('eliminar', Session::get('INFORME_ALUMNOS_ELIMINAR'));
+
+        /*$alumnosall = Alumno::all();
 
         $i = 0;
         foreach ($alumnosall as $alumno) {
@@ -2317,6 +2330,75 @@ exit();*/
             $alumnos[$i] = ['apeynom'=>$apeynom, 'dni'=>$dni, 'usuario_alta'=>$alumno->usuario_alta, 'fecha_alta'=>$fecha_alta,
                                 'usuario_modi'=>$alumno->usuario_modi, 'fecha_modi'=>$fecha_modi];
             $i++;
+        }
+        //highlight_string(var_export($alumnos, true));
+        //exit();
+
+        $pdf = PDF::loadView(
+            'informes.pdf.auditoriaalumnos',
+            [
+                'alumnos' => $alumnos
+            ]
+        );
+        return $pdf->setOrientation('landscape')->stream();*/
+
+    }
+
+    public function postObtenerauditoria()
+    {
+        $idCarrera = Input::get('carrera');
+        $alumnos = [];
+
+        $carreras = AlumnoCarrera::whereRaw('carrera_id ='.$idCarrera)->get();
+
+        foreach ($carreras as $carrera) {
+            $alumno = Alumno::findOrFail($carrera->alumno_id);
+            $persona = $alumno->persona;
+
+            $apeynom = $persona->apellido . ', ' . $persona->nombre;
+            $dni = $persona->nrodocumento;
+
+            $fecha_alta = FechaHelper::getFechaImpresion($alumno->fecha_alta);
+            $fecha_modi = FechaHelper::getFechaImpresion($alumno->fecha_modi);
+
+            if ($alumno->usuario_modi) {
+                $usuario_modi = $alumno->usuario_modi;
+            } else {
+                $usuario_modi = '';
+            }
+
+            if ($alumno->fecha_modi) {
+                $fecha_modi = FechaHelper::getFechaImpresion($alumno->fecha_modi);
+            } else {
+                $fecha_modi = '';
+            }
+
+            $alumnos[] = ['apeynom'=>$apeynom, 'dni'=>$dni, 'usuario_alta'=>$alumno->usuario_alta, 'fecha_alta'=>$fecha_alta,
+                                'usuario_modi'=>$usuario_modi, 'fecha_modi'=>$fecha_modi];
+        }
+
+        return Response::json($alumnos);
+    }
+
+    public function getImprimirauditoria()
+    {
+        $idCarrera = Input::get('carrera_id');
+        $alumnos = [];
+
+        $carreras = AlumnoCarrera::whereRaw('carrera_id ='.$idCarrera)->get();
+
+        foreach ($carreras as $carrera) {
+            $alumno = Alumno::findOrFail($carrera->alumno_id);
+            $persona = $alumno->persona;
+
+            $apeynom = $persona->apellido . ', ' . $persona->nombre;
+            $dni = $persona->nrodocumento;
+
+            $fecha_alta = FechaHelper::getFechaImpresion($alumno->fecha_alta);
+            $fecha_modi = FechaHelper::getFechaImpresion($alumno->fecha_modi);
+
+            $alumnos[] = ['apeynom'=>$apeynom, 'dni'=>$dni, 'usuario_alta'=>$alumno->usuario_alta, 'fecha_alta'=>$fecha_alta,
+                                'usuario_modi'=>$alumno->usuario_modi, 'fecha_modi'=>$fecha_modi];
         }
         //highlight_string(var_export($alumnos, true));
         //exit();

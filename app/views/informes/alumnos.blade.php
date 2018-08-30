@@ -129,7 +129,7 @@
 
 								<label class="col-md-12 col-sm-12 control-label">
     								<i class="fa fa-circle-o"></i>
-									<a target="_blank" href="{{url('alumnos/informeauditoriaalumnos')}}">
+									<a href="{{url('alumnos/informeauditoriaalumnos')}}">
 										Informe de Auditoria Alumnos
 									</a>
 								</label>
