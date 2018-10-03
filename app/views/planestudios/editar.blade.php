@@ -24,8 +24,8 @@ $cicloid = (trim(Input::old('ciclo') == false)) ? $planestudios->ciclolectivo_id
 $codigoplan = (trim(Input::old('codigoplan') == false)) ? $planestudios->codigoplan : Input::old('codigoplan');
 $tituloplan = (trim(Input::old('tituloplan') == false)) ? $planestudios->tituloplan : Input::old('tituloplan');
 $nroresolucion = (trim(Input::old('nroresolucion') == false)) ? $planestudios->nroresolucion : Input::old('nroresolucion');
-$fechainicio = (trim(Input::old('fechaInicio') == false)) ? $planestudios->fechainicio : Input::old('fechaInicio');
-$fechafin = (trim(Input::old('fechaFin') == false)) ? $planestudios->fechafin : Input::old('fechaFin');
+$fechainicio = (trim(Input::old('fechaInicio') == false)) ? $fechainicio : Input::old('fechaInicio');
+$fechafin = (trim(Input::old('fechaFin') == false)) ? $fechafin : Input::old('fechaFin');
 
 ?>
 @section('content')
@@ -147,7 +147,7 @@ $fechafin = (trim(Input::old('fechaFin') == false)) ? $planestudios->fechafin : 
 										<div class="form-group">
 											<label class="col-md-2 col-sm-2 control-label" for="fechaInicio">Fecha Inicio:</label>
 											<div class="col-md-2 col-sm-2">
-												<input type="text" class="form-control" id="fechaInicio" name="fechaInicio" placeholder="" value="{{FechaHelper::getFechaImpresion($fechainicio)}}">
+												<input type="text" class="form-control" id="fechaInicio" name="fechaInicio" placeholder="" value="{{$fechainicio}}">
 											</div>
 											@if ($errors->has('fechaInicio'))
 												<span class="help-block">La fecha de inicio es obligatoria.</span>
@@ -157,7 +157,7 @@ $fechafin = (trim(Input::old('fechaFin') == false)) ? $planestudios->fechafin : 
 										<div class="form-group">
 											<label class="col-md-2 col-sm-2 control-label" for="fechaFin">Fecha Fin:</label>
 											<div class="col-md-2 col-sm-2">
-												<input type="text" class="form-control" id="fechaFin" name="fechaFin" placeholder="" value="{{FechaHelper::getFechaImpresion($fechafin)}}">
+												<input type="text" class="form-control" id="fechaFin" name="fechaFin" placeholder="" value="{{$fechafin}}">
 											</div>
 											<span class="help-block">La fecha de fin debe ser mayor</span>
 										</div>

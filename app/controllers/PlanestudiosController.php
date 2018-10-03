@@ -143,12 +143,22 @@ class PlanestudiosController extends \BaseController {
         $ciclos         = CicloLectivo::lists('descripcion', 'id');
         $carreras       = CarrerasController::ObtenerCarrerasParaSelect(1);
 
+        $fechainicio = FechaHelper::getFechaImpresion($planestudios->fechainicio);
+
+        if ($planestudios->fechafin == '0000-00-00 00:00:00') {
+            $fechafin = '';
+        } else {
+            $fechafin = FechaHelper::getFechaImpresion($planestudios->fechafin);
+        }
+
         //return $planestudios;
         //exit();
 
         return View::make('planestudios/editar', [
                     'planestudios'      => $planestudios,
-                    'ciclos'           => $ciclos,
+                    'ciclos'            => $ciclos,
+                    'fechainicio'       => $fechainicio,
+                    'fechafin'          => $fechafin,
                     'carreras'          => $carreras
                 ])
                 ->with('menu', ModulosHelper::MENU_GESTION_ADMINISTRATIVA)
