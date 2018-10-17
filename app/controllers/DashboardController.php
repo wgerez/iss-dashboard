@@ -73,8 +73,8 @@ class DashboardController extends BaseController
         		$i++;
             }
     	}
-highlight_string(var_export($porcent, true));
-        exit();
+/*highlight_string(var_export($porcent, true));
+        exit();*/
         //TOTAL DE ALUMNOS BECADOS
         $tot_becados = Beca::all()->count();
     	
