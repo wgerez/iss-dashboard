@@ -65,10 +65,12 @@ class DashboardController extends BaseController
     	$highlight = ['#FF5A5E', '#5AD3D1', '#FFC870', '#A8B3C5', '#616774', '#89BEFA', '#B296EB', '#8BC47C', '#5DC9C4', '#FAD05C', '#4FD4E8', '#74F7DF', '#74C971', '#468BB0'];
 
     	$i = 0;
-    	foreach ($arrporc as $arrp) {
-    		$porcent[$i] = ['value'=>(int)number_format($arrp,2,",","."), 'color'=>$colores[$i], 'highlight'=>$highlight[$i], 'label'=>$arrc[$i]];
-    		$i++;
-    	}
+        if (count($arrporc) > 0) {
+        	foreach ($arrporc as $arrp) {
+        		$porcent[$i] = ['value'=>(int)number_format($arrp,2,",","."), 'color'=>$colores[$i], 'highlight'=>$highlight[$i], 'label'=>$arrc[$i]];
+        		$i++;
+        	}
+        }
 
         //TOTAL DE ALUMNOS BECADOS
         $tot_becados = Beca::all()->count();
