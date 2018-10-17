@@ -61,18 +61,20 @@ class DashboardController extends BaseController
 			$arrporc[] =  ($carrera->alumnos->count()*100)/$totalumnos;
     	}
 
-        highlight_string(var_export($arrporc, true));
-        exit();
+        
     	//FOREACH PARA ARMADO PARA EL JSON DE GRAFICO DE TORTA
     	$colores = ['#F7464A', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360', '#69ADFB', '#A17BED', '#67B352', '#31B5AE', '#FAC020', '#22BED6', '#3CDEC0', '#32A12F', '#1A6891'];
     	$highlight = ['#FF5A5E', '#5AD3D1', '#FFC870', '#A8B3C5', '#616774', '#89BEFA', '#B296EB', '#8BC47C', '#5DC9C4', '#FAD05C', '#4FD4E8', '#74F7DF', '#74C971', '#468BB0'];
 
     	$i = 0;
     	foreach ($arrporc as $arrp) {
-    		$porcent[$i] = ['value'=>(int)number_format($arrp,2,",","."), 'color'=>$colores[$i], 'highlight'=>$highlight[$i], 'label'=>$arrc[$i]];
-    		$i++;
+            if ($arrp > 0) {
+        		$porcent[$i] = ['value'=>(int)number_format($arrp,2,",","."), 'color'=>$colores[$i], 'highlight'=>$highlight[$i], 'label'=>$arrc[$i]];
+        		$i++;
+            }
     	}
-
+highlight_string(var_export($porcent, true));
+        exit();
         //TOTAL DE ALUMNOS BECADOS
         $tot_becados = Beca::all()->count();
     	
