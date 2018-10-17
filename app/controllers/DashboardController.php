@@ -60,6 +60,9 @@ class DashboardController extends BaseController
     		//RESCATO EN PORCENTAJE PARA LUEGO USAR EN EL BUCLE DE GRAFICO DE TORTA
 			$arrporc[] =  ($carrera->alumnos->count()*100)/$totalumnos;
     	}
+
+        highlight_string(var_export($arrporc, true));
+        exit();
     	//FOREACH PARA ARMADO PARA EL JSON DE GRAFICO DE TORTA
     	$colores = ['#F7464A', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360', '#69ADFB', '#A17BED', '#67B352', '#31B5AE', '#FAC020', '#22BED6', '#3CDEC0', '#32A12F', '#1A6891'];
     	$highlight = ['#FF5A5E', '#5AD3D1', '#FFC870', '#A8B3C5', '#616774', '#89BEFA', '#B296EB', '#8BC47C', '#5DC9C4', '#FAD05C', '#4FD4E8', '#74F7DF', '#74C971', '#468BB0'];
