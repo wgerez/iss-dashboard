@@ -329,7 +329,7 @@ class ControlAccesoController extends \BaseController {
 	    }
 
         if ($salida == '') {
-        	$horasalida = date('Y-m-d H:i');
+        	$horasalida = '';//date('Y-m-d H:i');
         } else {
         	if ($horas == '' || $minutos == '') {
         		Session::flash('message', 'ERROR AL INTENTAR GUARDAR EL ACCESO, LA FECHA/HORA DE SALIDA DEBE ESTAR COMPLETA!');
@@ -342,21 +342,24 @@ class ControlAccesoController extends \BaseController {
         }
 
         $fecha_inicio = strtotime($horaentrada);
-        $fecha_fin    = strtotime($horasalida);
 
-	    if ($fecha_inicio > $fecha_fin) {
-	    	Session::flash('message', 'ERROR AL INTENTAR GUARDAR EL ACCESO, LA FECHA/HORA DE SALIDA NO PUEDE SER MAYOR QUE LA DE ENTRADA!');
-            Session::flash('message_type', self::OPERACION_FALLIDA);
-            return Redirect::to('controlacceso/pagarcuotas/' . $persona_id)
-                ->withInput();
-	    }
+        if (!$horasalida == '') {
+        	$fecha_fin    = strtotime($horasalida);
 
-
+		    if ($fecha_inicio > $fecha_fin) {
+		    	Session::flash('message', 'ERROR AL INTENTAR GUARDAR EL ACCESO, LA FECHA/HORA DE SALIDA NO PUEDE SER MAYOR QUE LA DE ENTRADA!');
+	            Session::flash('message_type', self::OPERACION_FALLIDA);
+	            return Redirect::to('controlacceso/pagarcuotas/' . $persona_id)
+	                ->withInput();
+		    }
+        }
+        
         $acceso = Acceso::find($usuario_id);
         
         //$acceso->persona_id   = $personal;
         $acceso->entrada        = $horaentrada;
-        $acceso->salida         = $horasalida;
+
+        if (!$horasalida == '') $acceso->salida = $horasalida;
         //$acceso->tipo           = 7;
         //$acceso->visto          = 1;
         $acceso->usuario_modi   = Auth::user()->usuario;

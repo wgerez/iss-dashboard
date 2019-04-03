@@ -382,6 +382,19 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 
     function Buscar_codigo(codigo) {
 	    //alert(codigo);
+	    var fecha = new Date();
+		var mes = fecha.getMonth()+1; //obteniendo mes
+		var dia = fecha.getDate(); //obteniendo dia
+		var ano = fecha.getFullYear(); //obteniendo año
+
+		if(dia<10) dia='0'+dia; //agrega cero si el menor de 10
+
+		if(mes<10) mes='0'+mes //agrega cero si el menor de 10
+
+		//document.getElementById('fechaActual').value=ano+"-"+mes+"-"+dia;
+	    $('#txt_entrada').val(ano+"-"+mes+"-"+dia);
+	    $('#txt_salida').val(ano+"-"+mes+"-"+dia);
+
 	    $.ajax({
 			type: "POST",
 			url: "{{url('controlacceso/buscarcodigo')}}",
@@ -395,9 +408,9 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 					$('#txt_usuario').val(value.usuario);
 				});
 
-			}).error(function(data) {
-				console.log(data);
-			});
+		}).error(function(data) {
+			console.log(data);
+		});
 	}
 
 	$('#BtnBuscarLista').live('click', function(){
@@ -412,6 +425,20 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 		$('#txt_codigo').val(id);
 		$('#txt_personal').val(personal);
 		$('#txt_usuario').val(usuario);
+		
+	    var fecha = new Date();
+		var mes = fecha.getMonth()+1; //obteniendo mes
+		var dia = fecha.getDate(); //obteniendo dia
+		var ano = fecha.getFullYear(); //obteniendo año
+
+		if(dia<10) dia='0'+dia; //agrega cero si el menor de 10
+
+		if(mes<10) mes='0'+mes //agrega cero si el menor de 10
+
+		//document.getElementById('fechaActual').value=ano+"-"+mes+"-"+dia;
+	    $('#txt_entrada').val(ano+"-"+mes+"-"+dia);
+	    $('#txt_salida').val(ano+"-"+mes+"-"+dia);
+
 
 		$('#modalBuscarPersona').modal('hide');
 	});

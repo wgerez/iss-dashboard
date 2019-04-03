@@ -339,10 +339,30 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 																</label>
 															</div-->
 															<div class="col-md-2 col-sm-2">
-												                <input type="number" name="txt_hora" id="txt_hora" class="form-control" value="">
+																<select class="table-group-action-input form-control" name="txt_hora" id="txt_hora">
+																	<option value="00">00</option>
+																	<?php
+																	for ($i=1; $i < 25; $i++) { 
+																		if ($i < 10) {
+																		 	$i = '0'.$i;
+																		 } ?>
+																		<option value="{{ $i }}">{{ $i }}</option>
+																	<?php } ?>
+																</select>
+												                <!--input type="number" name="txt_hora" id="txt_hora" class="form-control" value=""-->
 												            </div>
 												            <div class="col-md-2 col-sm-2">
-												                <input type="number" name="txt_minuto" id="txt_minuto" class="form-control" value="">
+												            	<select class="table-group-action-input form-control" name="txt_minuto" id="txt_minuto">
+																	<option value="00">00</option>
+																	<?php
+																	for ($i=01; $i < 60; $i++) { 
+																		if ($i < 10) {
+																		 	$i = '0'.$i;
+																		 } ?>
+																		<option value="{{ $i }}">{{ $i }}</option>
+																	<?php } ?>
+																</select>
+												                <!--input type="number" name="txt_minuto" id="txt_minuto" class="form-control" value=""-->
 															</div>
 													 	</div>
 														<div class="form-group">
@@ -353,10 +373,32 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 																<input type="date" name="txt_salida" id="txt_salida" class="form-control" value=''>
 															</div>
 															<div class="col-md-2 col-sm-2">
-												                <input type="number" name="txt_horas" id="txt_horas" class="form-control" value="">
+																<select class="table-group-action-input form-control" name="txt_horas" id="txt_horas">
+																	<option value=""></option>
+																	<option value="00">00</option>
+																	<?php
+																	for ($i=1; $i < 25; $i++) { 
+																		if ($i < 10) {
+																		 	$i = '0'.$i;
+																		 } ?>
+																		<option value="{{ $i }}">{{ $i }}</option>
+																	<?php } ?>
+																</select>
+												                <!--input type="number" name="txt_horas" id="txt_horas" class="form-control" value=""-->
 												            </div>
 												            <div class="col-md-2 col-sm-2">
-												                <input type="number" name="txt_minutos" id="txt_minutos" class="form-control" value="">
+																<select class="table-group-action-input form-control" name="txt_minutos" id="txt_minutos">
+																	<option value=""></option>
+																	<option value="00">00</option>
+																	<?php
+																	for ($i=01; $i < 60; $i++) { 
+																		if ($i < 10) {
+																		 	$i = '0'.$i;
+																		 } ?>
+																		<option value="{{ $i }}">{{ $i }}</option>
+																	<?php } ?>
+																</select>
+												                <!--input type="number" name="txt_minutos" id="txt_minutos" class="form-control" value=""-->
 															</div>
 													 	</div>
 													</div>

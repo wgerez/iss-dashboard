@@ -7,6 +7,9 @@ class UsersController extends BaseController
     const OPERACION_FALLIDA = 2;
     const OPERACION_CANCELADA = 3;
     const OPERACION_INFO = 4;
+    const IMG_PATH = 'usuarios/img-perfil/';
+    const IMG_PERFIL_WIDTH = 400;
+    const IMG_WIDTH = 800;
 
     public function getIndex()
     {
@@ -325,6 +328,19 @@ class UsersController extends BaseController
                 ->withInput();
         } else {
 
+            $fotoperfil = Input::file('fotoperfil');
+
+            if ($fotoperfil) {
+
+                $extension_valida = ImagenHelper::extensionValida($fotoperfil->getClientOriginalName());
+
+                if (!$extension_valida) {
+                    Session::flash('message', 'LA IMAGEN DEBE SER DEL TIPO PNG/JPG/GIF.');
+                    Session::flash('message_type', self::OPERACION_FALLIDA);
+                    return Redirect::to('usuarios/crear');
+                }
+            }
+
 			$persona = new Persona();
 			$persona->nombre           = trim(Input::get("txtnombre"));
 			$persona->apellido         = trim(Input::get("txtapellido"));
@@ -343,6 +359,12 @@ class UsersController extends BaseController
 			$user->password     = Hash::make(trim(Input::get("txtpass")));
 			$user->activo       = (Input::get('usuarioactivo')) ? 1 : 0;
 			$user->persona_id 	= $persona->id;
+
+            if ($fotoperfil) {
+                $filename = $persona->id . '_' . $persona->nrodocumento . '.jpg';
+                $user->foto = $filename;
+            }
+
             $user->usuario_alta = Auth::user()->usuario;
             $user->fecha_alta   = date('Y-m-d');
 
@@ -350,6 +372,17 @@ class UsersController extends BaseController
 
 			$organizacion = Input::get("organizaciones");
 			$user->organizaciones()->attach($organizacion);
+
+            // se guarda la imagen
+            if ($fotoperfil) {
+                $imagen = Image::make($fotoperfil->getRealPath());
+                $ancho = $imagen->width();
+                if ($ancho > self::IMG_PERFIL_WIDTH) $ancho = self::IMG_PERFIL_WIDTH;
+                $imagen->resize($ancho, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $imagen->save(self::IMG_PATH . $filename);
+            }
 
 			Session::flash('message', 'USUARIO CREADO CON ÉXITO!');
             Session::flash('message_type', self::OPERACION_EXITOSA);
