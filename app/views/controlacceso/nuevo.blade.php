@@ -133,7 +133,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 									<div class="form-group @if ($errors->has('txt_personal')) {{'has-error'}} @endif">
 										<label class="col-md-2 control-label" for="txt_personal">Personal:</label>
 										<div class="col-md-4 <?php if ($errors->has('txt_personal')) echo 'has-error' ?>">
-											<input type="text" class="form-control" id="txt_personal" name="txt_personal" value="{{ Input::old('txt_personal') }}" placeholder="Personal">
+											<input type="text" class="form-control" id="txt_personal" name="txt_personal" value="{{ Input::old('txt_personal') }}" placeholder="Personal" readonly="readonly">
 											@if ($errors->has('txt_personal'))
 											    <span class="help-block">{{ $errors->first('txt_personal') }}</span>
 										    @endif
@@ -143,7 +143,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 									<div class="form-group @if ($errors->has('txt_usuario')) {{'has-error'}} @endif">
 										<label class="col-md-2 control-label" for="txt_usuario">Usuario:</label>
 										<div class="col-md-4 <?php if ($errors->has('txt_usuario')) echo 'has-error' ?>">
-											<input type="text" class="form-control" id="txt_usuario" name="txt_usuario" value="{{ Input::old('txt_usuario') }}" placeholder="Usuario">
+											<input type="text" class="form-control" id="txt_usuario" name="txt_usuario" value="{{ Input::old('txt_usuario') }}" placeholder="Usuario" readonly="readonly">
 											@if ($errors->has('txt_usuario'))
 											    <span class="help-block">{{ $errors->first('txt_usuario') }}</span>
 										    @endif
