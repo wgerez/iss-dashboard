@@ -20,6 +20,7 @@ class CreateAccesosTable extends Migration {
 			$table->dateTime('entrada')->nullable();
 			$table->dateTime('salida')->nullable();
 			$table->integer('tipo')->nullable();
+			$table->boolean('visto')->default(0);
 			$table->string('usuario_alta',50)->nullable();
 			$table->timestamp('fecha_alta')->nullable();
 			$table->string('usuario_modi',50)->nullable();

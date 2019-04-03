@@ -14,6 +14,43 @@
 					</a>
 				</li>	
 
+			<?php 
+			foreach (Session::get('permisos')[0] as $permiso) {
+				if ($permiso['submoduloid'] == ModulosHelper::CONTROL_ACCESOS_ID){
+			?>
+				<li <?php if ($menu == ModulosHelper::MENU_ACCESOS) echo "class='start active open'"; ?> >
+					<a href="javascript:;">
+					<i class="glyphicon glyphicon-log-in"></i>
+					<span class="title">
+					Acceso</span>
+					<span class="selected ">
+					</span>
+					<span class="arrow <?php if ($menu == ModulosHelper::MENU_ACCESOS) echo 'open'; ?>">
+					</span>
+					</a>
+					<ul class="sub-menu">
+						<?php 
+						foreach (Session::get('permisos')[0] as $permiso) {
+							if ($permiso['submoduloid'] == ModulosHelper::CONTROL_ACCESOS_ID){
+						?>
+							<li class="<?php if ($submenu == ModulosHelper::SUBMENU_CONTROL_ACCESOS) echo 'active'; ?>">
+								<a href="{{url('controlacceso/listado')}}">
+								<i class="glyphicon glyphicon-transfer"></i>
+								 Control de Acceso</a>
+							</li>
+						<?php
+							break; 
+							}
+						}
+						?>
+					</ul>
+				</li>
+			<?php
+				break; 
+				}
+			}
+			?>
+
 
 			<?php 
 			foreach (Session::get('permisos')[0] as $permiso) {

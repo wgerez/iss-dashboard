@@ -5,6 +5,10 @@ class ModulosHelper
 	/* DASHBOARD */
 	const MENU_DASHBOARD = 'dashboard';
 
+	/* CONTROL DE ACCESO */
+	const MENU_ACCESOS = 'accesos';
+	const SUBMENU_CONTROL_ACCESOS = 'control_accesos';
+
 	/* GESTION ACADEMICA */
 	const MENU_GESTION_ACADEMICA = 'gestion_academica';
 
@@ -113,6 +117,9 @@ class ModulosHelper
 	/* SEGURIDAD */
 	const USUARIOS_ID 			= 20;
 	const PERFILES_ID 			= 21;
+
+	/* CONTROL DE ACCESOS */
+	const CONTROL_ACCESOS_ID	= 40;
 }
 
 ?>

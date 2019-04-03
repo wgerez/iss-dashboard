@@ -92,4 +92,38 @@ class FechaHelper {
         return $horaInput;
     }
 
+    public static function getCalculoHorarios($fecha1, $fecha2)
+    {
+        list($iniDia, $iniHora) = explode(" ", $fecha1);
+        list($dia1, $mes1, $anio1) = explode("-", $iniDia);
+
+        list($finDia, $finHora) = explode(" ", $fecha2);
+        list($dia2, $mes2, $anio2) = explode("-", $finDia);
+
+        $datetime1 = date_create($anio1.'-'.$mes1.'-'.$dia1.' '.$iniHora);
+        $datetime2 = date_create($anio2.'-'.$mes2.'-'.$dia2.' '.$finHora);
+        $intervalo = date_diff($datetime1, $datetime2);
+        $dias2 = $intervalo->format('%a');
+
+        $cadena = strtotime($iniHora);
+        $iniHora = date("H:i:s", $cadena);
+
+        $cadena = strtotime($finHora);
+        $finHora = date("H:i:s", $cadena);
+        $hora = '';
+
+        $dias = date("H:i:s", strtotime("00:00:00") + strtotime($finHora) - strtotime($iniHora));
+
+        if ($dias2 > -1) {
+            $canhoras = $dias2 * 24;
+            list($hora1, $minut, $segu) = explode(':', $dias);
+            $nhora = $hora1 + $canhoras;
+            $hora = $nhora.':'.$minut.':'.$segu;
+        }
+
+        if ($nhora > 35) $hora = $dias;
+
+        return $hora;
+    }
+
 }

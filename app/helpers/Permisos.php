@@ -210,7 +210,13 @@ class PermisosHelper
 	                Session::put('CONTRATOS_EDITAR', $permiso['editar']);
 	                Session::put('CONTRATOS_IMPRIMIR', $permiso['imprimir']);
 	                Session::put('CONTRATOS_ELIMINAR', $permiso['eliminar']);
-			        break;			        
+			        break;
+			    case ModulosHelper::CONTROL_ACCESOS_ID:
+	                Session::put('CONTROL_ACCESOS_LEER', $permiso['leer']);
+	                Session::put('CONTROL_ACCESOS_EDITAR', $permiso['editar']);
+	                Session::put('CONTROL_ACCESOS_IMPRIMIR', $permiso['imprimir']);
+	                Session::put('CONTROL_ACCESOS_ELIMINAR', $permiso['eliminar']);
+			        break;
 			}
         }
 	}

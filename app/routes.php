@@ -172,6 +172,11 @@ Route::group(['before' => 'auth'], function()
 	});
 	
 
+	Route::group(['before' => 'filtrocontrolacceso'], function()
+	{
+		Route::controller('controlacceso', 'ControlAccesoController');
+	});
+	
 	/*Route::group(['before' => 'filtromaterias'], function()
 	{
 		Route::resource('materias', 'MateriasResourceController');

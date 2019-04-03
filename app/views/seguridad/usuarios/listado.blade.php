@@ -112,6 +112,11 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 								<span class="hidden-480">
 								Actualizar </span>
 								</a>
+								<a target="_blank" href="#" id="imprimir" class="btn default yellow-stripe" <?php if (count($usuarios) == 0) echo 'disabled' ?>>
+								<i class="glyphicon glyphicon-list-alt"></i>
+								<span class="hidden-480">
+								Imprimir </span>
+								</a>
 
 							</div>
 
@@ -159,8 +164,8 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 										@foreach ($usuarios as $usuario)
 											@if (Auth::user()->id==5)
 												<tr class="@if ($usuario->activo == 0) {{'danger'}} @else @if (!isset($usuario->perfiles->first()->perfil)) {{'warning'}}  @endif @endif">
-													<td>
-														{{$usuario->id}}
+													<td><center>
+														{{$usuario->Persona['id']//$usuario->id}}</center>
 													</td>
 													<td>
 														{{ $usuario->Persona['apellido'].', '.$usuario->Persona['nombre'] }}
@@ -188,8 +193,8 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 												@else
 													@if ( $usuario->id!=5)
 													<tr class="@if ($usuario->activo == 0) {{'danger'}} @else @if (!isset($usuario->perfiles->first()->perfil)) {{'warning'}}  @endif @endif">
-														<td>
-															{{$usuario->id}}
+														<td><center>
+															{{$usuario->Persona['id']//$usuario->id}}</center>
 														</td>
 														<td>
 															{{ $usuario->Persona['apellido'].', '.$usuario->Persona['nombre'] }}
@@ -275,6 +280,10 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 		$('#modalEliminaUsuario').modal('show');
 	});
 
+	$('#imprimir').on('click', function(e){
+		e.preventDefault();
+		window.open("{{url('usuarios/imprimirusuarios')}}?organizacion=" + $('#organizacion').val());
+	});
 @stop
 
 

@@ -120,7 +120,9 @@ class UsersController extends BaseController
 
 		array_unshift($organizaciones, 'Seleccionar');
 
-		return View::make('seguridad.usuarios.listado',['organizaciones' => $organizaciones])
+		$usuarios = array();
+
+		return View::make('seguridad.usuarios.listado',['organizaciones' => $organizaciones, 'usuarios' => $usuarios])
             ->with('menu', ModulosHelper::MENU_SEGURIDAD)
             ->with('submenu', ModulosHelper::SUBMENU_SEGURIDAD_USUARIOS)
             ->with('leer', Session::get('USUARIO_LEER'))
@@ -482,7 +484,36 @@ class UsersController extends BaseController
 		{
 			return Response::json(array('documento' => false));
 		}
+	}
+
+	public function getImprimirusuarios()/*PDF*/
+	{
+		$idOrganizacion = Input::get('organizacion');
+
+		if (!$idOrganizacion){
+			Session::flash('message', 'NO SE HA SELECCIONADO UNA ORGANIZACION!');
+        	Session::flash('message_type', self::OPERACION_CANCELADA);
+			return Redirect::to('usuarios/listado');
+		}
+
+		$organizaciones = Organizacion::lists('nombre', 'id');
+
+		array_unshift($organizaciones, 'Seleccionar');
+		//TODAVÍA NO FUNCIONA EL FILTRO TRAE TODOS LOS USUARIOS
+		$organizacion = Organizacion::find($idOrganizacion);
+
+		if (!$organizacion) {
+            Session::flash('message', 'LA ORGANIZACION NO POSEE USUARIOS ASOCIADOS.');
+            Session::flash('message_type', self::OPERACION_CANCELADA);
+            return Redirect::to('usuarios/listado');
+        }
+
+        $usuarios = $organizacion->users;
+
+        $pdf = PDF::loadView('informes.pdf.usuarios', ['organizaciones'=>$organizaciones, 'usuarios'=>$usuarios]);
+        return $pdf->setOrientation('landscape')->stream();
 	}	
+
 	
 }
 

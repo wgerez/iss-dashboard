@@ -8,9 +8,10 @@ class Alumno extends \Eloquent {
     {
         $result = DB::table('personas', 'alumnos')
                 ->select(DB::raw('personas.id as persona_id, personas.apellido, personas.nombre,
-                    personas.nrodocumento, alumnos.id as alumno_id'))
+                    personas.nrodocumento, alumnos.id as alumno_id, alumnos.activo'))
                 ->join('alumnos', 'personas.id', '=', 'alumnos.persona_id')
-                ->where('personas.apellido', 'like', '%' . $apellido . '%')
+                //->where('personas.apellido', 'like', '%' . $apellido . '%')
+                ->whereRaw('personas.apellido="' . $apellido . '" AND alumnos.activo=1')
                 ->orderBy('personas.apellido')
                 ->get();
 
