@@ -7,7 +7,7 @@ class UsersController extends BaseController
     const OPERACION_FALLIDA = 2;
     const OPERACION_CANCELADA = 3;
     const OPERACION_INFO = 4;
-    const IMG_PATH = 'usuarios/img-perfil/';
+    const IMG_PATH = 'alumnos/img-perfil/';
     const IMG_PERFIL_WIDTH = 400;
     const IMG_WIDTH = 800;
 
@@ -442,6 +442,19 @@ class UsersController extends BaseController
                 ->withInput();
         } else {
 
+            $fotoperfil = Input::file('fotoperfil');
+
+            if ($fotoperfil) {
+
+                $extension_valida = ImagenHelper::extensionValida($fotoperfil->getClientOriginalName());
+
+                if (!$extension_valida) {
+                    Session::flash('message', 'LA IMAGEN DEBE SER DEL TIPO PNG/JPG/GIF.');
+                    Session::flash('message_type', self::OPERACION_FALLIDA);
+                    return Redirect::to('usuarios/editar/' . $usrid);
+                }
+            }
+
 			$persona = Persona::findOrFail($idpersona);
 			$persona->nombre           = trim(Input::get("txtnombre"));
 			$persona->apellido         = trim(Input::get("txtapellido"));
@@ -465,11 +478,27 @@ class UsersController extends BaseController
             $user->usuario_modi = Auth::user()->usuario;
             $user->fecha_modi   = date('Y-m-d');
 
+            if ($fotoperfil) {
+                $filename = $persona->id . '_' . $persona->nrodocumento . '.jpg';
+                $user->foto = $filename;
+            }
+
 			$user->save();
 
 			$organizacion = Input::get("organizaciones");
 			$user->organizaciones()->detach();
 			$user->organizaciones()->attach($organizacion);
+
+            // se guarda la imagen
+            if ($fotoperfil) {
+                $imagen = Image::make($fotoperfil->getRealPath());
+                $ancho = $imagen->width();
+                if ($ancho > self::IMG_PERFIL_WIDTH) $ancho = self::IMG_PERFIL_WIDTH;
+                $imagen->resize($ancho, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $imagen->save(self::IMG_PATH . $filename);
+            }
 
 			Session::flash('message', 'USUARIO MODIFICADO CON ÉXITO!');
             Session::flash('message_type', self::OPERACION_EXITOSA);

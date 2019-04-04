@@ -4,6 +4,10 @@
 <!-- BEGIN PAGE LEVEL STYLES -->
 <link rel="stylesheet" type="text/css" href="{{url('assets/global/plugins/select2/select2.css')}}"/>
 <link rel="stylesheet" type="text/css" href="{{url('assets/global/plugins/jquery-multi-select/css/multi-select.css')}}"/>
+<link rel="stylesheet" type="text/css" href="{{url('assets/global/plugins/bootstrap-datepicker/css/datepicker.css')}}"/>
+<link rel="stylesheet" type="text/css" href="{{url('assets/global/plugins/bootstrap-datetimepicker/css/datetimepicker.css')}}"/>
+<link rel="stylesheet" type="text/css" href="{{url('assets/global/plugins/fancybox/source/jquery.fancybox.css')}}"/>
+<link rel="stylesheet" type="text/css" href="{{url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css')}}"/>
 <style>
 .fixed {
     position:fixed;
@@ -121,46 +125,77 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 									</ul>
 
 
-									<div class="form-group">
+									<div class="row">
+										<div class="col-md-8">
+											<div class="form-group">
 
-										<div class="<?php if ($errors->has('apellido')) echo 'has-error' ?>">
-											<label  class="col-md-2 col-sm-2 control-label">Apellido:</label>
-											<div class="col-md-4 col-sm-4">
-												<input {{$readonly}} type="text" class="form-control" name="txtapellido" id="txtapellido" value="{{$apellido}}">
-												@if ($errors->has('apellido'))
-												   	<span class="help-block">{{ $errors->first('apellido') }}</span>
-												@endif
+												<div class="<?php if ($errors->has('apellido')) echo 'has-error' ?>">
+													<label  class="col-md-2 col-sm-2 control-label">Apellido:</label>
+													<div class="col-md-4 col-sm-4">
+														<input {{$readonly}} type="text" class="form-control" name="txtapellido" id="txtapellido" value="{{$apellido}}">
+														@if ($errors->has('apellido'))
+														   	<span class="help-block">{{ $errors->first('apellido') }}</span>
+														@endif
+													</div>
+												</div>
+											</div>
+											
+											<div class="form-group">
+												<div class="<?php if ($errors->has('nombre')) echo 'has-error' ?>">
+													<label  class="col-md-2 col-sm-2 control-label">Nombre/s:</label>
+													<div class="col-md-4 col-sm-4">
+														<input {{$readonly}} type="text" class="form-control" name="txtnombre" id="txtnombre" value="{{$nombre}}" >
+														@if ($errors->has('nombre'))
+														   	<span class="help-block">{{ $errors->first('nombre') }}</span>
+														@endif
+													</div>
+												</div>
+											</div>
+
+											<div class="form-group">
+												<label  class="col-md-2 col-sm-2 control-label">Tipo Documento:</label>
+												<div class="col-md-2 col-sm-2">
+													{{ Form::select('tipodocumento', $tipodocumento, $tipodni, array('class'=>'table-group-action-input form-control','id'=>'tipodocumento', $disabled)); }}
+												</div>
+												<div id="divavisodni" class="<?php if ($errors->has('nrodocumento')) echo 'has-error' ?>">
+													<label  class="col-md-2 col-sm-2 control-label">N° Documento:</label>
+													<div class="col-md-4 col-sm-4">
+														<div class="input-icon right">
+															<i class="fa fa-exclamation tooltips iconoerror" style="display:none" data-original-title="El documento ya está registrado." data-container="body"></i>
+															<input {{$readonly}} type="text" class="form-control" autocomplete="off" name="txtdocumento" id="txtdocumento" value="{{$nroDocumento}}">
+															@if ($errors->has('nrodocumento'))
+														   		<span class="help-block">{{ $errors->first('nrodocumento') }}</span>
+															@endif
+														</div>	
+													</div>
+												</div>
 											</div>
 										</div>
-										<div class="<?php if ($errors->has('nombre')) echo 'has-error' ?>">
-											<label  class="col-md-2 col-sm-2 control-label">Nombre/s:</label>
-											<div class="col-md-4 col-sm-4">
-												<input {{$readonly}} type="text" class="form-control" name="txtnombre" id="txtnombre" value="{{$nombre}}" >
-												@if ($errors->has('nombre'))
-												   	<span class="help-block">{{ $errors->first('nombre') }}</span>
-												@endif
-											</div>
-										</div>
-									</div>
 
-									<div class="form-group">
-										<label  class="col-md-2 col-sm-2 control-label">Tipo Documento:</label>
-										<div class="col-md-4 col-sm-4">
-											{{ Form::select('tipodocumento', $tipodocumento, $tipodni, array('class'=>'table-group-action-input form-control','id'=>'tipodocumento', $disabled)); }}
-										</div>
-										<div id="divavisodni" class="<?php if ($errors->has('nrodocumento')) echo 'has-error' ?>">
-											<label  class="col-md-2 col-sm-2 control-label">N° Documento:</label>
-											<div class="col-md-2 col-sm-2">
-												<div class="input-icon right">
-													<i class="fa fa-exclamation tooltips iconoerror" style="display:none" data-original-title="El documento ya está registrado." data-container="body"></i>
-													<input {{$readonly}} type="text" class="form-control" autocomplete="off" name="txtdocumento" id="txtdocumento" value="{{$nroDocumento}}">
-													@if ($errors->has('nrodocumento'))
-												   		<span class="help-block">{{ $errors->first('nrodocumento') }}</span>
-													@endif
+										<div class="col-md-4">
+											<div class="row" style="padding: 10px 0">
+												<center>
+												<div class="fileinput fileinput-new" data-provides="fileinput">
+													<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 130px; height: 110px;">
+														@if ($user->foto)
+														    <img src="{{url('usuarios/img-perfil')}}/{{$user->foto}}" alt="sin perfil">
+														@else
+														    <img src="{{url('assets/admin/layout/img/sinperfil.png')}}" alt="sin perfil">
+														@endif
+													</div>
+													<div>
+														<span class="btn btn-sm default btn-file">
+															<span class="fileinput-new"><i class="fa fa-search"></i> Buscar Foto </span>
+															<span class="fileinput-exists"><i class="fa fa-edit"></i> Cambiar </span>
+															<input {{$disabled}} type="file" name="fotoperfil">
+														</span>
+														<a href="#" class="btn btn-sm red fileinput-exists" data-dismiss="fileinput"><i class="fa fa-trash-o"></i> Eliminar </a>
+													</div>
 												</div>	
+												</center>				
 											</div>
 										</div>
-									</div>
+									</div> <!-- row -->	
 
 									<div class="form-group">
 										<div id="divavisousuario" class="<?php if ($errors->has('usuario')) echo 'has-error' ?>">
@@ -176,16 +211,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 												</div>	
 											</div>
 										</div>
-										<div class="<?php if ($errors->has('email')) echo 'has-error' ?>">
-											<label  class="col-md-2 col-sm-2 control-label">E-mail:</label>
-											<div class="col-md-3 col-sm-3">
-												<input {{$readonly}} type="text" class="form-control" name="txtcorreo" id="txtcorreo" value="{{$correo}}">
-												@if ($errors->has('email'))
-												   	<span class="help-block">{{ $errors->first('email') }}</span>
-												@endif
-											</div>
-										</div>
-										<label class="col-md-2 col-sm-2 control-label" for="cicloactivo">Activo
+										<label class="col-md-5 col-sm-5 control-label" for="cicloactivo">Activo
 											<div class="checker {{$disabled}}">
 												<span class="<?php if ($user->activo) echo 'checked'; ?>">
 													<input type="checkbox" class="form-control" id="usuarioactivo" name="usuarioactivo" <?php if ($user->activo) echo 'CHECKED'; ?> value="1">
@@ -202,7 +228,17 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 											@else
 												<span class="help-block">Mínimo 6 caracteres.</span>
 											@endif
-										</div>																		
+										</div>
+
+										<div class="<?php if ($errors->has('email')) echo 'has-error' ?>">
+											<label  class="col-md-2 col-sm-2 control-label">E-mail:</label>
+											<div class="col-md-3 col-sm-3">
+												<input {{$readonly}} type="text" class="form-control" name="txtcorreo" id="txtcorreo" value="{{$correo}}">
+												@if ($errors->has('email'))
+												   	<span class="help-block">{{ $errors->first('email') }}</span>
+												@endif
+											</div>
+										</div>
 									</div>									
 									<div class="form-group">
 										<label class="control-label col-md-2 col-sm-2">Organizaciones:</label>
@@ -335,5 +371,15 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 <script type="text/javascript" src="{{url('assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js')}}"></script>
 <script type="text/javascript" src="{{url('assets/global/plugins/jquery-inputmask/jquery.inputmask.bundle.min.js')}}"></script>
 <script src="{{url('assets/admin/layout/scripts/menusticky.js')}}" type="text/javascript"></script>
+
+<script type="text/javascript" src="{{url('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js')}}"></script>
+<script type="text/javascript" src="{{url('assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js')}}"></script>
+<script src="{{url('assets/global/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js')}}" type="text/javascript"></script>
+<script src="{{url('assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js')}}" type="text/javascript"></script>
+<script type="text/javascript" src="{{url('assets/global/plugins/fancybox/source/jquery.fancybox.pack.js')}}"></script>
+<script src="{{url('assets/global/plugins/plupload/js/plupload.full.min.js')}}" type="text/javascript"></script>
+<script type="text/javascript" src="{{url('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js')}}"></script>
+
+<script src="{{url('assets/admin/pages/scripts/components-form-tools.js')}}"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 @stop
