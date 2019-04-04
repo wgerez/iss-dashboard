@@ -185,6 +185,12 @@ class AlumnosController extends BaseController {
                 $alumno->fecha_alta   = date('Y-m-d');
             $alumno->save();
 
+            if ($fotoperfil) {
+                $personas = Persona::find($persona->id);
+                $personas->foto = $filename;
+                $personas->save();
+            } 
+
             foreach ($arrContactos as $contacto) {
                 $persona->contactos()->attach(
                     $contacto['tipo'],
@@ -372,6 +378,12 @@ class AlumnosController extends BaseController {
                 $persona->departamento       = Input::get('domiciliodepartamento');
                 $persona->codigo_postal      = Input::get('codigopostal');
                 $persona->cuil               = $cuil;
+
+                if ($fotoperfil) {
+                    $filename = $alumno->persona_id . '_' . $nrodoc . '.jpg';
+                    $persona->foto = $filename;
+                }
+
                 $persona->usuario_modi       = Auth::user()->usuario;
                 $persona->fecha_modi         = date('Y-m-d');
             $persona->save();

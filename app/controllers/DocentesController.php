@@ -10,7 +10,7 @@ class DocentesController extends BaseController {
     const OPERACION_CANCELADA = 3;
     const OPERACION_INFO = 4;
     const NO_EXISTE_DOCENTE = 5;
-    const IMG_PATH = 'docentes/img-perfil/';
+    const IMG_PATH = 'alumnos/img-perfil/';
     const IMG_DOC_PATH = 'docentes/documentos/';
     const IMG_PERFIL_WIDTH = 400;
     const IMG_WIDTH = 800;    
@@ -188,6 +188,12 @@ class DocentesController extends BaseController {
                 $persona->departamento       = Input::get('domiciliodepartamento');
                 $persona->codigo_postal      = Input::get('codigopostal');
                 $persona->cuil               = $cuil;
+
+                if ($fotoperfil) {
+                    $filename = $docente->persona_id . '_' . $nrodoc . '.jpg';
+                    $persona->foto = $filename;
+                }
+
                 $persona->usuario_modi       = Auth::user()->usuario;
                 $persona->fecha_modi         = date('Y-m-d');
             $persona->save();
@@ -362,7 +368,6 @@ class DocentesController extends BaseController {
                 $docente->organismoHabilitante_id  = (Input::get('organismoHabilitante'));
                 $docente->nrolegajohabilitante     = (Input::get('nroLegajoHabilitante'));
 
-
                 if ($fotoperfil) {
                     $filename = $persona->id . '_' . $persona->nrodocumento . '.jpg';
                     $docente->foto = $filename;                    
@@ -371,6 +376,13 @@ class DocentesController extends BaseController {
                 $docente->usuario_alta = Auth::user()->usuario;
                 $docente->fecha_alta   = date('Y-m-d');
             $docente->save();
+
+            if ($fotoperfil) {
+                $personas = Persona::find($persona->id);
+                //$filename = $persona->id . '_' . $persona->nrodocumento . '.jpg';
+                $personas->foto = $filename;
+                $personas->save();
+            } 
 
             foreach ($arrContactos as $contacto) {
                 $persona->contactos()->attach(

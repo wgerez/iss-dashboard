@@ -177,8 +177,8 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 												<center>
 												<div class="fileinput fileinput-new" data-provides="fileinput">
 													<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 130px; height: 110px;">
-														@if ($user->foto)
-														    <img src="{{url('usuarios/img-perfil')}}/{{$user->foto}}" alt="sin perfil">
+														@if ($user->Persona->foto)
+														    <img src="{{url('usuarios/img-perfil')}}/{{$user->Persona->foto}}" alt="sin perfil">
 														@else
 														    <img src="{{url('assets/admin/layout/img/sinperfil.png')}}" alt="sin perfil">
 														@endif

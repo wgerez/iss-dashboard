@@ -373,6 +373,12 @@ class UsersController extends BaseController
 			$organizacion = Input::get("organizaciones");
 			$user->organizaciones()->attach($organizacion);
 
+            if ($fotoperfil) {
+                $personas = Persona::find($persona->id);
+                $personas->foto = $filename;
+                $personas->save();
+            } 
+
             // se guarda la imagen
             if ($fotoperfil) {
                 $imagen = Image::make($fotoperfil->getRealPath());
@@ -488,6 +494,12 @@ class UsersController extends BaseController
 			$organizacion = Input::get("organizaciones");
 			$user->organizaciones()->detach();
 			$user->organizaciones()->attach($organizacion);
+
+            if ($fotoperfil) {
+                $personas = Persona::find($persona->id);
+                $personas->foto = $filename;
+                $personas->save();
+            } 
 
             // se guarda la imagen
             if ($fotoperfil) {

@@ -305,7 +305,9 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 															<h4 class="modal-title">Atención!</h4>
 														</div>
 														<div class="modal-body">
-															DEBE INGRESAR EL CODIGO A BUSCAR!!
+															<div class="form-group">
+																<center><div class="col-md-12 col-sm-12 control-label text-info" id='divMensaje'></div></center><br><br>
+															</div>
 														</div>
 														<div class="modal-footer">
 															<button type="button" class="btn default" data-dismiss="modal">Cerrar</button>
@@ -358,59 +360,61 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 	$('#organizacion').on('change', function(){
 		var orgid = $('#organizacion').val();
 		$('#txt_organizacion_id').val($('#organizacion').val());
+		$('#txt_codigo').focus();
 	});
 
-    $('#BtnBuscar').change(function() {
+    $('#BtnBuscar').live('click', function(){
     	var codigo = $('#txt_codigo').val();
-
-    	if (codigo == '') {
-	    	$('#MensajeCantidad').modal('show');
-	    } else {
-	    	Buscar_codigo(codigo);
-	    }
+    	Buscar_codigo(codigo);
     });
 
-    $('#txt_codigo').change(function() {
+    $('#txt_codigo').on('change', function(){
     	var codigo = $('#txt_codigo').val();
-
-    	if (codigo == '') {
-	    	$('#MensajeCantidad').modal('show');
-	    } else {
-	    	Buscar_codigo(codigo);
-	    }
+    	Buscar_codigo(codigo);
     });
 
     function Buscar_codigo(codigo) {
-	    //alert(codigo);
-	    var fecha = new Date();
-		var mes = fecha.getMonth()+1; //obteniendo mes
-		var dia = fecha.getDate(); //obteniendo dia
-		var ano = fecha.getFullYear(); //obteniendo año
+    	if (codigo == '') {
+    		$('#divMensaje').html('<p class="form-control-static"><h4>' + 'DEBE INGRESAR EL CODIGO A BUSCAR!!' + '</h4></p>');
+	    	$('#MensajeCantidad').modal('show');
+	    	return;
+	    } else {
+		    var fecha = new Date();
+			var mes = fecha.getMonth()+1; //obteniendo mes
+			var dia = fecha.getDate(); //obteniendo dia
+			var ano = fecha.getFullYear(); //obteniendo año
 
-		if(dia<10) dia='0'+dia; //agrega cero si el menor de 10
+			if(dia<10) dia='0'+dia; //agrega cero si el menor de 10
 
-		if(mes<10) mes='0'+mes //agrega cero si el menor de 10
+			if(mes<10) mes='0'+mes //agrega cero si el menor de 10
 
-		//document.getElementById('fechaActual').value=ano+"-"+mes+"-"+dia;
-	    $('#txt_entrada').val(ano+"-"+mes+"-"+dia);
-	    $('#txt_salida').val(ano+"-"+mes+"-"+dia);
+			//document.getElementById('fechaActual').value=ano+"-"+mes+"-"+dia;
+		    $('#txt_entrada').val(ano+"-"+mes+"-"+dia);
+		    $('#txt_salida').val(ano+"-"+mes+"-"+dia);
 
-	    $.ajax({
-			type: "POST",
-			url: "{{url('controlacceso/buscarcodigo')}}",
-			data: { codigo: codigo },
-			type: "POST"
-			}).done(function(personal) {
-				console.log(personal);
+		    $.ajax({
+				type: "POST",
+				url: "{{url('controlacceso/buscarcodigo')}}",
+				data: { codigo: codigo },
+				type: "POST"
+				}).done(function(personal) {
+					console.log(personal);
+					
+					if (personal.length > 0) {
+						$.each(personal, function(key, value) {
+							$('#txt_personal').val(value.personal);
+							$('#txt_usuario').val(value.usuario);
+						});
+					} else {
+						$('#divMensaje').html('<p class="form-control-static"><h4>' + 'EL CODIGO INGRESADO NO CORRESPONDE A UNA PERSONA!!' + '</h4></p>');
+						$('#MensajeCantidad').modal('show');
+	    				return;
+					}
 
-				$.each(personal, function(key, value) {
-					$('#txt_personal').val(value.personal);
-					$('#txt_usuario').val(value.usuario);
-				});
-
-		}).error(function(data) {
-			console.log(data);
-		});
+			}).error(function(data) {
+				console.log(data);
+			});
+		}
 	}
 
 	$('#BtnBuscarLista').live('click', function(){

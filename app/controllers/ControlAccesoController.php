@@ -399,7 +399,7 @@ class ControlAccesoController extends \BaseController {
 	        }
         }
 
-        //array_unshift($organizaciones, 'Seleccionar');
+        array_unshift($organizaciones, 'Seleccionar');
 
           return View::make('controlacceso/nuevo',[
               'arrOrganizaciones'   => $organizaciones,
