@@ -583,9 +583,10 @@ class ControlAccesoController extends \BaseController {
 
 					if (count($usuario) > 0) {
 	    				$usuario = User::whereRaw('persona_id ='. $persona->id)->first()->usuario;
-
+	    				$acc = 0;
 	    				$accesos = Acceso::whereRaw('persona_id =' . $persona->id)->get();
 	    				$persona_id = $persona->id;
+				        $horax = array();
 	    				
 	    				foreach ($accesos as $acceso) {
 		                    $fechatransaccion = FechaHelper::getFechaImpresion($acceso->entrada);
@@ -595,6 +596,7 @@ class ControlAccesoController extends \BaseController {
 		                    $fecha_trans = strtotime($fechatransaccions);
 
 	    					if ($fecha_trans >= $fecha_inicio && $fecha_trans <= $fecha_fin) {
+	    						$acc = 1;
 			                    $porcion = explode(" ", $acceso->entrada);
 			                    $fecha = $porcion[0];
 		    					$horaentrada = $porcion[1];
@@ -629,15 +631,53 @@ class ControlAccesoController extends \BaseController {
 			                    //////////////CALCULA HORAS////////////////
 			                    $hora = FechaHelper::getCalculoHorarios($fecha1, $fecha2);
 			                    //////////////////////////////////////////
+				                if ($hora == '0:00:00') {
+					            	$e = 0;
+				                } else {
+				                	array_push($horax, $hora);
+				                }
 			    				
 			                    if ($i == 0) {
-			                    	$resultados[] = ['i' => $i, 'id' => $acceso->id, 'usuario' => $usuario, 'persona_id' => $persona_id, 'apellido_nombre' => $apellido_nombre, 'dia' => $dianu, 'entrada' => $horaentrada, 'salida' => $horasalida, 'horascumplidas' => $hora, 'fecha_entrada' => $fechatransaccions, 'fecha_salida' => $fecha_salida, 'hora' => $horae, 'minuto' => $minutoe, 'horas' => $horass, 'minutos' => $minutoss];
+			                    	$resultados[] = ['i' => $i, 'id' => $acceso->id, 'usuario' => $usuario, 'persona_id' => $persona_id, 'apellido_nombre' => $apellido_nombre, 'dia' => $dianu, 'entrada' => $horaentrada, 'salida' => $horasalida, 'horascumplidas' => $hora, 'fecha_entrada' => $fechatransaccions, 'fecha_salida' => $fecha_salida, 'hora' => $horae, 'minuto' => $minutoe, 'horas' => $horass, 'minutos' => $minutoss, 'totalhoras' => ''];
 			                    	$i++;
 			                    } else {
-			                    	$resultados[] = ['i' => $i, 'id' => $acceso->id, 'usuario' => $usuario, 'persona_id' => $persona_id, 'apellido_nombre' => $apellido_nombre, 'dia' => $dianu, 'entrada' => $horaentrada, 'salida' => $horasalida, 'horascumplidas' => $hora, 'fecha_entrada' => $fechatransaccions, 'fecha_salida' => $fecha_salida, 'hora' => $horae, 'minuto' => $minutoe, 'horas' => $horass, 'minutos' => $minutoss];
+			                    	$resultados[] = ['i' => $i, 'id' => $acceso->id, 'usuario' => $usuario, 'persona_id' => $persona_id, 'apellido_nombre' => $apellido_nombre, 'dia' => $dianu, 'entrada' => $horaentrada, 'salida' => $horasalida, 'horascumplidas' => $hora, 'fecha_entrada' => $fechatransaccions, 'fecha_salida' => $fecha_salida, 'hora' => $horae, 'minuto' => $minutoe, 'horas' => $horass, 'minutos' => $minutoss, 'totalhoras' => ''];
 			                    }
 			                }
 	    				}
+
+	    				$total = 0;
+
+		    			if ($acc == 1) {
+	    					$sumaHoras=0;
+							for ($i=0; $i < count($horax); $i++) { 
+							    $value_horario   = $horax[$i];
+							    $parts           = explode(':', $value_horario);
+							    $resultado      = ($parts[0] + ($parts[1]/6) / 10 . PHP_EOL);
+							    $sumaHoras = $sumaHoras + $resultado;
+							}
+						  //return $resultado
+
+						    /*foreach($horax as $h) {
+						        $parts = explode(":", $h);
+						        $total += $parts[2] + $parts[1]*60 + $parts[0]*3600;        
+						    }   
+						    
+						    $totalhoras = gmdate("H:i:s", $total);*/
+						    $parte = explode('.', $sumaHoras);
+
+						    $resultado = substr($parte[1], 0, 2);
+
+						    if ($resultado > 59) {
+						    	$totalhoras = $parte[0].':00';
+						    } else {						    
+						    	$totalhoras = $parte[0].':'.$resultado;
+						    }
+
+		    				$resultados[] = ['i' => '', 'id' => '', 'usuario' => $usuario, 'persona_id' => '', 'apellido_nombre' => '', 'dia' => '', 'entrada' => '', 'salida' => '', 'horascumplidas' => '', 'fecha_entrada' => '', 'fecha_salida' => '', 'hora' => '', 'minuto' => '', 'horas' => '', 'minutos' => '', 'totalhoras' => $totalhoras];
+
+		    				$acc = 0;
+		    			}
 	    			}
 	    			////
 	    		}
@@ -655,8 +695,10 @@ class ControlAccesoController extends \BaseController {
 		    				$usuario = User::whereRaw('persona_id ='. $persona->id)->first()->usuario;
 
 		    				//$accesos = Acceso::whereRaw("persona_id =".$persona->id." AND entrada >='".$fechadesdes."' AND entrada <='".$fechahastas."'")->get();
+		    				$acc = 0;
 		    				$accesos = Acceso::whereRaw('persona_id =' . $persona->id)->get();
 	    					$persona_id = $persona->id;
+				            $horax = array();
 		    				
 		    				foreach ($accesos as $acceso) {
 			                    $fechatransaccion = FechaHelper::getFechaImpresion($acceso->entrada);
@@ -666,6 +708,7 @@ class ControlAccesoController extends \BaseController {
 			                    $fecha_trans = strtotime($fechatransaccions);
 
 		    					if ($fecha_trans >= $fecha_inicio && $fecha_trans <= $fecha_fin) {
+		    						$acc = 1;
 				                    $porcion = explode(" ", $acceso->entrada);
 				                    $fecha = $porcion[0];
 			    					$horaentrada = $porcion[1];
@@ -700,15 +743,53 @@ class ControlAccesoController extends \BaseController {
 				                    //////////////CALCULA HORAS////////////////
 				                    $hora = FechaHelper::getCalculoHorarios($fecha1, $fecha2);
 				                    //////////////////////////////////////////
+				                    if ($hora == '0:00:00') {
+						            	$e = 0;
+					                } else {
+					                	array_push($horax, $hora);
+					                }
 				    				
 				                    if ($i == 0) {
-				                    	$resultados[] = ['i' => $i, 'id' => $acceso->id, 'usuario' => $usuario, 'persona_id' => $persona_id, 'apellido_nombre' => $apellido_nombre, 'dia' => $dianu, 'entrada' => $horaentrada, 'salida' => $horasalida, 'horascumplidas' => $hora, 'fecha_entrada' => $fechatransaccions, 'fecha_salida' => $fecha_salida, 'hora' => $horae, 'minuto' => $minutoe, 'horas' => $horass, 'minutos' => $minutoss];
+				                    	$resultados[] = ['i' => $i, 'id' => $acceso->id, 'usuario' => $usuario, 'persona_id' => $persona_id, 'apellido_nombre' => $apellido_nombre, 'dia' => $dianu, 'entrada' => $horaentrada, 'salida' => $horasalida, 'horascumplidas' => $hora, 'fecha_entrada' => $fechatransaccions, 'fecha_salida' => $fecha_salida, 'hora' => $horae, 'minuto' => $minutoe, 'horas' => $horass, 'minutos' => $minutoss, 'totalhoras' => ''];
 				                    	$i++;
 				                    } else {
-				                    	$resultados[] = ['i' => $i, 'id' => $acceso->id, 'usuario' => $usuario, 'persona_id' => $persona_id, 'apellido_nombre' => $apellido_nombre, 'dia' => $dianu, 'entrada' => $horaentrada, 'salida' => $horasalida, 'horascumplidas' => $hora, 'fecha_entrada' => $fechatransaccions, 'fecha_salida' => $fecha_salida, 'hora' => $horae, 'minuto' => $minutoe, 'horas' => $horass, 'minutos' => $minutoss];
+				                    	$resultados[] = ['i' => $i, 'id' => $acceso->id, 'usuario' => $usuario, 'persona_id' => $persona_id, 'apellido_nombre' => $apellido_nombre, 'dia' => $dianu, 'entrada' => $horaentrada, 'salida' => $horasalida, 'horascumplidas' => $hora, 'fecha_entrada' => $fechatransaccions, 'fecha_salida' => $fecha_salida, 'hora' => $horae, 'minuto' => $minutoe, 'horas' => $horass, 'minutos' => $minutoss, 'totalhoras' => ''];
 				                    }
 				                }
 		    				}
+
+		    				$total = 0;
+
+			    			if ($acc == 1) {
+		    					$sumaHoras=0;
+								for ($i=0; $i < count($horax); $i++) { 
+								    $value_horario   = $horax[$i];
+								    $parts           = explode(':', $value_horario);
+								    $resultado      = ($parts[0] + ($parts[1]/6) / 10 . PHP_EOL);
+								    $sumaHoras = $sumaHoras + $resultado;
+								}
+							  //return $resultado
+
+							    /*foreach($horax as $h) {
+							        $parts = explode(":", $h);
+							        $total += $parts[2] + $parts[1]*60 + $parts[0]*3600;        
+							    }   
+							    
+							    $totalhoras = gmdate("H:i:s", $total);*/
+							    $parte = explode('.', $sumaHoras);
+
+							    $resultado = substr($parte[1], 0, 2);
+
+							    if ($resultado > 59) {
+							    	$totalhoras = $parte[0].':'.$parts[1];
+							    } else {						    
+							    	$totalhoras = $parte[0].':'.$resultado;
+							    }
+
+			    				$resultados[] = ['i' => '', 'id' => '', 'usuario' => $usuario, 'persona_id' => '', 'apellido_nombre' => '', 'dia' => '', 'entrada' => '', 'salida' => '', 'horascumplidas' => '', 'fecha_entrada' => '', 'fecha_salida' => '', 'hora' => '', 'minuto' => '', 'horas' => '', 'minutos' => '', 'totalhoras' => $totalhoras];
+
+			    				$acc = 0;
+			    			}
 		    			}
 					}
 				}
@@ -723,7 +804,7 @@ class ControlAccesoController extends \BaseController {
 
 	    $fechadesde = FechaHelper::getFechaImpresion($fechadesdes);
 	    $fechahasta = FechaHelper::getFechaImpresion($fechahastas);
-        /*highlight_string(var_export($matriculas,true));
+        /*highlight_string(var_export($resultados,true));
         exit;*/
 
         $pdf = PDF::loadView('informes.pdf.accesopersonal', ['resultados'=>$resultados, 'fechadesde'=>$fechadesde, 'fechahasta'=>$fechahasta, 'filtro' => $filtro, 'txtalumno' => $txtalumno]);

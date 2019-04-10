@@ -51,6 +51,17 @@
                 <td><center>{{ $resultado['horascumplidas'] }}</center></td>
               </tr>
             @endif
+
+            @if (!$resultado['totalhoras'] == '')
+              <tr>
+                <td><center>TOTAL</center></td>
+                <td><center></center></td>
+                <td><center></center></td>
+                <td><center></center></td>
+                <td><center></center></td>
+                <td><center>{{ $resultado['totalhoras'] }}</center></td>
+              </tr>
+            @endif
           @endforeach
         @endif
         <?php

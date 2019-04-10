@@ -57,8 +57,14 @@ class UsersController extends BaseController
 
 	public function getEditar($id)
 	{
-
 		$user = User::find($id);
+		
+		if (!$user) {
+            Session::flash('message', 'EL USUARIO ASOCIADO NO EXISTE.');
+            Session::flash('message_type', self::OPERACION_CANCELADA);
+            return Redirect::to('usuarios/listado');
+        }
+
 		$persona = DB::table('personas')->where('nrodocumento', '=', '36.015.610')->first();	
 		
 		$user = User::with('Persona')->find($id);
