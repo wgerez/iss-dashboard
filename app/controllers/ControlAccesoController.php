@@ -172,10 +172,16 @@ class ControlAccesoController extends \BaseController {
 				if (count($personas) > 0) {
 					foreach ($personas as $persona) {
 						$apellido_nombre = $persona->apellido .', '. $persona->nombre;
-						$usuario = User::whereRaw('persona_id ='. $persona->id)->get();
+						//$usuario = User::whereRaw('persona_id ='. $persona->id)->get();
 
-						if (count($usuario) > 0) {
-		    				$usuario = User::whereRaw('persona_id ='. $persona->id)->first()->usuario;
+						//if (count($usuario) > 0) {
+		    				$usuarios = User::whereRaw('persona_id ='. $persona->id)->first();
+
+		    				if (count($usuarios) > 0) {
+		    					$usuario = $usuarios->usuario;
+		    				} else {
+		    					$usuario = '';
+		    				}
 
 		    				//$accesos = Acceso::whereRaw("persona_id =".$persona->id." AND entrada >='".$fechadesdes."' AND entrada <='".$fechahastas."'")->get();
 		    				$accesos = Acceso::whereRaw('persona_id =' . $persona->id)->get();
@@ -230,7 +236,7 @@ class ControlAccesoController extends \BaseController {
 				                    }
 				                }
 		    				}
-		    			}
+		    			//}
 					}
 				}
 			}
