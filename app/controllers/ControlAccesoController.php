@@ -148,16 +148,18 @@ class ControlAccesoController extends \BaseController {
 
 			                    $dian = date("w", strtotime($fecha));
 			                    $dia = $arraydias[$dian];
+			                    $porcionz = explode("-", $fecha);
+			                    $dianu = $dia.' '.$porcionz[2];
 
 			                    //////////////CALCULA HORAS////////////////
 			                    $hora = FechaHelper::getCalculoHorarios($fecha1, $fecha2);
 			                    //////////////////////////////////////////
 			    				
 			                    if ($i == 0) {
-			                    	$resultados[] = ['i' => $i, 'id' => $acceso->id, 'usuario' => $usuario, 'persona_id' => $persona_id, 'apellido_nombre' => $apellido_nombre, 'dia' => $dia, 'entrada' => $horaentrada, 'salida' => $horasalida, 'horascumplidas' => $hora, 'fecha_entrada' => $fechatransaccions, 'fecha_salida' => $fecha_salida, 'hora' => $horae, 'minuto' => $minutoe, 'horas' => $horass, 'minutos' => $minutoss];
+			                    	$resultados[] = ['i' => $i, 'id' => $acceso->id, 'usuario' => $usuario, 'persona_id' => $persona_id, 'apellido_nombre' => $apellido_nombre, 'dia' => $dianu, 'entrada' => $horaentrada, 'salida' => $horasalida, 'horascumplidas' => $hora, 'fecha_entrada' => $fechatransaccions, 'fecha_salida' => $fecha_salida, 'hora' => $horae, 'minuto' => $minutoe, 'horas' => $horass, 'minutos' => $minutoss];
 			                    	$i++;
 			                    } else {
-			                    	$resultados[] = ['i' => $i, 'id' => $acceso->id, 'usuario' => $usuario, 'persona_id' => $persona_id, 'apellido_nombre' => $apellido_nombre, 'dia' => $dia, 'entrada' => $horaentrada, 'salida' => $horasalida, 'horascumplidas' => $hora, 'fecha_entrada' => $fechatransaccions, 'fecha_salida' => $fecha_salida, 'hora' => $horae, 'minuto' => $minutoe, 'horas' => $horass, 'minutos' => $minutoss];
+			                    	$resultados[] = ['i' => $i, 'id' => $acceso->id, 'usuario' => $usuario, 'persona_id' => $persona_id, 'apellido_nombre' => $apellido_nombre, 'dia' => $dianu, 'entrada' => $horaentrada, 'salida' => $horasalida, 'horascumplidas' => $hora, 'fecha_entrada' => $fechatransaccions, 'fecha_salida' => $fecha_salida, 'hora' => $horae, 'minuto' => $minutoe, 'horas' => $horass, 'minutos' => $minutoss];
 			                    }
 			                }
 	    				}
@@ -223,16 +225,19 @@ class ControlAccesoController extends \BaseController {
 
 				                    $dian = date("w", strtotime($fecha));
 				                    $dia = $arraydias[$dian];
+				                    $porcionz = explode("-", $fecha);
+				                    $dianu = $dia.' '.$porcionz[2];
+
 
 				                    //////////////CALCULA HORAS////////////////
 				                    $hora = FechaHelper::getCalculoHorarios($fecha1, $fecha2);
 				                    //////////////////////////////////////////
 				    				
 				                    if ($i == 0) {
-				                    	$resultados[] = ['i' => $i, 'id' => $acceso->id, 'usuario' => $usuario, 'persona_id' => $persona_id, 'apellido_nombre' => $apellido_nombre, 'dia' => $dia, 'entrada' => $horaentrada, 'salida' => $horasalida, 'horascumplidas' => $hora, 'fecha_entrada' => $fechatransaccions, 'fecha_salida' => $fecha_salida, 'hora' => $horae, 'minuto' => $minutoe, 'horas' => $horass, 'minutos' => $minutoss];
+				                    	$resultados[] = ['i' => $i, 'id' => $acceso->id, 'usuario' => $usuario, 'persona_id' => $persona_id, 'apellido_nombre' => $apellido_nombre, 'dia' => $dianu, 'entrada' => $horaentrada, 'salida' => $horasalida, 'horascumplidas' => $hora, 'fecha_entrada' => $fechatransaccions, 'fecha_salida' => $fecha_salida, 'hora' => $horae, 'minuto' => $minutoe, 'horas' => $horass, 'minutos' => $minutoss];
 				                    	$i++;
 				                    } else {
-				                    	$resultados[] = ['i' => $i, 'id' => $acceso->id, 'usuario' => $usuario, 'persona_id' => $persona_id, 'apellido_nombre' => $apellido_nombre, 'dia' => $dia, 'entrada' => $horaentrada, 'salida' => $horasalida, 'horascumplidas' => $hora, 'fecha_entrada' => $fechatransaccions, 'fecha_salida' => $fecha_salida, 'hora' => $horae, 'minuto' => $minutoe, 'horas' => $horass, 'minutos' => $minutoss];
+				                    	$resultados[] = ['i' => $i, 'id' => $acceso->id, 'usuario' => $usuario, 'persona_id' => $persona_id, 'apellido_nombre' => $apellido_nombre, 'dia' => $dianu, 'entrada' => $horaentrada, 'salida' => $horasalida, 'horascumplidas' => $hora, 'fecha_entrada' => $fechatransaccions, 'fecha_salida' => $fecha_salida, 'hora' => $horae, 'minuto' => $minutoe, 'horas' => $horass, 'minutos' => $minutoss];
 				                    }
 				                }
 		    				}
@@ -402,6 +407,8 @@ class ControlAccesoController extends \BaseController {
 	        	}
 
         		$resultados[] = ['id' => $persona->id, 'apellido_nombre' => $apellido_nombre, 'usuario' => $usuario, 'perfil' => $perfilesu];
+	        } else {
+	        	$resultados[] = ['id' => $persona->id, 'apellido_nombre' => $apellido_nombre, 'usuario' => $usuario, 'perfil' => $perfilesu];
 	        }
         }
 
@@ -429,9 +436,15 @@ class ControlAccesoController extends \BaseController {
 
     	if (count($personas) > 0) {
     		$apellido_nombre = $personas->apellido.', '.$personas->nombre;
-    		$usuario = User::whereRaw('persona_id= '.$personas->id)->first();
+    		$usuarios = User::whereRaw('persona_id= '.$personas->id)->first();
 
-    		$personal[] = ['personal' => $apellido_nombre, 'usuario' => $usuario->usuario];
+    		if (count($usuarios) > 0) {
+    			$usuario = $usuarios->usuario;
+    		} else {
+    			$usuario = '';
+    		}
+
+    		$personal[] = ['personal' => $apellido_nombre, 'usuario' => $usuario];
     	}
 
     	return Response::json($personal);
@@ -451,7 +464,7 @@ class ControlAccesoController extends \BaseController {
 
         $horaentrada = $entrada.' '.$hora.':'.$minuto;
         
-        if ($usuario_id == '' || $personal == '' || $usuario == '') {
+        if ($usuario_id == '' || $personal == '') {
             Session::flash('message', 'ERROR AL INTENTAR GUARDAR EL ACCESO, DEBE INGRESAR EL PERSONAL!');
             Session::flash('message_type', self::OPERACION_FALLIDA);
             return Redirect::to('controlacceso/crear')
@@ -675,9 +688,9 @@ class ControlAccesoController extends \BaseController {
 						    $resultado = substr($parte[1], 0, 2);
 
 						    if ($resultado > 59) {
-						    	$totalhoras = $parte[0].':00';
+						    	$totalhoras = $parte[0].':'.$parts[1];//.':00';
 						    } else {						    
-						    	$totalhoras = $parte[0].':'.$resultado;
+						    	$totalhoras = $parte[0].':'.$parts[1];//$resultado;
 						    }
 
 		    				$resultados[] = ['i' => '', 'id' => '', 'usuario' => $usuario, 'persona_id' => '', 'apellido_nombre' => '', 'dia' => '', 'entrada' => '', 'salida' => '', 'horascumplidas' => '', 'fecha_entrada' => '', 'fecha_salida' => '', 'hora' => '', 'minuto' => '', 'horas' => '', 'minutos' => '', 'totalhoras' => $totalhoras];
@@ -795,7 +808,7 @@ class ControlAccesoController extends \BaseController {
 						    if ($resultado > 59) {
 						    	$totalhoras = $parte[0].':'.$parts[1];
 						    } else {						    
-						    	$totalhoras = $parte[0].':'.$resultado;
+						    	$totalhoras = $parte[0].':'.$parts[1];//$resultado;
 						    }
 
 		    				$resultados[] = ['i' => '', 'id' => '', 'usuario' => $usuario, 'persona_id' => '', 'apellido_nombre' => '', 'dia' => '', 'entrada' => '', 'salida' => '', 'horascumplidas' => '', 'fecha_entrada' => '', 'fecha_salida' => '', 'hora' => '', 'minuto' => '', 'horas' => '', 'minutos' => '', 'totalhoras' => $totalhoras];

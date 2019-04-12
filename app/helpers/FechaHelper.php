@@ -95,10 +95,10 @@ class FechaHelper {
     public static function getCalculoHorarios($fecha1, $fecha2)
     {
         list($iniDia, $iniHora) = explode(" ", $fecha1);
-        list($dia1, $mes1, $anio1) = explode("-", $iniDia);
+        list($anio1, $mes1, $dia1) = explode("-", $iniDia);
 
         list($finDia, $finHora) = explode(" ", $fecha2);
-        list($dia2, $mes2, $anio2) = explode("-", $finDia);
+        list($anio2, $mes2, $dia2) = explode("-", $finDia);
 
         $datetime1 = date_create($anio1.'-'.$mes1.'-'.$dia1.' '.$iniHora);
         $datetime2 = date_create($anio2.'-'.$mes2.'-'.$dia2.' '.$finHora);
@@ -112,16 +112,62 @@ class FechaHelper {
         $finHora = date("H:i:s", $cadena);
         $hora = '';
 
-        $dias = date("H:i:s", strtotime("00:00:00") + strtotime($finHora) - strtotime($iniHora));
+        $fecha_inicial = $anio1.'-'.$mes1.'-'.$dia1;
+        $fecha_final = $anio2.'-'.$mes2.'-'.$dia2;
 
-        if ($dias2 > -1) {
-            $canhoras = $dias2 * 24;
-            list($hora1, $minut, $segu) = explode(':', $dias);
-            $nhora = $hora1 + $canhoras;
-            $hora = $nhora.':'.$minut.':'.$segu;
+        if (strtotime($fecha_inicial) == strtotime($fecha_final)) {
+            $dias = date("H:i:s", strtotime("00:00:00") + strtotime($finHora) - strtotime($iniHora));
+
+            if ($dias2 > -1) {
+                $canhoras = $dias2 * 24;
+                list($hora1, $minut, $segu) = explode(':', $dias);
+                $nhora = $hora1 + $canhoras;
+                $hora = $nhora.':'.$minut.':'.$segu;
+            }
+
+            if ($nhora > 35) $hora = $dias;
+        } else {
+            ////////////
+            list($year,$mes,$dia) = explode("-",$fecha_inicial);
+            $ini = mktime(0, 0, 0, $mes , $dia, $year); 
+            list($yearf,$mesf,$diaf) = explode("-",$fecha_final);
+            $fin = mktime(0, 0, 0, $mesf , $diaf, $yearf);
+
+            $newArray = array();
+            $ArrayLab = array();
+            $r = 1;
+            $i = 0;
+            $dia2 = 0;
+
+            while ($ini != $fin) {
+                $ini = mktime(0, 0, 0, $mes , $dia+$r, $year); 
+                $newArray[$i] = $ini; //CANTIDAD DE DIAS HABILES TENIENDO EN CUENTA EL CICLO
+                $r++;
+                $i++;
+            }
+            $j = count($newArray);
+
+            $dias = date("H:i:s", strtotime("00:00:00") + strtotime($finHora) - strtotime($iniHora));
+
+            if ($dias2 > -1) {
+                $canhoras = $dias2 * 24;
+                list($hora1, $minut, $segu) = explode(':', $dias);
+                $nhora = $hora1 + $canhoras;
+                $hora = $nhora.':'.$minut.':'.$segu;
+            }
+
+            if ($nhora > 35) $hora = $dias;
+
+            list($hora3, $minuts, $segus) = explode(':', $hora);
+
+            $mul_hora = $j * 24;
+            $sum_hora = $mul_hora + $hora3;
+
+            $hora = $sum_hora.':'.$minuts.':'.$segus;
+
+            //$hora = $j.' dias y '.$hora;
+            ///////////////////////////
         }
-
-        if ($nhora > 35) $hora = $dias;
 
         return $hora;
     }

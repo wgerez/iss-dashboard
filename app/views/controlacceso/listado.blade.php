@@ -100,7 +100,7 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 								Actualizar </span>
 								</a>
 								<a target="_blank" href="#" id="imprimir" {{$imprimir}} class="btn default yellow-stripe" <?php if (count($resultados) == 0) echo 'disabled' ?>>
-								<i class="glyphicon glyphicon-list-alt"></i>
+								<i class="glyphicon glyphicon-print"></i>
 								<span class="hidden-480">
 								Imprimir </span>
 								</a>

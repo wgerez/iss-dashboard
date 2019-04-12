@@ -113,7 +113,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 								Actualizar </span>
 								</a>
 								<a target="_blank" href="#" id="imprimir" class="btn default yellow-stripe" <?php if (count($usuarios) == 0) echo 'disabled' ?>>
-								<i class="glyphicon glyphicon-list-alt"></i>
+								<i class="glyphicon glyphicon-print"></i>
 								<span class="hidden-480">
 								Imprimir </span>
 								</a>
