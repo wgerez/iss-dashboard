@@ -85,10 +85,10 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 								<span class="hidden-480">
 								Guardar </span>
 								</button>
-								<a href="listado" class="btn default yellow-stripe">
-								<i class="fa fa-reorder"></i>
+								<a href="listado" class="btn default red-stripe">
+								<i class="fa fa-times"></i>
 								<span class="hidden-480">
-								Listado </span>
+								Cancelar </span>
 								</a>
 								<!--a target="_blank" href="#" id="imprimir" class="btn default yellow-stripe" disabled>
 								<i class="glyphicon glyphicon-list-alt"></i>
@@ -110,9 +110,9 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 									</div>
 
 									<div class="form-group <?php if ($errors->has('txt_codigo')) echo 'has-error' ?>">
-										<label class="col-md-2 col-sm-2 control-label" for="txt_codigo">Buscar por Codigo:</label>
+										<label class="col-md-2 col-sm-2 control-label" for="txt_codigo">Buscar por Código:</label>
 										<div class="col-md-4 col-sm-4 <?php if ($errors->has('txt_codigo')) echo 'has-error' ?>">
-											<input class="form-control" name="txt_codigo" id="txt_codigo" type="text" placeholder="Codigo" value="{{ Input::old('txt_codigo') }}">
+											<input class="form-control" name="txt_codigo" id="txt_codigo" type="text" placeholder="Código" value="{{ Input::old('txt_codigo') }}">
 											@if ($errors->has('txt_codigo'))
 											    <span class="help-block">{{ $errors->first('txt_codigo') }}</span>
 										    @endif
@@ -162,9 +162,9 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 										<label class="col-md-2 control-label" for="cbo_hora">Hora:</label>
 										<div class="col-md-1">
 											<select class="table-group-action-input form-control" name="cbo_hora" id="cbo_hora">
-												<option value="00">00</option>
+												<option value=""></option>
 												<?php
-												for ($i=1; $i < 25; $i++) { 
+												for ($i=00; $i < 24; $i++) { 
 													if ($i < 10) {
 													 	$i = '0'.$i;
 													 } ?>
@@ -177,9 +177,9 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 										</div>
 										<div class="col-md-1">
 											<select class="table-group-action-input form-control" name="cbo_minuto" id="cbo_minuto">
-												<option value="00">00</option>
+												<option value=""></option>
 												<?php
-												for ($i=01; $i < 60; $i++) { 
+												for ($i=00; $i < 60; $i++) { 
 													if ($i < 10) {
 													 	$i = '0'.$i;
 													 } ?>
@@ -204,9 +204,9 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 										<label class="col-md-2 control-label" for="cbo_horas">Hora:</label>
 										<div class="col-md-1">
 											<select class="table-group-action-input form-control" name="cbo_horas" id="cbo_horas">
-												<option value="00">00</option>
+												<option value=""></option>
 												<?php
-												for ($i=1; $i < 25; $i++) { 
+												for ($i=00; $i < 24; $i++) { 
 													if ($i < 10) {
 													 	$i = '0'.$i;
 													 } ?>
@@ -219,9 +219,9 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 										</div>
 										<div class="col-md-1">
 											<select class="table-group-action-input form-control" name="cbo_minutos" id="cbo_minutos">
-												<option value="00">00</option>
+												<option value=""></option>
 												<?php
-												for ($i=01; $i < 60; $i++) { 
+												for ($i=00; $i < 60; $i++) { 
 													if ($i < 10) {
 													 	$i = '0'.$i;
 													 } ?>
@@ -370,7 +370,13 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 
     $('#txt_codigo').on('change', function(){
     	var codigo = $('#txt_codigo').val();
-    	Buscar_codigo(codigo);
+
+    	if (codigo == '') {
+	    	$('#txt_personal').val('');
+			$('#txt_usuario').val('');
+	    } else {
+    		Buscar_codigo(codigo);
+    	}
     });
 
     function Buscar_codigo(codigo) {

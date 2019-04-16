@@ -468,8 +468,6 @@ class UsersController extends BaseController
         } else {
 
             $fotoperfil = Input::file('fotoperfil');
-            highlight_string(var_export($fotoperfil, true));
-		exit();
 
             if ($fotoperfil) {
                 $extension_valida = ImagenHelper::extensionValida($fotoperfil->getClientOriginalName());

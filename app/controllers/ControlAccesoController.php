@@ -128,7 +128,7 @@ class ControlAccesoController extends \BaseController {
 		            Session::flash('message', 'ERROR, DEBE INGRESAR UN CRITERIO DE BUSQUEDA!');
 		            Session::flash('message_type', self::OPERACION_CANCELADA);
 		        }
-		        
+
 	        	$personas = Persona::whereRaw("nombre= '". $txtalumno ."'")->get();
 	        	//$alumno = (count($alumnos)) ? $alumnos[0] : self::NO_EXISTE_ALUMNO;
 	        } else {
@@ -349,7 +349,7 @@ class ControlAccesoController extends \BaseController {
         if ($entrada == '' || $hora == '' || $minuto == '') {
             Session::flash('message', 'ERROR AL INTENTAR GUARDAR EL ACCESO, DEBE INGRESAR LA FECHA/HORA DE ENTRADA!');
             Session::flash('message_type', self::OPERACION_FALLIDA);
-            return Redirect::to('controlacceso/pagarcuotas/' . $persona_id)
+            return Redirect::to('controlacceso/listado')//pagarcuotas/' . $persona_id)
                 ->withInput();
         }
 
@@ -365,7 +365,7 @@ class ControlAccesoController extends \BaseController {
 	    if ($fecha_inicio > $fecha_fin) {
 	    	Session::flash('message', 'ERROR AL INTENTAR GUARDAR EL ACCESO, LA FECHA DE SALIDA NO PUEDE SER MAYOR QUE LA DE ENTRADA!');
             Session::flash('message_type', self::OPERACION_FALLIDA);
-            return Redirect::to('controlacceso/pagarcuotas/' . $persona_id)
+            return Redirect::to('controlacceso/listado')//pagarcuotas/' . $persona_id)
                 ->withInput();
 	    }
 
@@ -373,7 +373,7 @@ class ControlAccesoController extends \BaseController {
 	    	if ($horas == '' || $minutos == '') {
 	    		Session::flash('message', 'ERROR AL INTENTAR GUARDAR EL ACCESO, LA FECHA DE SALIDA DEBE ESTAR COMPLETA!');
 	            Session::flash('message_type', self::OPERACION_FALLIDA);
-	            return Redirect::to('controlacceso/pagarcuotas/' . $persona_id)
+	            return Redirect::to('controlacceso/listado')//pagarcuotas/' . $persona_id)
 	                ->withInput();
 	    	}
 	    }
@@ -384,7 +384,7 @@ class ControlAccesoController extends \BaseController {
         	if ($horas == '' || $minutos == '') {
         		Session::flash('message', 'ERROR AL INTENTAR GUARDAR EL ACCESO, LA FECHA/HORA DE SALIDA DEBE ESTAR COMPLETA!');
 	            Session::flash('message_type', self::OPERACION_FALLIDA);
-	            return Redirect::to('controlacceso/pagarcuotas/' . $persona_id)
+	            return Redirect::to('controlacceso/listado')//pagarcuotas/' . $persona_id)
 	                ->withInput();
         	} else {
         		$horasalida = $salida.' '.$horas.':'.$minutos;
@@ -399,7 +399,7 @@ class ControlAccesoController extends \BaseController {
 		    if ($fecha_inicio > $fecha_fin) {
 		    	Session::flash('message', 'ERROR AL INTENTAR GUARDAR EL ACCESO, LA FECHA/HORA DE SALIDA NO PUEDE SER MAYOR QUE LA DE ENTRADA!');
 	            Session::flash('message_type', self::OPERACION_FALLIDA);
-	            return Redirect::to('controlacceso/pagarcuotas/' . $persona_id)
+	            return Redirect::to('controlacceso/listado')//pagarcuotas/' . $persona_id)
 	                ->withInput();
 		    }
         }
@@ -416,7 +416,7 @@ class ControlAccesoController extends \BaseController {
         $acceso->fecha_modi     = date('Y-m-d H:i:s');
         $acceso->save();
 
-        Session::flash('message', 'ACCESO REGISTRADO CON ÉXITO!');
+        Session::flash('message', 'LOS DATOS SE GUARDARON EXITOSAMENTE!');
         Session::flash('message_type', self::OPERACION_EXITOSA);
         return Redirect::to('controlacceso/listado');
     }
@@ -500,11 +500,12 @@ class ControlAccesoController extends \BaseController {
         $salida         = Input::get('cbo_salida');
         $horas         	= Input::get('cbo_horas');
         $minutos        = Input::get('cbo_minutos');
+        $organizacion   = Input::get('organizacion');
 
         $horaentrada = $entrada.' '.$hora.':'.$minuto;
         
-        if ($usuario_id == '' || $personal == '') {
-            Session::flash('message', 'ERROR AL INTENTAR GUARDAR EL ACCESO, DEBE INGRESAR EL PERSONAL!');
+        if ($usuario_id == '' || $personal == '' || $organizacion == 0) {
+            Session::flash('message', 'ERROR AL INTENTAR GUARDAR EL ACCESO, DEBE INGRESAR LOS DATOS!');
             Session::flash('message_type', self::OPERACION_FALLIDA);
             return Redirect::to('controlacceso/crear')
                 ->withInput();
@@ -578,7 +579,7 @@ class ControlAccesoController extends \BaseController {
         $acceso->fecha_alta     = date('Y-m-d H:i:s');
         $acceso->save();
 
-        Session::flash('message', 'ACCESO REGISTRADO CON ÉXITO!');
+        Session::flash('message', 'LOS DATOS SE GUARDARON EXITOSAMENTE!');
         Session::flash('message_type', self::OPERACION_EXITOSA);
         return Redirect::to('controlacceso/crear');
     }
@@ -870,7 +871,7 @@ class ControlAccesoController extends \BaseController {
 	    $fechahasta = FechaHelper::getFechaImpresion($fechahastas);
         /*highlight_string(var_export($resultados,true));
         exit;*/
-        
+
         $pdf = PDF::loadView('informes.pdf.accesopersonal', ['resultados'=>$resultados, 'fechadesde'=>$fechadesde, 'fechahasta'=>$fechahasta, 'filtro' => $filtro, 'txtalumno' => $txtalumno]);
         return $pdf->setOrientation('landscape')->stream();
     }
