@@ -321,8 +321,7 @@ class UsersController extends BaseController
 		*	//Hash::make($pass);
 		*	//if (preg_match('#[0-9]#',$str))
 		*
-		*/		
-
+		*/
 
 		$validator = Validator::make($data, $this->rules['create'] , $this->messages['create']);
 
@@ -347,15 +346,30 @@ class UsersController extends BaseController
                 }
             }
 
-			$persona = new Persona();
-			$persona->nombre           = trim(Input::get("txtnombre"));
-			$persona->apellido         = trim(Input::get("txtapellido"));
-			$persona->tipodocumento_id = Input::get("tipodocumento");
-			$persona->nrodocumento     = trim(Input::get("txtdocumento"));
-            $persona->usuario_alta     = Auth::user()->usuario;
-            $persona->fecha_alta       = date('Y-m-d');
+			//VALIDACION PARA QUE NO SE REPITA PERSONAS CON EL MISMO DNI
+			$personas = Persona::whereRaw('nrodocumento ='. $vdoc)->first();
 
-			$persona->save();
+	        if ($personas) {
+	            $persona = Persona::findOrFail($personas->id);
+				/*$persona->nombre           = trim(Input::get("txtnombre"));
+				$persona->apellido         = trim(Input::get("txtapellido"));
+				$persona->tipodocumento_id = Input::get("tipodocumento");
+				$persona->nrodocumento     = trim(Input::get("txtdocumento"));*/
+	            $persona->usuario_modi	   = Auth::user()->usuario;
+	            $persona->fecha_modi       = date('Y-m-d');
+
+				$persona->save();
+	        } else {
+				$persona = new Persona();
+				$persona->nombre           = trim(Input::get("txtnombre"));
+				$persona->apellido         = trim(Input::get("txtapellido"));
+				$persona->tipodocumento_id = Input::get("tipodocumento");
+				$persona->nrodocumento     = trim(Input::get("txtdocumento"));
+	            $persona->usuario_alta     = Auth::user()->usuario;
+	            $persona->fecha_alta       = date('Y-m-d');
+
+				$persona->save();
+			}
 
 			$user = new User();		
 		
@@ -408,7 +422,6 @@ class UsersController extends BaseController
 
 	public function postUpdate()
 	{
-
 		$usrid 		= Input::get('userid');
 		$idpersona 	= Input::get('idpersona');
 
@@ -455,9 +468,10 @@ class UsersController extends BaseController
         } else {
 
             $fotoperfil = Input::file('fotoperfil');
+            highlight_string(var_export($fotoperfil, true));
+		exit();
 
             if ($fotoperfil) {
-
                 $extension_valida = ImagenHelper::extensionValida($fotoperfil->getClientOriginalName());
 
                 if (!$extension_valida) {
@@ -502,7 +516,7 @@ class UsersController extends BaseController
 			$user->organizaciones()->attach($organizacion);
 
             if ($fotoperfil) {
-                $personas = Persona::find($persona->id);
+                $personas = Persona::find($idpersona);
                 $personas->foto = $filename;
                 $personas->save();
             } 

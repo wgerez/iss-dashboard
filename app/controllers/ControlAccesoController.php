@@ -50,6 +50,25 @@ class ControlAccesoController extends \BaseController {
         return Response::json($resultado);
     }
 
+    public function getObtenermovimientos()
+    {
+        $organizaciones = Organizacion::lists('nombre', 'id');
+
+        array_unshift($organizaciones, 'Seleccionar');
+
+        $resultados = array();
+
+    	return View::make('controlacceso/listado')
+            ->with('organizaciones', $organizaciones)
+            ->with('resultados', $resultados)
+            ->with('menu', ModulosHelper::MENU_ACCESOS)
+            ->with('submenu', ModulosHelper::SUBMENU_CONTROL_ACCESOS)
+            ->with('leer', Session::get('CONTROL_ACCESOS_LEER'))
+            ->with('editar', Session::get('CONTROL_ACCESOS_EDITAR'))
+            ->with('imprimir', Session::get('CONTROL_ACCESOS_IMPRIMIR'))
+            ->with('eliminar', Session::get('CONTROL_ACCESOS_ELIMINAR'));
+    }
+
     public function postObtenermovimientos() 
     {
         $orgid = Input::get('organizacion');
@@ -76,8 +95,18 @@ class ControlAccesoController extends \BaseController {
 
     	if (!$filtro == '') {
 	        if ($filtro == 'N° Documento') {
+	        	if ($txtalumno == '') {
+		            Session::flash('message', 'ERROR, DEBE INGRESAR UN CRITERIO DE BUSQUEDA!');
+		            Session::flash('message_type', self::OPERACION_CANCELADA);
+		        }
+
 	        	$personas = Persona::whereRaw("nrodocumento= '". $txtalumno ."'")->get();
 	        } elseif ($filtro == 'Usuario') {
+	        	if ($txtalumno == '') {
+		            Session::flash('message', 'ERROR, DEBE INGRESAR UN CRITERIO DE BUSQUEDA!');
+		            Session::flash('message_type', self::OPERACION_CANCELADA);
+		        }
+
 	        	$usuario = User::whereRaw("usuario ='". $txtalumno ."'")->get();
 
 	        	if (count($usuario) > 0) {
@@ -88,8 +117,18 @@ class ControlAccesoController extends \BaseController {
 	        		$personas = array();
 	        	}
 	        } elseif ($filtro == 'Apellido') {
+	        	if ($txtalumno == '') {
+		            Session::flash('message', 'ERROR, DEBE INGRESAR UN CRITERIO DE BUSQUEDA!');
+		            Session::flash('message_type', self::OPERACION_CANCELADA);
+		        }
+
 	        	$personas = Persona::whereRaw("apellido= '". $txtalumno ."'")->get();
 	        } elseif ($filtro == 'Nombre') {
+	        	if ($txtalumno == '') {
+		            Session::flash('message', 'ERROR, DEBE INGRESAR UN CRITERIO DE BUSQUEDA!');
+		            Session::flash('message_type', self::OPERACION_CANCELADA);
+		        }
+		        
 	        	$personas = Persona::whereRaw("nombre= '". $txtalumno ."'")->get();
 	        	//$alumno = (count($alumnos)) ? $alumnos[0] : self::NO_EXISTE_ALUMNO;
 	        } else {
@@ -831,7 +870,7 @@ class ControlAccesoController extends \BaseController {
 	    $fechahasta = FechaHelper::getFechaImpresion($fechahastas);
         /*highlight_string(var_export($resultados,true));
         exit;*/
-
+        
         $pdf = PDF::loadView('informes.pdf.accesopersonal', ['resultados'=>$resultados, 'fechadesde'=>$fechadesde, 'fechahasta'=>$fechahasta, 'filtro' => $filtro, 'txtalumno' => $txtalumno]);
         return $pdf->setOrientation('landscape')->stream();
     }

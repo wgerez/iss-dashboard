@@ -145,7 +145,7 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 										<div id="divavisofechaing" class="col-md-3 <?php if ($errors->has('fechadesde')) echo 'has-error' ?>">
 											<div class="input-icon right">
 												<i class="fa fa-exclamation tooltips iconoerrorfechaing" style="display:none" data-original-title="Fecha Incorrecta." data-container="body"></i>
-												<input type="date" class="form-control" name="fechadesde" id="fechadesde" placeholder="" value="<?php if (isset($fechadesdes)) echo $fechadesdes; ?>">
+												<input type="date" class="form-control" name="fechadesde" id="fechadesde" placeholder="" value="<?php if (isset($fechadesdes)) {echo $fechadesdes;} else {echo date('Y-m-d');} ?>">
 
 												<!-- mostrar cuando exista error -->
 										    	@if ($errors->has('fechadesde'))
@@ -156,7 +156,7 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 										</div>
 										<label class="col-md-2 control-label">Fecha Hasta:</label>
 										<div class="col-md-3">
-											<input type="date" class="form-control" name="fechahasta" id="fechahasta" placeholder="" value="<?php if (isset($fechahastas)) echo $fechahastas; ?>">
+											<input type="date" class="form-control" name="fechahasta" id="fechahasta" placeholder="" value="<?php if (isset($fechahastas)) {echo $fechahastas;} else {echo date('Y-m-d');} ?>">
 										</div>
 										
 										<div class="col-md-2 col-sm-2">
@@ -180,7 +180,7 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 										<center><i class="fa fa-users"></i> Apellido y Nombre</center>
 									</th>
 									<th>
-										<center><i class="glyphicon glyphicon-calendar"></i> Dia</center>
+										<center><i class="glyphicon glyphicon-calendar"></i> Dias</center>
 									</th>
 									<th>
 										<center><i class="glyphicon glyphicon-thumbs-up"></i> Entrada</center>

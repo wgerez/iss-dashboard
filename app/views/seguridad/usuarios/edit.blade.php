@@ -32,6 +32,8 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 	$usuario = (trim(Input::old('txtusuario') == false)) ? $user->usuario : Input::old('txtusuario');
 	$correo = (trim(Input::old('txtcorreo') == false)) ? $user->email : Input::old('txtcorreo');
 	$organizacion = (trim(Input::old('organizaciones') == false)) ? $user->organizaciones->first()->id : Input::old('organizaciones');
+	/*highlight_string(var_export($user->Persona['foto'], true));
+	exit();*/
 
 ?>
 
@@ -177,8 +179,8 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 												<center>
 												<div class="fileinput fileinput-new" data-provides="fileinput">
 													<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 130px; height: 110px;">
-														@if ($user->Persona->foto)
-														    <img src="{{url('usuarios/img-perfil')}}/{{$user->Persona->foto}}" alt="sin perfil">
+														@if ($user->Persona['foto'])
+														    <img src="{{url('alumnos/img-perfil')}}/{{$user->Persona['foto']}}" alt="sin perfil">
 														@else
 														    <img src="{{url('assets/admin/layout/img/sinperfil.png')}}" alt="sin perfil">
 														@endif
@@ -260,6 +262,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 
 
 @section('customjs')
+ComponentsFormTools.init();
 
 	//$('#organizaciones').multiSelect();
 
