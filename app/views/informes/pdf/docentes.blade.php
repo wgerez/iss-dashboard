@@ -5,6 +5,7 @@
   <table class="collapse">
     <thead>
       <tr>
+        <th>Código</th>
         <th>Apellido y Nombre</th>
         <th>DNI</th>
         <th>Dirección</th>
@@ -30,6 +31,7 @@
 					@endif
 				@endforeach											
 				<tr>
+					<td><center>{{$docente->persona['id']}}</center></td>
 					<td>{{$docente->persona['apellido'].", ". $docente->persona['nombre']}}</td>
 					<td>{{$docente->persona['nrodocumento']}}</td>
 					<td>

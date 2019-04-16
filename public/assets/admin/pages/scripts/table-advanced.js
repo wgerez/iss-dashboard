@@ -241,6 +241,8 @@ var TableAdvanced = function () {
                 "orderable": true
             },{
                 "orderable": true
+            },{
+                "orderable": true
             }, {
                 "orderable": true
             }, {
@@ -270,6 +272,8 @@ var TableAdvanced = function () {
                 [0, 'asc']
             ],
             "columns": [{
+                "orderable": true
+            },{
                 "orderable": true
             },{
                 "orderable": true

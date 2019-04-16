@@ -154,6 +154,9 @@
 								<table class="table table-striped table-bordered table-hover" id="table_informes_alumnos">
 									<thead>
 										<tr>
+											<th class="hidden-xs">
+												<center><i class="glyphicon glyphicon-list-alt"></i> Código</center>
+											</th>
 											<th>
 												 <center><i class="fa fa-tags"></i> Apellido y Nombre</center>
 											</th>
@@ -196,6 +199,7 @@
 												@endforeach
 												@if ($filtroseleccionado==1)
 												<tr>
+													<td><center>{{$alumno->persona['id']}}</center></td>
 													<td>{{$alumno->persona['apellido'].", ". $alumno->persona['nombre']}}</td>
 													<td>{{$alumno->persona['nrodocumento']}}</td>
 													<td>{{$alumno->persona['sexo']}}</td>

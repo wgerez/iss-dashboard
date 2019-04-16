@@ -5,6 +5,7 @@
   <table class="collapse">
     <thead>
       <tr>
+        <th>Código</th>
         <th>Apellido y Nombre</th>
         <th>DNI</th>
         <th>Dirección</th>
@@ -31,6 +32,7 @@
                         @endforeach
                         @if ($filtroseleccionado==1)
                         <tr>
+                          <td><center>{{$alumno->persona['id']}}</center></td>
                           <td>{{$alumno->persona['apellido'].", ". $alumno->persona['nombre']}}</td>
                           <td>{{$alumno->persona['nrodocumento']}}</td>
                           <td>

@@ -113,6 +113,9 @@
 								<table class="table table-striped table-bordered table-hover" id="table_informes_docentes">
 									<thead>
 										<tr>
+											<th class="hidden-xs">
+												<center><i class="glyphicon glyphicon-list-alt"></i> Código</center>
+											</th>
 											<th>
 												 <center><i class="fa fa-tags"></i> Apellido y Nombre</center>
 											</th>
@@ -150,6 +153,7 @@
 													@endif
 												@endforeach											
 												<tr>
+													<td><center>{{$docente->persona['id']}}</center></td>
 													<td>{{$docente->persona['apellido'].", ". $docente->persona['nombre']}}</td>
 													<td>{{$docente->persona['nrodocumento']}}</td>
 													<td>
