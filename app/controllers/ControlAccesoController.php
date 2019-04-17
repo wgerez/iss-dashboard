@@ -148,7 +148,7 @@ class ControlAccesoController extends \BaseController {
 					if (count($usuario) > 0) {
 	    				$usuario = User::whereRaw('persona_id ='. $persona->id)->first()->usuario;
 
-	    				$accesos = Acceso::whereRaw('persona_id =' . $persona->id)->get();
+	    				$accesos = Acceso::whereRaw('persona_id =' . $persona->id)->orderByRaw('entrada ASC')->get();
 	    				$persona_id = $persona->id;
 	    				
 	    				foreach ($accesos as $acceso) {
@@ -225,7 +225,7 @@ class ControlAccesoController extends \BaseController {
 		    				}
 
 		    				//$accesos = Acceso::whereRaw("persona_id =".$persona->id." AND entrada >='".$fechadesdes."' AND entrada <='".$fechahastas."'")->get();
-		    				$accesos = Acceso::whereRaw('persona_id =' . $persona->id)->get();
+		    				$accesos = Acceso::whereRaw('persona_id =' . $persona->id)->orderByRaw('entrada ASC')->get();
 	    					$persona_id = $persona->id;
 		    				
 		    				foreach ($accesos as $acceso) {
