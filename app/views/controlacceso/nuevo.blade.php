@@ -72,7 +72,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 						@endif	
 					@endif
 					<!-- COMIENZO DE LA TABLA-->
-					{{ Form::open(array('url'=>'controlacceso/guardar', 'class'=>'form-horizontal form-row-seperated', 'id'=>'FrmCajaChica', 'name'=>'FrmCajaChica'))}}
+					{{ Form::open(array('url'=>'controlacceso/guardar', 'class'=>'form-horizontal form-row-seperated', 'id'=>'FrmControlAcceso', 'name'=>'FrmControlAcceso'))}}
 					
 					<div class="portlet">
 						<div class="portlet-title">
@@ -80,7 +80,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 								<i class="fa fa-files-o"></i> Control de Acceso
 							</div>
 							<div class="actions">
-								<button type='submit' class="btn default green-stripe" {{ $disabled }}>
+								<button type='button' id="btnGuardar" class="btn default green-stripe" {{ $disabled }}>
 								<i class="fa fa-save"></i>
 								<span class="hidden-480">
 								Guardar </span>
@@ -317,6 +317,28 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 										</div>
 										<!-- FIN MODAL-->
 
+	<!-- MODAL ELIMINACION DE MATERIAS-->
+	<div class="modal fade" id="modalGuardarAcceso" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<input id="idMateriaHidden" name='idMateriaHidden' type="hidden" value="">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+						<h4 class="modal-title">Guardar Control de Acceso</h4>
+					</div>
+					<div class="modal-body">
+						¿Desea guardar los datos? 
+					</div>
+					<div class="modal-footer">
+						<button type="button" id="btnGuardarAcceso" class="btn red"><i class="fa fa-trash-o"></i> Guardar</button>
+						<button type="button" class="btn default" data-dismiss="modal"><i class="fa fa-times-circle-o"></i> Cancelar</button>
+					</div>
+				</div>
+			</div>
+	</div>
+	<!-- FIN DEL MODAL FORM-->
+
+
 									</div>
 
 								</div>																	
@@ -425,6 +447,14 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 
 	$('#BtnBuscarLista').live('click', function(){
 		$('#modalBuscarPersona').modal('show');
+	});
+
+	$('#btnGuardar').live('click', function(){
+		$('#modalGuardarAcceso').modal('show');
+	});
+
+	$('#btnGuardarAcceso').live('click', function(){
+		$('#FrmControlAcceso').submit();
 	});
 
 	$('.verinfo').live('click', function(){
