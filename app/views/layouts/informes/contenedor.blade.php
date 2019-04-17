@@ -18,6 +18,9 @@
 	       padding-top: 0.4em;
 	       border-top: 1px solid #DADADA;
 	    }
+	    footer .pagenum:before {/*AGREGUE 17-04-19 */
+		      content: counter(page);
+		}/* HASTA AQUI */
 	    table {
 	      width: 100%;
 	      color:black;
@@ -55,5 +58,11 @@
 		<!--footer>
 			<center>Instituto Superior de Sanidad "Prof. Ramón Carrillo" - Formosa</center>
 		</footer -->
+		<br><!-- AGREGUE 17-04-19 -->
+		<br>
+		<br>
+		<footer>
+            <div class="pagenum-container">Pagina <span class="pagenum"></span></div>
+		</footer><!-- HASTA AQUI -->
 	</body>
 </html>
