@@ -711,6 +711,38 @@ var TableAdvanced = function () {
         });
     }         
 
+    var ListadoControlAcceso = function () {
+        var table = $('#table_controlacceso');
+        var oTable = table.dataTable({
+            "order": [
+                [0, 'asc']
+            ],
+            "columns": [{
+                "orderable": true
+            },{
+                "orderable": true
+            }, {
+                "orderable": true
+            }, {
+                "orderable": true
+            },{
+                "orderable": true
+            }, {
+                "orderable": true
+            }, {
+                "orderable": true
+            },{
+                "orderable": true
+            }],            
+            "lengthMenu": [
+                [20, 30, 40, -1],
+                [20, 30, 40, "Todos"]
+            ],
+            // set the initial value
+            "pageLength": 20,
+        });
+    }         
+
 
 
 
@@ -746,6 +778,7 @@ var TableAdvanced = function () {
             Listadopagoanio();
             ListadoFeriados();
             ListadoExamenFinal();
+            ListadoControlAcceso();
         }
 
     };

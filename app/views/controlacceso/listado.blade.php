@@ -167,7 +167,7 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 							</div>
 							<br>
 
-							<table class="table table-striped table-bordered table-hover" id="table_movimien">
+							<table class="table table-striped table-bordered table-hover" id="table_controlacceso">
 								<thead>
 								<tr>
 									<th class="hidden-xs" style="display: none;">
@@ -436,7 +436,7 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 
 @section('customjs')
 	$(document).ready(function() {
-	    $('#table_movimien').DataTable();
+	    $('#table_controlacceso').DataTable();
 	});
 
 	$('#btnGuardarAcceso').live('click', function() {
