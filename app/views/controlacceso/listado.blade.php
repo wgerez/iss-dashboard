@@ -305,7 +305,7 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
 											<h4 class="modal-title"><strong>Registrar Entrada/Salida</strong></h4>
 										</div>
-										{{ Form::open(array('url'=>'controlacceso/registrarentradasalida', 'class' => 'form-horizontal form-row-seperated')) }}
+										{{ Form::open(array('url'=>'controlacceso/registrarentradasalida', 'class' => 'form-horizontal form-row-seperated', 'id'=>'FrmControlAcceso', 'name'=>'FrmControlAcceso')) }}
 										  <input id="txt_usuario_id" name='txt_usuario_id' type="hidden" value="">
 										  <div class="modal-body form-body">
 											<div class="scroller" style="height:250px;" data-always-visible="1" data-rail-visible="1">
@@ -340,9 +340,9 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 															</div-->
 															<div class="col-md-2 col-sm-2">
 																<select class="table-group-action-input form-control" name="txt_hora" id="txt_hora">
-																	<option value="00">00</option>
+																	<option value=""></option>
 																	<?php
-																	for ($i=1; $i < 25; $i++) { 
+																	for ($i=00; $i < 24; $i++) { 
 																		if ($i < 10) {
 																		 	$i = '0'.$i;
 																		 } ?>
@@ -353,9 +353,9 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 												            </div>
 												            <div class="col-md-2 col-sm-2">
 												            	<select class="table-group-action-input form-control" name="txt_minuto" id="txt_minuto">
-																	<option value="00">00</option>
+																	<option value=""></option>
 																	<?php
-																	for ($i=01; $i < 60; $i++) { 
+																	for ($i=00; $i < 60; $i++) { 
 																		if ($i < 10) {
 																		 	$i = '0'.$i;
 																		 } ?>
@@ -375,9 +375,9 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 															<div class="col-md-2 col-sm-2">
 																<select class="table-group-action-input form-control" name="txt_horas" id="txt_horas">
 																	<option value=""></option>
-																	<option value="00">00</option>
+																	<option value=""></option>
 																	<?php
-																	for ($i=1; $i < 25; $i++) { 
+																	for ($i=00; $i < 24; $i++) { 
 																		if ($i < 10) {
 																		 	$i = '0'.$i;
 																		 } ?>
@@ -389,9 +389,9 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 												            <div class="col-md-2 col-sm-2">
 																<select class="table-group-action-input form-control" name="txt_minutos" id="txt_minutos">
 																	<option value=""></option>
-																	<option value="00">00</option>
+																	<option value=""></option>
 																	<?php
-																	for ($i=01; $i < 60; $i++) { 
+																	for ($i=00; $i < 60; $i++) { 
 																		if ($i < 10) {
 																		 	$i = '0'.$i;
 																		 } ?>
@@ -410,7 +410,7 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 												<i class="fa fa-print"></i>
 												<span class="hidden-480">Imprimir</span>
 											</a-->
-											<button type="submit" id="guardar" class="btn blue"><i class="fa fa-save"></i> Guardar</button>
+											<button type="button" id="btnGuardarAcceso" class="btn blue"><i class="fa fa-save"></i> Guardar</button>
 											<button type="button" class="btn default" data-dismiss="modal"><i class="fa fa-times-circle-o"></i> Cerrar</button>
 										</div>
 										{{ Form::close() }}
@@ -437,6 +437,28 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 @section('customjs')
 	$(document).ready(function() {
 	    $('#table_movimien').DataTable();
+	});
+
+	$('#btnGuardarAcceso').live('click', function() {
+
+		if ($('#txt_entrada').val() == '' || $('#txt_hora').val() == '' || $('#txt_minuto').val() == '') {
+			alert('Debe por lo menos cargar datos de entrada');
+			return;
+		}
+		
+		if ($('#txt_entrada').val() > $('#txt_salida').val()) {
+			alert('La fecha de salida no debe superar la fecha de entrada!');
+			return;
+		}
+		
+		if ($('#txt_salida').val() != '') {
+			if ($('#txt_horas').val() == '' || $('#txt_minutos').val() == '') {
+				alert('Debe ingresar Hora de salida!');
+				return;
+			}
+		}
+
+		$('#FrmControlAcceso').submit();
 	});
 
 	$('#BtnBuscardni').hide();

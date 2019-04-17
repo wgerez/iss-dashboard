@@ -349,7 +349,7 @@ class ControlAccesoController extends \BaseController {
         if ($entrada == '' || $hora == '' || $minuto == '') {
             Session::flash('message', 'ERROR AL INTENTAR GUARDAR EL ACCESO, DEBE INGRESAR LA FECHA/HORA DE ENTRADA!');
             Session::flash('message_type', self::OPERACION_FALLIDA);
-            return Redirect::to('controlacceso/listado')//pagarcuotas/' . $persona_id)
+            return Redirect::to('controlacceso/listado')//acceso/' . $persona_id)
                 ->withInput();
         }
 
@@ -365,7 +365,7 @@ class ControlAccesoController extends \BaseController {
 	    if ($fecha_inicio > $fecha_fin) {
 	    	Session::flash('message', 'ERROR AL INTENTAR GUARDAR EL ACCESO, LA FECHA DE SALIDA NO PUEDE SER MAYOR QUE LA DE ENTRADA!');
             Session::flash('message_type', self::OPERACION_FALLIDA);
-            return Redirect::to('controlacceso/listado')//pagarcuotas/' . $persona_id)
+            return Redirect::to('controlacceso/listado')//acceso/' . $persona_id)
                 ->withInput();
 	    }
 
@@ -373,7 +373,7 @@ class ControlAccesoController extends \BaseController {
 	    	if ($horas == '' || $minutos == '') {
 	    		Session::flash('message', 'ERROR AL INTENTAR GUARDAR EL ACCESO, LA FECHA DE SALIDA DEBE ESTAR COMPLETA!');
 	            Session::flash('message_type', self::OPERACION_FALLIDA);
-	            return Redirect::to('controlacceso/listado')//pagarcuotas/' . $persona_id)
+	            return Redirect::to('controlacceso/listado')//acceso/' . $persona_id)
 	                ->withInput();
 	    	}
 	    }
@@ -384,7 +384,7 @@ class ControlAccesoController extends \BaseController {
         	if ($horas == '' || $minutos == '') {
         		Session::flash('message', 'ERROR AL INTENTAR GUARDAR EL ACCESO, LA FECHA/HORA DE SALIDA DEBE ESTAR COMPLETA!');
 	            Session::flash('message_type', self::OPERACION_FALLIDA);
-	            return Redirect::to('controlacceso/listado')//pagarcuotas/' . $persona_id)
+	            return Redirect::to('controlacceso/listado')//acceso/' . $persona_id)
 	                ->withInput();
         	} else {
         		$horasalida = $salida.' '.$horas.':'.$minutos;
@@ -399,7 +399,7 @@ class ControlAccesoController extends \BaseController {
 		    if ($fecha_inicio > $fecha_fin) {
 		    	Session::flash('message', 'ERROR AL INTENTAR GUARDAR EL ACCESO, LA FECHA/HORA DE SALIDA NO PUEDE SER MAYOR QUE LA DE ENTRADA!');
 	            Session::flash('message_type', self::OPERACION_FALLIDA);
-	            return Redirect::to('controlacceso/listado')//pagarcuotas/' . $persona_id)
+	            return Redirect::to('controlacceso/listado')//acceso/' . $persona_id)
 	                ->withInput();
 		    }
         }
