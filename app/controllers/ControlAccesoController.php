@@ -489,6 +489,39 @@ class ControlAccesoController extends \BaseController {
     	return Response::json($personal);
     }
 
+    public function postBuscarhorario()
+    {
+    	$codigo = Input::get('codigo');
+    	$resultados = array();
+
+    	$accesos = Acceso::whereRaw('persona_id =' . $codigo)->get();
+
+    	if (count($accesos) > 0) {
+    		foreach ($accesos as $acceso) {
+    			if ($acceso->salida == '') {
+    				$acceso_id = $acceso->id;
+    				$porcion = explode(" ", $acceso->entrada);
+                    $fechas = $porcion[0];
+                    $horas = $porcion[1];
+
+    				$porcionx = explode(":", $horas);
+                    $hora = $porcionx[0];
+                    $minuto = $porcionx[1];
+
+    				$fechatransaccion = FechaHelper::getFechaImpresion($fechas);
+                    $porcions = explode("/", $fechatransaccion);
+                    $fecha = $porcions[2].'-'.$porcions[1].'-'.$porcions[0];
+
+    				$resultados[] = ['acceso_id' => $acceso_id, 'fecha' => $fecha, 'hora' => $hora, 'minuto' => $minuto];
+    			}
+    		}
+    	}
+
+/*highlight_string(var_export($resultados,true));
+        exit;*/
+    	return Response::json($resultados);
+    }
+
     public function postGuardar()
     {   
         $personal       = Input::get('txt_personal');
@@ -497,10 +530,11 @@ class ControlAccesoController extends \BaseController {
         $entrada        = Input::get('txt_entrada');
         $hora      		= Input::get('cbo_hora'); // mes
         $minuto         = Input::get('cbo_minuto');
-        $salida         = Input::get('cbo_salida');
+        $salida         = Input::get('txt_salida');
         $horas         	= Input::get('cbo_horas');
         $minutos        = Input::get('cbo_minutos');
         $organizacion   = Input::get('organizacion');
+        $acceso_id   	= Input::get('txt_acceso_id');
 
         $horaentrada = $entrada.' '.$hora.':'.$minuto;
         
@@ -552,7 +586,7 @@ class ControlAccesoController extends \BaseController {
 	            return Redirect::to('controlacceso/crear')
 	                ->withInput();
         	} else {
-        		$horasalida = $salida.' '.$horas.':'.$minutos;
+        		$horasalida = $salida.' '.$horas.':'.$minutos.':00';
         	}
         }
 
@@ -568,16 +602,27 @@ class ControlAccesoController extends \BaseController {
 		    }
 		}
 
-        $acceso = new Acceso();
+		if ($acceso_id == '') {
+	        $acceso = new Acceso();
+	        
+	        $acceso->persona_id     = $usuario_id;
+	        $acceso->entrada        = $horaentrada;
+	        $acceso->salida         = $horasalida;
+	        $acceso->tipo           = 8;
+	        $acceso->visto          = 1;
+	        $acceso->usuario_alta   = Auth::user()->usuario;
+	        $acceso->fecha_alta     = date('Y-m-d H:i:s');
+	        $acceso->save();
+	    } else {
+	    	$acceso = Acceso::find($acceso_id);
         
-        $acceso->persona_id     = $usuario_id;
-        $acceso->entrada        = $horaentrada;
-        $acceso->salida         = $horasalida;
-        $acceso->tipo           = 8;
-        $acceso->visto          = 1;
-        $acceso->usuario_alta   = Auth::user()->usuario;
-        $acceso->fecha_alta     = date('Y-m-d H:i:s');
-        $acceso->save();
+	        if (!$horasalida == '') $acceso->salida = $horasalida;
+	        //$acceso->tipo           = 7;
+	        //$acceso->visto          = 1;
+	        $acceso->usuario_modi   = Auth::user()->usuario;
+	        $acceso->fecha_modi     = date('Y-m-d H:i:s');
+	        $acceso->save();
+	    }
 
         Session::flash('message', 'LOS DATOS SE GUARDARON EXITOSAMENTE!');
         Session::flash('message_type', self::OPERACION_EXITOSA);

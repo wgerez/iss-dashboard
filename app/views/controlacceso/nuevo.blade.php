@@ -137,6 +137,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 											@if ($errors->has('txt_personal'))
 											    <span class="help-block">{{ $errors->first('txt_personal') }}</span>
 										    @endif
+				  							<input id="txt_acceso_id" name='txt_acceso_id' type="hidden" value="">
 										</div>
 									</div>
 
@@ -439,6 +440,33 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 	    				return;
 					}
 
+					var codigo = $('#txt_codigo').val();
+
+				$.ajax({
+				type: "POST",
+				url: "{{url('controlacceso/buscarhorario')}}",
+				data: { codigo: codigo },
+				type: "POST"
+				}).done(function(horario) {
+					console.log(horario);
+					
+					if (horario.length > 0) {
+						$.each(horario, function(key, value) {
+							$('#txt_entrada').val(value.fecha);
+							$('#cbo_hora').val(value.hora);
+							$('#cbo_minuto').val(value.minuto);
+							$('#txt_acceso_id').val(value.acceso_id);
+						});
+					} else {
+						$('#txt_entrada').val();
+						$('#cbo_hora').val('');
+						$('#cbo_minuto').val('');
+						$('#txt_acceso_id').val('');
+					}
+
+				}).error(function(data) {
+					console.log(data);
+				});
 			}).error(function(data) {
 				console.log(data);
 			});
