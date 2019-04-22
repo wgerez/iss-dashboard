@@ -419,7 +419,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 
 			//document.getElementById('fechaActual').value=ano+"-"+mes+"-"+dia;
 		    $('#txt_entrada').val(ano+"-"+mes+"-"+dia);
-		    $('#txt_salida').val(ano+"-"+mes+"-"+dia);
+		    //$('#txt_salida').val(ano+"-"+mes+"-"+dia);
 
 		    $.ajax({
 				type: "POST",
@@ -505,7 +505,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 
 		//document.getElementById('fechaActual').value=ano+"-"+mes+"-"+dia;
 	    $('#txt_entrada').val(ano+"-"+mes+"-"+dia);
-	    $('#txt_salida').val(ano+"-"+mes+"-"+dia);
+	    //$('#txt_salida').val(ano+"-"+mes+"-"+dia);
 
 
 		$('#modalBuscarPersona').modal('hide');
