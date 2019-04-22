@@ -239,7 +239,7 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 													</td>													
 													<td>
 														<center>
-															<a title="Modificar" href="#modaleditarregistro" data-id="{{$resultado['id']}}" data-usuario="{{$resultado['usuario']}}" data-apellido_nombre="{{$resultado['apellido_nombre']}}" data-fecha_entrada="{{$resultado['fecha_entrada']}}" data-fecha_salida="{{$resultado['fecha_salida']}}" data-hora="{{$resultado['hora']}}" data-minuto="{{$resultado['minuto']}}" data-horas="{{$resultado['horas']}}" data-minutos="{{$resultado['minutos']}}" class="btn default btn-xs purple btnEditarRegistro">
+															<a title="Modificar" {{ $disabled }} href="#modaleditarregistro" data-id="{{$resultado['id']}}" data-usuario="{{$resultado['usuario']}}" data-apellido_nombre="{{$resultado['apellido_nombre']}}" data-fecha_entrada="{{$resultado['fecha_entrada']}}" data-fecha_salida="{{$resultado['fecha_salida']}}" data-hora="{{$resultado['hora']}}" data-minuto="{{$resultado['minuto']}}" data-horas="{{$resultado['horas']}}" data-minutos="{{$resultado['minutos']}}" class="btn default btn-xs purple btnEditarRegistro">
 																<i class="fa fa-edit"></i>
 															</a>
 														</center>
@@ -284,7 +284,7 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 													</td>													
 													<td>
 														<center>
-															<a title="Modificar" href="#modaleditarregistro" data-id="{{$resultado['id']}}" data-usuario="{{$resultado['usuario']}}" data-apellido_nombre="{{$resultado['apellido_nombre']}}" data-fecha_entrada="{{$resultado['fecha_entrada']}}" data-fecha_salida="{{$resultado['fecha_salida']}}" data-hora="{{$resultado['hora']}}" data-minuto="{{$resultado['minuto']}}" data-horas="{{$resultado['horas']}}" data-minutos="{{$resultado['minutos']}}" class="btn default btn-xs purple btnEditarRegistro">
+															<a title="Modificar" {{ $disabled }} href="#modaleditarregistro" data-id="{{$resultado['id']}}" data-usuario="{{$resultado['usuario']}}" data-apellido_nombre="{{$resultado['apellido_nombre']}}" data-fecha_entrada="{{$resultado['fecha_entrada']}}" data-fecha_salida="{{$resultado['fecha_salida']}}" data-hora="{{$resultado['hora']}}" data-minuto="{{$resultado['minuto']}}" data-horas="{{$resultado['horas']}}" data-minutos="{{$resultado['minutos']}}" class="btn default btn-xs purple btnEditarRegistro">
 																<i class="fa fa-edit"></i>
 															</a>
 														</center>

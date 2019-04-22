@@ -331,7 +331,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 						¿Desea guardar los datos? 
 					</div>
 					<div class="modal-footer">
-						<button type="button" id="btnGuardarAcceso" class="btn red"><i class="fa fa-trash-o"></i> Guardar</button>
+						<button type="button" id="btnGuardarAcceso" class="btn red"><i class="fa fa-save"></i> Guardar</button>
 						<button type="button" class="btn default" data-dismiss="modal"><i class="fa fa-times-circle-o"></i> Cancelar</button>
 					</div>
 				</div>
