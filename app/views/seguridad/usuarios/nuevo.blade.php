@@ -69,7 +69,7 @@
 					@endif
 					
 					<!-- COMIENZO DE LA TABLA-->
-					{{ Form::open(array('url'=>'usuarios/guardar', 'class'=>'form-horizontal form-row-seperated', 'id'=>'FrmUsuario', 'name'=>'FrmUsuario'))}}
+					{{ Form::open(array('url'=>'usuarios/guardar', 'class'=>'form-horizontal form-row-seperated', 'id'=>'FrmUsuario', 'name'=>'FrmUsuario', 'enctype'=>'multipart/form-data'))}}
 					
 					<div class="portlet">
 						<div class="portlet-title">

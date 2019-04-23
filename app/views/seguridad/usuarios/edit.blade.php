@@ -88,8 +88,8 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 					@endif
 					
 					<!-- COMIENZO DE LA TABLA-->
-					{{ Form::open(array('url'=>'usuarios/update', 'class'=>'form-horizontal form-row-seperated', 'id'=>'FrmUsuario', 'name'=>'FrmUsuario'))}}
-
+					{{ Form::open(array('url'=>'usuarios/update', 'class'=>'form-horizontal form-row-seperated', 'id'=>'FrmUsuario', 'name'=>'FrmUsuario', 'enctype'=>'multipart/form-data'))}}
+					
 					{{ Form::hidden('userid', $user->id) }}
 					{{ Form::hidden('idpersona', $user->Persona['id']) }}	
 
