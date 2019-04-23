@@ -564,7 +564,7 @@ class ControlAccesoController extends \BaseController {
 	    if ($fecha_inicio > $fecha_fin) {
 	    	Session::flash('message', 'ERROR AL INTENTAR GUARDAR EL ACCESO, LA FECHA DE SALIDA NO PUEDE SER MAYOR QUE LA DE ENTRADA!');
             Session::flash('message_type', self::OPERACION_FALLIDA);
-            return Redirect::to('controlacceso/acceso/crear')
+            return Redirect::to('controlacceso/crear')
                 ->withInput();
 	    }
 
