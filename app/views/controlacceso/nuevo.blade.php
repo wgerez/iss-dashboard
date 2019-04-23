@@ -137,7 +137,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 											@if ($errors->has('txt_personal'))
 											    <span class="help-block">{{ $errors->first('txt_personal') }}</span>
 										    @endif
-				  							<input id="txt_acceso_id" name='txt_acceso_id' type="hidden" value="">
+				  							<input id="txt_acceso_id" name='txt_acceso_id' type="hidden" value="{{ Input::old('txt_acceso_id') }}">
 										</div>
 									</div>
 
@@ -168,9 +168,12 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 												for ($i=00; $i < 24; $i++) { 
 													if ($i < 10) {
 													 	$i = '0'.$i;
-													 } ?>
+													 } 
+													 if (Input::old('cbo_hora') == $i) { ?>
+													  	<option value="{{ $i }}" selected="selected">{{ $i }}</option>
+													  <?php } else { ?>
 													<option value="{{ $i }}">{{ $i }}</option>
-												<?php } ?>
+												<?php } } ?>
 											</select>
 											@if ($errors->has('cbo_hora'))
 											    <span class="help-block">{{ $errors->first('cbo_hora') }}</span>
@@ -183,9 +186,12 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 												for ($i=00; $i < 60; $i++) { 
 													if ($i < 10) {
 													 	$i = '0'.$i;
-													 } ?>
+													 } 
+													 if (Input::old('cbo_minuto') == $i) { ?>
+													  	<option value="{{ $i }}" selected="selected">{{ $i }}</option>
+													  <?php } else { ?>
 													<option value="{{ $i }}">{{ $i }}</option>
-												<?php } ?>
+												<?php } } ?>
 											</select>
 											@if ($errors->has('cbo_minuto'))
 											    <span class="help-block">{{ $errors->first('cbo_minuto') }}</span>
