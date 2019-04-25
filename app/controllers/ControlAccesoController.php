@@ -753,22 +753,31 @@ class ControlAccesoController extends \BaseController {
 	    				$total = 0;
 
 		    			if ($acc == 1) {
-	    					$sumaHoras=0;
-							for ($i=0; $i < count($horax); $i++) { 
+	    					$sumaHoras = 0;
+	    					$sumaminutos = 0;
+							/*for ($i=0; $i < count($horax); $i++) { 
 							    $value_horario   = $horax[$i];
 							    $parts           = explode(':', $value_horario);
 							    $resultado      = ($parts[0] + ($parts[1]/6) / 10 . PHP_EOL);
 							    $sumaHoras = $sumaHoras + $resultado;
-							}
-						  //return $resultado
+							}*/
+							
+							for ($i=0; $i < count($horax); $i++) { 
+							    $value_horario   = $horax[$i];
+							    $parts           = explode(':', $value_horario);
+							    
+							    $sumaHoras = $sumaHoras + $parts[0];
+							    $sumaminutos = $sumaminutos + $parts[1];
 
-						    /*foreach($horax as $h) {
-						        $parts = explode(":", $h);
-						        $total += $parts[2] + $parts[1]*60 + $parts[0]*3600;        
-						    }   
-						    
-						    $totalhoras = gmdate("H:i:s", $total);*/
-						    $parte = explode('.', $sumaHoras);
+							    if ($sumaminutos > 59) {
+							    	$sumaHoras++;
+							    	$sumaminutosn = $sumaminutos - 60;
+							    	$sumaminutos = $sumaminutosn;
+							    }
+							}
+							
+						    $totalhoras = $sumaHoras.':'.$sumaminutos;
+						    /*$parte = explode('.', $sumaHoras);
 
 						    $resultado = substr($parte[1], 0, 2);
 
@@ -776,7 +785,7 @@ class ControlAccesoController extends \BaseController {
 						    	$totalhoras = $parte[0].':'.$parts[1];//.':00';
 						    } else {						    
 						    	$totalhoras = $parte[0].':'.$parts[1];//$resultado;
-						    }
+						    }*/
 
 		    				$resultados[] = ['i' => '', 'id' => '', 'usuario' => $usuario, 'persona_id' => '', 'apellido_nombre' => '', 'dia' => '', 'entrada' => '', 'salida' => '', 'horascumplidas' => '', 'fecha_entrada' => '', 'fecha_salida' => '', 'hora' => '', 'minuto' => '', 'horas' => '', 'minutos' => '', 'totalhoras' => $totalhoras];
 
@@ -872,29 +881,37 @@ class ControlAccesoController extends \BaseController {
 
 		    			if ($acc == 1) {
 	    					$sumaHoras=0;
-							for ($i=0; $i < count($horax); $i++) { 
+	    					$sumaminutos = 0;
+							/*for ($i=0; $i < count($horax); $i++) { 
 							    $value_horario   = $horax[$i];
 							    $parts           = explode(':', $value_horario);
 							    $resultado      = ($parts[0] + ($parts[1]/6) / 10 . PHP_EOL);
 							    $sumaHoras = $sumaHoras + $resultado;
+							}*/
+							
+							for ($i=0; $i < count($horax); $i++) { 
+							    $value_horario   = $horax[$i];
+							    $parts           = explode(':', $value_horario);
+							    
+							    $sumaHoras = $sumaHoras + $parts[0];
+							    $sumaminutos = $sumaminutos + $parts[1];
+
+							    if ($sumaminutos > 59) {
+							    	$sumaHoras++;
+							    	$sumaminutosn = $sumaminutos - 60;
+							    	$sumaminutos = $sumaminutosn;
+							    }
 							}
-						  //return $resultado
+							
+						    $totalhoras = $sumaHoras.':'.$sumaminutos;
 
-						    /*foreach($horax as $h) {
-						        $parts = explode(":", $h);
-						        $total += $parts[2] + $parts[1]*60 + $parts[0]*3600;        
-						    }   
-						    
-						    $totalhoras = gmdate("H:i:s", $total);*/
-						    $parte = explode('.', $sumaHoras);
-
-						    $resultado = substr($parte[1], 0, 2);
+						    /*$resultado = substr($parte[1], 0, 2);
 
 						    if ($resultado > 59) {
 						    	$totalhoras = $parte[0].':'.$parts[1];
 						    } else {						    
 						    	$totalhoras = $parte[0].':'.$parts[1];//$resultado;
-						    }
+						    }*/
 
 		    				$resultados[] = ['i' => '', 'id' => '', 'usuario' => $usuario, 'persona_id' => '', 'apellido_nombre' => '', 'dia' => '', 'entrada' => '', 'salida' => '', 'horascumplidas' => '', 'fecha_entrada' => '', 'fecha_salida' => '', 'hora' => '', 'minuto' => '', 'horas' => '', 'minutos' => '', 'totalhoras' => $totalhoras];
 

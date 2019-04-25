@@ -2,7 +2,7 @@
 
 @section('cuerpo')
 <p align="right">Fecha de Impresión: {{date('d/m/Y')}} - {{Auth::user()->usuario}}</p>
-  <h3><center>Informe de Accesos de Personal</center></h3>
+  <h3><center>Control de Accesos</center></h3>
   <?php
   if ($filtro == 'N° Documento') { ?>
     <h4>DNI: {{$txtalumno}}</h4> <?php

@@ -499,8 +499,12 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 		$('#txt_codigo').val(id);
 		$('#txt_personal').val(personal);
 		$('#txt_usuario').val(usuario);
+
+		var codigo = id;
 		
-	    var fecha = new Date();
+    	Buscar_codigo(codigo);
+
+	    /*var fecha = new Date();
 		var mes = fecha.getMonth()+1; //obteniendo mes
 		var dia = fecha.getDate(); //obteniendo dia
 		var ano = fecha.getFullYear(); //obteniendo año
@@ -509,9 +513,7 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 
 		if(mes<10) mes='0'+mes //agrega cero si el menor de 10
 
-		//document.getElementById('fechaActual').value=ano+"-"+mes+"-"+dia;
-	    $('#txt_entrada').val(ano+"-"+mes+"-"+dia);
-	    //$('#txt_salida').val(ano+"-"+mes+"-"+dia);
+	    $('#txt_entrada').val(ano+"-"+mes+"-"+dia);*/
 
 
 		$('#modalBuscarPersona').modal('hide');

@@ -156,13 +156,18 @@ class FechaHelper {
                 $hora = $nhora.':'.$minut.':'.$segu;
             }
 
-            if ($nhora > 35) $hora = $dias;
-
-            list($hora3, $minuts, $segus) = explode(':', $hora);
-
-            $mul_hora = $j * 24;
-            $sum_hora = $mul_hora + $hora3;
-
+        
+            if ($nhora > 35) {
+                $hora = $dias;
+                list($hora3, $minuts, $segus) = explode(':', $hora);
+                $mul_hora = $j * 24;
+                $sum_hora = $mul_hora + $hora3;
+            } else {
+                list($hora3, $minuts, $segus) = explode(':', $hora);
+                //$mul_hora = $j * 24;
+                $sum_hora = $nhora;
+            }
+            
             $hora = $sum_hora.':'.$minuts.':'.$segus;
 
             //$hora = $j.' dias y '.$hora;
