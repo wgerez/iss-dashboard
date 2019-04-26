@@ -134,22 +134,23 @@ class ControlAccesoController extends \BaseController {
 	        } else {
 	        	$perfil = Perfil::whereRaw("perfil ='". $filtro ."'")->first();
 
-	        	$perfiles = PerfilUser::whereRaw('perfil_id ='. $perfil->id)->get();
-
-	    		foreach ($perfiles as $perfil) {
+	        	$users = Acceso::getAccesoPerfil($perfil->id);
+	        	//$perfiles = PerfilUser::whereRaw('perfil_id ='. $perfil->id)->get();
+	        	
+	    		foreach ($users as $user) {
 	    			$i = 0;
-	    			$usuario = User::find($perfil->user_id);
+	    			$usuario = User::find($user->id);
 
-	    			$persona = Persona::find($usuario->persona_id);
+	    			$persona = $user->usuario;
 	    			/////
-	    			$apellido_nombre = $persona->apellido .', '. $persona->nombre;
-					$usuario = User::whereRaw('persona_id ='. $persona->id)->get();
+	    			$apellido_nombre = $user->apellido .', '. $user->nombre;
+					$usuario = User::whereRaw('persona_id ='. $user->persona_id)->get();
 
 					if (count($usuario) > 0) {
-	    				$usuario = User::whereRaw('persona_id ='. $persona->id)->first()->usuario;
+	    				$usuario = User::whereRaw('persona_id ='. $user->persona_id)->first()->usuario;
 
-	    				$accesos = Acceso::whereRaw('persona_id =' . $persona->id)->orderByRaw('entrada ASC')->get();
-	    				$persona_id = $persona->id;
+	    				$accesos = Acceso::whereRaw('persona_id =' . $user->persona_id)->orderByRaw('entrada ASC')->get();
+	    				$persona_id = $user->persona_id;
 	    				
 	    				foreach ($accesos as $acceso) {
 		                    $fechatransaccion = FechaHelper::getFechaImpresion($acceso->entrada);
@@ -673,23 +674,24 @@ class ControlAccesoController extends \BaseController {
 	        	//$alumno = (count($alumnos)) ? $alumnos[0] : self::NO_EXISTE_ALUMNO;
 	        } else {
 	        	$perfil = Perfil::whereRaw("perfil ='". $filtro ."'")->first();
+	        	
+	        	$users = Acceso::getAccesoPerfil($perfil->id);
+	        	//$perfiles = PerfilUser::whereRaw('perfil_id ='. $perfil->id)->get();
 
-	        	$perfiles = PerfilUser::whereRaw('perfil_id ='. $perfil->id)->get();
-
-	    		foreach ($perfiles as $perfil) {
+	    		foreach ($users as $user) {
 	    			$i = 0;
-	    			$usuario = User::find($perfil->user_id);
+	    			$usuario = User::find($user->id);
 
-	    			$persona = Persona::find($usuario->persona_id);
+	    			$persona = $user->usuario;
 	    			/////
-	    			$apellido_nombre = $persona->apellido .', '. $persona->nombre;
-					$usuario = User::whereRaw('persona_id ='. $persona->id)->get();
+	    			$apellido_nombre = $user->apellido .', '. $user->nombre;
+					$usuario = User::whereRaw('persona_id ='. $user->persona_id)->get();
 
 					if (count($usuario) > 0) {
-	    				$usuario = User::whereRaw('persona_id ='. $persona->id)->first()->usuario;
+	    				$usuario = User::whereRaw('persona_id ='. $user->persona_id)->first()->usuario;
 	    				$acc = 0;
-	    				$accesos = Acceso::whereRaw('persona_id =' . $persona->id)->get();
-	    				$persona_id = $persona->id;
+	    				$accesos = Acceso::whereRaw('persona_id =' . $user->persona_id)->get();
+	    				$persona_id = $user->persona_id;
 				        $horax = array();
 	    				
 	    				foreach ($accesos as $acceso) {

@@ -204,7 +204,7 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 												<tr>
 													<td style="display: none;">
 														<center>
-															{{ $resultado['usuario'] }}
+															{{ $resultado['apellido_nombre'] }}
 														</center>
 													</td>
 													<td>
@@ -249,7 +249,7 @@ $orgId 		= (isset($OrgID)) ? $OrgID : 0;
 												<tr>
 													<td style="display: none;">
 														<center>
-															{{ $resultado['usuario'] }}
+															{{ $resultado['apellido_nombre'] }}
 														</center>
 													</td>
 													<td>
