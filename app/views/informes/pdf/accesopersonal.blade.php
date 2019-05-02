@@ -54,35 +54,16 @@
 
             @if (!$resultado['totalhoras'] == '')
               <tr>
-                <td><center>TOTAL</center></td>
+                <td><center><strong>TOTAL</strong></center></td>
                 <td><center></center></td>
                 <td><center></center></td>
                 <td><center></center></td>
                 <td><center></center></td>
-                <td><center>{{ $resultado['totalhoras'] }}</center></td>
+                <td><center><strong>{{ $resultado['totalhoras'] }}</strong></center></td>
               </tr>
             @endif
           @endforeach
         @endif
-        <?php
-        /*if (!$mesa == '') {
-          $mesaseguir = $mesa + 1;
-          $mespagocuotafins = $mespagocuotafin + 1;
-
-          for ($i=$mesaseguir; $i < $mespagocuotafins; $i++) { */
-          ?>
-          <!--tr>
-            <td><center></center></td>
-            <td><center></center></td>
-            <td><center></center></td>
-            <td><center></center></td>
-            <td><center></center></td>
-            <td><center></center></td>
-            <td><center></center></td>
-            <td><center></center></td>
-          </tr-->
-          <?php /*}
-        } */?>
     </tbody>          
   </table>
 @stop
