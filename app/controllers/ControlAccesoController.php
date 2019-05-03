@@ -123,7 +123,6 @@ class ControlAccesoController extends \BaseController {
 		        }
 
 	        	$personas = Persona::SearchApellido($txtalumno)->orderBy('apellido')->paginate(1000);
-	        	//$personas = Persona::whereRaw("apellido= '". $txtalumno ."'")->get();
 	        } elseif ($filtro == 'Nombre') {
 	        	if ($txtalumno == '') {
 		            Session::flash('message', 'ERROR, DEBE INGRESAR UN CRITERIO DE BUSQUEDA!');
@@ -215,9 +214,7 @@ class ControlAccesoController extends \BaseController {
 					foreach ($personas as $persona) {
 						$i = 0;
 						$apellido_nombre = $persona->apellido .', '. $persona->nombre;
-						//$usuario = User::whereRaw('persona_id ='. $persona->id)->get();
 
-						//if (count($usuario) > 0) {
 		    				$usuarios = User::whereRaw('persona_id ='. $persona->id)->first();
 
 		    				if (count($usuarios) > 0) {
@@ -226,7 +223,6 @@ class ControlAccesoController extends \BaseController {
 		    					$usuario = '';
 		    				}
 
-		    				//$accesos = Acceso::whereRaw("persona_id =".$persona->id." AND entrada >='".$fechadesdes."' AND entrada <='".$fechahastas."'")->get();
 		    				$accesos = Acceso::whereRaw('persona_id =' . $persona->id)->orderByRaw('entrada ASC')->get();
 	    					$persona_id = $persona->id;
 		    				

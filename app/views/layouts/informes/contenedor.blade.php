@@ -19,7 +19,7 @@
 	       border-top: 1px solid #DADADA;
 	    }
 	    footer .pagenum:before {/*AGREGUE 17-04-19 */
-		      content: counter(page);
+		    content: counter(page);
 		}/* HASTA AQUI */
 	    table {
 	      width: 100%;

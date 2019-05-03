@@ -87,4 +87,5 @@ class Persona extends \Eloquent {
         return $query->where('nombre', 'like', "%$descripcion%");
     }
 
+
 }
