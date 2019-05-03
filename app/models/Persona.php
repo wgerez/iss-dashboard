@@ -76,4 +76,15 @@ class Persona extends \Eloquent {
         return $this->hasOne('User');
     }    
     /*Relaciones*/  
+
+    public function ScopeSearchApellido($query, $descripcion)
+    {
+        return $query->where('apellido', 'like', "%$descripcion%");
+    }
+
+    public function ScopeSearchNombre($query, $descripcion)
+    {
+        return $query->where('nombre', 'like', "%$descripcion%");
+    }
+
 }

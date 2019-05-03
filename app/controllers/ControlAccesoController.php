@@ -122,20 +122,20 @@ class ControlAccesoController extends \BaseController {
 		            Session::flash('message_type', self::OPERACION_CANCELADA);
 		        }
 
-	        	$personas = Persona::whereRaw("apellido= '". $txtalumno ."'")->get();
+	        	$personas = Persona::SearchApellido($txtalumno)->orderBy('apellido')->paginate(1000);
+	        	//$personas = Persona::whereRaw("apellido= '". $txtalumno ."'")->get();
 	        } elseif ($filtro == 'Nombre') {
 	        	if ($txtalumno == '') {
 		            Session::flash('message', 'ERROR, DEBE INGRESAR UN CRITERIO DE BUSQUEDA!');
 		            Session::flash('message_type', self::OPERACION_CANCELADA);
 		        }
 
-	        	$personas = Persona::whereRaw("nombre= '". $txtalumno ."'")->get();
-	        	//$alumno = (count($alumnos)) ? $alumnos[0] : self::NO_EXISTE_ALUMNO;
+	        	$personas = Persona::SearchNombre($txtalumno)->orderBy('nombre')->paginate(1000);
+	        	//$personas = Persona::whereRaw("nombre= '". $txtalumno ."'")->get();
 	        } else {
 	        	$perfil = Perfil::whereRaw("perfil ='". $filtro ."'")->first();
 
 	        	$users = Acceso::getAccesoPerfil($perfil->id);
-	        	//$perfiles = PerfilUser::whereRaw('perfil_id ='. $perfil->id)->get();
 	        	
 	    		foreach ($users as $user) {
 	    			$i = 0;
@@ -213,6 +213,7 @@ class ControlAccesoController extends \BaseController {
 		    if ($bandera == true) {
 				if (count($personas) > 0) {
 					foreach ($personas as $persona) {
+						$i = 0;
 						$apellido_nombre = $persona->apellido .', '. $persona->nombre;
 						//$usuario = User::whereRaw('persona_id ='. $persona->id)->get();
 
@@ -668,15 +669,13 @@ class ControlAccesoController extends \BaseController {
 	        		$personas = array();
 	        	}
 	        } elseif ($filtro == 'Apellido') {
-	        	$personas = Persona::whereRaw("apellido= '". $txtalumno ."'")->get();
+	        	$personas = Persona::SearchApellido($txtalumno)->orderBy('apellido')->paginate(1000);
 	        } elseif ($filtro == 'Nombre') {
-	        	$personas = Persona::whereRaw("nombre= '". $txtalumno ."'")->get();
-	        	//$alumno = (count($alumnos)) ? $alumnos[0] : self::NO_EXISTE_ALUMNO;
+	        	$personas = Persona::SearchNombre($txtalumno)->orderBy('nombre')->paginate(1000);
 	        } else {
 	        	$perfil = Perfil::whereRaw("perfil ='". $filtro ."'")->first();
 	        	
 	        	$users = Acceso::getAccesoPerfil($perfil->id);
-	        	//$perfiles = PerfilUser::whereRaw('perfil_id ='. $perfil->id)->get();
 
 	    		foreach ($users as $user) {
 	    			$i = 0;
@@ -757,12 +756,6 @@ class ControlAccesoController extends \BaseController {
 		    			if ($acc == 1) {
 	    					$sumaHoras = 0;
 	    					$sumaminutos = 0;
-							/*for ($i=0; $i < count($horax); $i++) { 
-							    $value_horario   = $horax[$i];
-							    $parts           = explode(':', $value_horario);
-							    $resultado      = ($parts[0] + ($parts[1]/6) / 10 . PHP_EOL);
-							    $sumaHoras = $sumaHoras + $resultado;
-							}*/
 							
 							for ($i=0; $i < count($horax); $i++) { 
 							    $value_horario   = $horax[$i];
@@ -779,15 +772,6 @@ class ControlAccesoController extends \BaseController {
 							}
 							
 						    $totalhoras = $sumaHoras.':'.$sumaminutos;
-						    /*$parte = explode('.', $sumaHoras);
-
-						    $resultado = substr($parte[1], 0, 2);
-
-						    if ($resultado > 59) {
-						    	$totalhoras = $parte[0].':'.$parts[1];//.':00';
-						    } else {						    
-						    	$totalhoras = $parte[0].':'.$parts[1];//$resultado;
-						    }*/
 
 		    				$resultados[] = ['i' => '', 'id' => '', 'usuario' => $usuario, 'persona_id' => '', 'apellido_nombre' => '', 'dia' => '', 'entrada' => '', 'salida' => '', 'horascumplidas' => '', 'fecha_entrada' => '', 'fecha_salida' => '', 'hora' => '', 'minuto' => '', 'horas' => '', 'minutos' => '', 'totalhoras' => $totalhoras];
 
@@ -803,10 +787,9 @@ class ControlAccesoController extends \BaseController {
 		    if ($bandera == true) {
 				if (count($personas) > 0) {
 					foreach ($personas as $persona) {
+						$i = 0;
 						$apellido_nombre = $persona->apellido .', '. $persona->nombre;
-						//$usuario = User::whereRaw('persona_id ='. $persona->id)->get();
 
-						//if (count($usuario) > 0) {
 	    				$usuarios = User::whereRaw('persona_id ='. $persona->id)->first();
 
 	    				if (count($usuarios) > 0) {
@@ -815,7 +798,6 @@ class ControlAccesoController extends \BaseController {
 	    					$usuario = '';
 	    				}
 
-	    				//$accesos = Acceso::whereRaw("persona_id =".$persona->id." AND entrada >='".$fechadesdes."' AND entrada <='".$fechahastas."'")->get();
 	    				$acc = 0;
 	    				$accesos = Acceso::whereRaw('persona_id =' . $persona->id)->get();
     					$persona_id = $persona->id;
@@ -884,13 +866,7 @@ class ControlAccesoController extends \BaseController {
 		    			if ($acc == 1) {
 	    					$sumaHoras=0;
 	    					$sumaminutos = 0;
-							/*for ($i=0; $i < count($horax); $i++) { 
-							    $value_horario   = $horax[$i];
-							    $parts           = explode(':', $value_horario);
-							    $resultado      = ($parts[0] + ($parts[1]/6) / 10 . PHP_EOL);
-							    $sumaHoras = $sumaHoras + $resultado;
-							}*/
-							
+
 							for ($i=0; $i < count($horax); $i++) { 
 							    $value_horario   = $horax[$i];
 							    $parts           = explode(':', $value_horario);
@@ -907,19 +883,10 @@ class ControlAccesoController extends \BaseController {
 							
 						    $totalhoras = $sumaHoras.':'.$sumaminutos;
 
-						    /*$resultado = substr($parte[1], 0, 2);
-
-						    if ($resultado > 59) {
-						    	$totalhoras = $parte[0].':'.$parts[1];
-						    } else {						    
-						    	$totalhoras = $parte[0].':'.$parts[1];//$resultado;
-						    }*/
-
 		    				$resultados[] = ['i' => '', 'id' => '', 'usuario' => $usuario, 'persona_id' => '', 'apellido_nombre' => '', 'dia' => '', 'entrada' => '', 'salida' => '', 'horascumplidas' => '', 'fecha_entrada' => '', 'fecha_salida' => '', 'hora' => '', 'minuto' => '', 'horas' => '', 'minutos' => '', 'totalhoras' => $totalhoras];
 
 		    				$acc = 0;
 		    			}
-		    			//}
 					}
 				}
 			}
