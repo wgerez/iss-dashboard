@@ -167,7 +167,7 @@ class ControlAccesoController extends \BaseController {
 		                    	$horae = $porciones[0];
 		                    	$minutoe = $porciones[1];
 
-		    					if ($acceso->salida == NULL) {
+		    					if ($acceso->salida == '') {
 		    						$horasalida = '';
 		    						$fecha2 = date('Y-m-d H:i:s');
 		    						$fecha_salida = '';
@@ -242,7 +242,7 @@ class ControlAccesoController extends \BaseController {
 			                    	$horae = $porciones[0];
 			                    	$minutoe = $porciones[1];
 
-			    					if ($acceso->salida == NULL) {
+			    					if ($acceso->salida == '') {
 			    						$horasalida = '';
 			    						$fecha2 = date('Y-m-d H:i:s');
 			    						$fecha_salida = '';
@@ -706,7 +706,7 @@ class ControlAccesoController extends \BaseController {
 		                    	$horae = $porciones[0];
 		                    	$minutoe = $porciones[1];
 
-		    					if ($acceso->salida == NULL) {
+		    					if ($acceso->salida == '') {
 		    						$horasalida = '';
 		    						$fecha2 = date('Y-m-d H:i:s');
 		    						$fecha_salida = '';
@@ -816,7 +816,7 @@ class ControlAccesoController extends \BaseController {
 		                    	$horae = $porciones[0];
 		                    	$minutoe = $porciones[1];
 
-		    					if ($acceso->salida == NULL) {
+		    					if ($acceso->salida == '') {
 		    						$horasalida = '';
 		    						$fecha2 = date('Y-m-d H:i:s');
 		    						$fecha_salida = '';
