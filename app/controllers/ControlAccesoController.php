@@ -763,7 +763,12 @@ class ControlAccesoController extends \BaseController {
 							    if ($sumaminutos > 59) {
 							    	$sumaHoras++;
 							    	$sumaminutosn = $sumaminutos - 60;
-							    	$sumaminutos = $sumaminutosn;
+
+							    	if ($sumaminutosn < 10) {
+							    		$sumaminutos = '0'.$sumaminutosn;
+							    	} else {
+							    		$sumaminutos = $sumaminutosn;
+							    	}
 							    }
 							}
 							
@@ -873,7 +878,12 @@ class ControlAccesoController extends \BaseController {
 							    if ($sumaminutos > 59) {
 							    	$sumaHoras++;
 							    	$sumaminutosn = $sumaminutos - 60;
-							    	$sumaminutos = $sumaminutosn;
+
+							    	if ($sumaminutosn < 10) {
+							    		$sumaminutos = '0'.$sumaminutosn;
+							    	} else {
+							    		$sumaminutos = $sumaminutosn;
+							    	}
 							    }
 							}
 							
