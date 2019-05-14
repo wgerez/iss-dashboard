@@ -245,7 +245,7 @@ if (trim(Input::old('codigopostal') == false)) {
 													<div class="fileinput fileinput-new" data-provides="fileinput">
 														<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 130px; height: 110px;">
 															@if ($alumno->Persona->foto)
-															    <img src="{{url('alumnos/img-perfil')}}/{{$alumno->Persona->foto}}" alt="sin perfil">
+															    <img id="img" src="{{url('alumnos/img-perfil')}}/{{$alumno->Persona->foto}}" alt="sin perfil">
 															@else
 															    <img src="{{url('assets/admin/layout/img/sinperfil.png')}}" alt="sin perfil">
 															@endif
@@ -652,6 +652,7 @@ if (trim(Input::old('codigopostal') == false)) {
 
 @section('customjs')
 ComponentsFormTools.init();
+refreshImg($('#img'));
 
 //Emular Tab al presionar Enter
 $('input').keydown( function(e) {
