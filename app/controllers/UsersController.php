@@ -400,7 +400,7 @@ class UsersController extends BaseController
             } 
 
             // se guarda la imagen
-            if ($fotoperfil) {
+            /*if ($fotoperfil) {
                 $imagen = Image::make($fotoperfil->getRealPath());
                 $ancho = $imagen->width();
                 if ($ancho > self::IMG_PERFIL_WIDTH) $ancho = self::IMG_PERFIL_WIDTH;
@@ -408,7 +408,7 @@ class UsersController extends BaseController
                     $constraint->aspectRatio();
                 });
                 $imagen->save(self::IMG_PATH . $filename);
-            }
+            }*/
 
             if ($fotoperfil) {
                 $image = $fotoperfil;
@@ -532,7 +532,7 @@ class UsersController extends BaseController
             } 
 
             // se guarda la imagen
-            if ($fotoperfil) {
+            /*if ($fotoperfil) {
                 $imagen = Image::make($fotoperfil->getRealPath());
                 $ancho = $imagen->width();
                 if ($ancho > self::IMG_PERFIL_WIDTH) $ancho = self::IMG_PERFIL_WIDTH;
@@ -540,7 +540,7 @@ class UsersController extends BaseController
                     $constraint->aspectRatio();
                 });
                 $imagen->save(self::IMG_PATH . $filename);
-            }
+            }*/
 
             if ($fotoperfil) {
                 $image = $fotoperfil;
