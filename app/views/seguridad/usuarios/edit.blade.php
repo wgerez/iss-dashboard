@@ -180,7 +180,8 @@ $imprimir = (!$imprimir) ? 'disabled' : '';
 												<div class="fileinput fileinput-new" data-provides="fileinput">
 													<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 130px; height: 110px;">
 														@if ($user->Persona['foto'])
-														    <img id="img" src="{{url('alumnos/img-perfil')}}/{{$user->Persona['foto']}}" alt="sin perfil">
+														    <img id="img" src="{{$user->Persona['foto2']}}" alt="sin perfil">
+														    <!--img id="img" src="{{url('alumnos/img-perfil')}}/{{$user->Persona['foto']}}" alt="sin perfil"-->
 														@else
 														    <img src="{{url('assets/admin/layout/img/sinperfil.png')}}" alt="sin perfil">
 														@endif

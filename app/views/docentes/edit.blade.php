@@ -244,7 +244,8 @@ if (trim(Input::old('codigopostal') == false)) {
 													<div class="fileinput fileinput-new" data-provides="fileinput">
 														<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 130px; height: 110px;">
 															@if ($docente->Persona->foto)
-															    <img id="img" src="{{url('alumnos/img-perfil')}}/{{$docente->Persona->foto}}" alt="sin perfil">
+															    <img id="img" src="{{$docente->Persona->foto2}}" alt="sin perfil">
+															    <!--img id="img" src="{{url('alumnos/img-perfil')}}/{{$docente->Persona->foto}}" alt="sin perfil"-->
 															@else
 															    <img src="{{url('assets/admin/layout/img/sinperfil.png')}}" alt="sin perfil">
 															@endif
