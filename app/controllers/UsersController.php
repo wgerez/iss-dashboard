@@ -410,6 +410,18 @@ class UsersController extends BaseController
                 $imagen->save(self::IMG_PATH . $filename);
             }
 
+            if ($fotoperfil) {
+                $image = $fotoperfil;
+                $path = self::IMG_PATH . $filename;
+                $type = pathinfo($path, PATHINFO_EXTENSION);
+                $data = file_get_contents($path);
+                $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                
+                $personas = Persona::find($persona->id);
+                $personas->foto2 = $base64;
+                $personas->save();
+            }
+
 			Session::flash('message', 'USUARIO CREADO CON ÉXITO!');
             Session::flash('message_type', self::OPERACION_EXITOSA);
             return Redirect::to('usuarios/editar/'.$user->id);
@@ -528,6 +540,18 @@ class UsersController extends BaseController
                     $constraint->aspectRatio();
                 });
                 $imagen->save(self::IMG_PATH . $filename);
+            }
+
+            if ($fotoperfil) {
+                $image = $fotoperfil;
+                $path = self::IMG_PATH . $filename;
+                $type = pathinfo($path, PATHINFO_EXTENSION);
+                $data = file_get_contents($path);
+                $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                
+                $personas = Persona::find($persona->id);
+                $personas->foto2 = $base64;
+                $personas->save();
             }
 
 			Session::flash('message', 'USUARIO MODIFICADO CON ÉXITO!');

@@ -209,6 +209,18 @@ class AlumnosController extends BaseController {
                 $imagen->save(self::IMG_PATH . $filename);
             }
 
+            if ($fotoperfil) {
+                $image = $fotoperfil;
+                $path = self::IMG_PATH . $filename;
+                $type = pathinfo($path, PATHINFO_EXTENSION);
+                $data = file_get_contents($path);
+                $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                
+                $personas = Persona::find($persona->id);
+                $personas->foto2 = $base64;
+                $personas->save();
+            }
+
             // se crea el legajo
             $legajo = new AlumnoLegajo;
                 $legajo->alumno_id    = $alumno->id;
@@ -421,6 +433,18 @@ class AlumnosController extends BaseController {
                     $constraint->aspectRatio();
                 });
                 $imagen->save(self::IMG_PATH . $filename);
+            }
+
+            if ($fotoperfil) {
+                $image = $fotoperfil;
+                $path = self::IMG_PATH . $filename;
+                $type = pathinfo($path, PATHINFO_EXTENSION);
+                $data = file_get_contents($path);
+                $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                
+                $personas = Persona::find($persona->id);
+                $personas->foto2 = $base64;
+                $personas->save();
             }
 
             Session::flash('message', 'LA EDICIÓN SE HA REALIZADO CON ÉXITO.');
