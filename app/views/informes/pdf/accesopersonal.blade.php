@@ -3,20 +3,6 @@
 @section('cuerpo')
 <p align="right">Fecha de Impresión: {{date('d/m/Y')}} - {{Auth::user()->usuario}}</p>
   <h3><center>Control de Accesos</center></h3>
-  <?php
-  if ($filtro == 'N° Documento') { ?>
-    <h4>DNI: {{$txtalumno}}</h4> <?php
-  } elseif ($filtro == 'Usuario') { ?>
-    <h4>Usuario: {{$txtalumno}}</h4> <?php
-  } elseif ($filtro == 'Apellido') { ?>
-    <h4>Apellido: {{$txtalumno}}</h4> <?php
-  } elseif ($filtro == 'Nombre') { ?>
-    <h4>Nombre: {{$txtalumno}}</h4> <?php
-  } else { ?>
-    <h4>{{$filtro}}</h4> <?php
-  }
-  ?>
-  
   <h4>Desde: {{$fechadesde}} al {{$fechahasta}}.</h4>
   <table class="collapse">
     <thead>
